@@ -41,7 +41,12 @@ public class HoodPlugin extends JavaPlugin {
         }
 
         // FASTTRAVEL
-
+        try {
+            this.db.initializeTable("CREATE TABLE IF NOT EXISTS fasttravelpoints (name VARCHAR(255) PRIMARY KEY, x INT NOT NULL, y INT NOT NULL, z INT NOT NULL, radius INT NOT NULL);");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Could not initialize fast travel table.");
+        }
 
         // LOADED
         super.onEnable();

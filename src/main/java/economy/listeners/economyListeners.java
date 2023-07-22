@@ -18,7 +18,7 @@ public class economyListeners implements Listener {
     @EventHandler
     public void onPlayerJoinEvent(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        try{
+        try {
             User user = playerRepository.getPlayer(player);
         } catch (SQLException e) {
             e.printStackTrace();

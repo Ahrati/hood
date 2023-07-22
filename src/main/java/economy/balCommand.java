@@ -29,7 +29,7 @@ public class balCommand implements TabExecutor {
 
         User player;
         try {
-            player = playerRepository.getPlayer(sender.getName());
+            player = playerRepository.getPlayer((Player) sender);
             sender.sendMessage("Balance: " + player.getMoney() + "$");
             return false;
         } catch (SQLException e) {

@@ -1,3 +1,4 @@
+import economy.listeners.economyListeners;
 import economy.repository.PlayerRepository;
 import fasttravel.FastTravelPointSetCommand;
 import org.bukkit.command.Command;
@@ -54,6 +55,8 @@ public class HoodPlugin extends JavaPlugin {
 
         Objects.requireNonNull(getCommand("pay")).setExecutor(new payCommand(prepo));
         Objects.requireNonNull(getCommand("pay")).setTabCompleter(new payCommand(prepo));
+
+        getServer().getPluginManager().registerEvents(new economyListeners(prepo), this);
 
         // FAST TRAVEL
         try {

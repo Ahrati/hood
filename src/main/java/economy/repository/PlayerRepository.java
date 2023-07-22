@@ -17,7 +17,7 @@ public class PlayerRepository {
         this.db = db;
     }
 
-    public User getPlayer(String username) throws SQLException {
+    private User fetchPlayer(String username) throws SQLException {
         PreparedStatement statement = db.getConnection().prepareStatement("SELECT * FROM balances WHERE username = ?");
         statement.setString(1, username);
 
@@ -28,26 +28,35 @@ public class PlayerRepository {
                                 resultSet.getString("username"),
                                 resultSet.getInt("money"));
             statement.close();
+            return player;
         }
 
         statement.close();
         return null;
     }
+    public User getPlayer(Player player) throws SQLException {
+        User user = fetchPlayer(player.getName());
+        if(user == null) {
+            user = new User(player.getUniqueId(), player.getName(), 0);
+            createPlayer(user);
+        }
+        return user;
+    }
 
     public void transferMoney(String from, String to, int amount) throws SQLException {
         Player sender = getServer().getPlayer(from);
-        Player reciever = getServer().getPlayer(to);
+        Player receiver = getServer().getPlayer(to);
 
-        if (reciever == null) {
+        if (receiver == null) {
             sender.sendMessage("Player not found!");
             return;
         }
 
-        updateMoney(getPlayer(from), -amount);
-        updateMoney(getPlayer(to), amount);
+        updateMoney(fetchPlayer(from), -amount);
+        updateMoney(fetchPlayer(to), amount);
 
         sender.sendMessage("Transferred $" + amount + " to " + to);
-        reciever.sendMessage("Received $" + amount + " from " + from);
+        receiver.sendMessage("Received $" + amount + " from " + from);
     }
 
     public void updateMoney(User player, int amount) throws SQLException {
@@ -56,6 +65,15 @@ public class PlayerRepository {
         statement.setString(2, player.getUsername());
         statement.setInt(3, player.getMoney() + amount);
         statement.setString(5, player.getUsername());
+        statement.executeUpdate();
+        statement.close();
+    }
+
+    private void createPlayer(User user) throws SQLException {
+        PreparedStatement statement = db.getConnection().prepareStatement("INSERT INTO user (player_uuid, username, money) VALUES (?, ?, ?)");
+        statement.setString(1, user.getUuid().toString());
+        statement.setString(2, user.getUsername());
+        statement.setInt(3, user.getMoney());
         statement.executeUpdate();
         statement.close();
     }

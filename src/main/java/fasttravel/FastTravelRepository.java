@@ -3,30 +3,37 @@ import db.database;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class works with the database related to fast travel points.
  */
 public class FastTravelRepository {
-    private database db = new database();
-    private FastTravelRepository(){
+    private final database db;
 
+    public FastTravelRepository(database db){
+        this.db = db;
     }
 
     /**
      * Creates a fast travel point.
      */
     public void CreateFastTravelPoint(FastTravelPoint fastTravelPoint) throws SQLException {
+        System.out.println("in create ftp function");
 
-        PreparedStatement statement = db.getConnection()
-                .prepareStatement("INSERT INTO fasttravelpoints(name,x,y,z,radius) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        PreparedStatement statement = db.getConnection().prepareStatement("INSERT INTO fasttravelpoints(name,x,y,z,radius) VALUES (?, ?, ?, ?, ?)");
         statement.setString(1, fastTravelPoint.getName());
         statement.setInt(2, fastTravelPoint.getX());
         statement.setInt(3, fastTravelPoint.getY());
         statement.setInt(4, fastTravelPoint.getZ());
         statement.setInt(5, fastTravelPoint.getRadius());
 
+        System.out.println("executing statement");
+
         statement.executeUpdate();
+
+        System.out.println("statement executed");
 
         statement.close();
 
@@ -65,5 +72,23 @@ public class FastTravelRepository {
         statement.executeUpdate();
 
         statement.close();
+    }
+
+    /**
+     * Returns an array of all fast travel point names.
+     */
+    public String[] GetFastTravelPointNames() throws SQLException {
+        List<String> names = new ArrayList<>();
+
+        PreparedStatement statement = db.getConnection().prepareStatement("SELECT name FROM fasttravelpoints");
+        ResultSet resultSet = statement.executeQuery();
+
+        while (resultSet.next()) {
+            names.add(resultSet.getString("name"));
+        }
+
+        statement.close();
+
+        return names.toArray(new String[0]);
     }
 }

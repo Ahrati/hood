@@ -57,7 +57,7 @@ public class HoodPlugin extends JavaPlugin {
 
         getCommand("fasttravelpointset").setExecutor(new FastTravelPointSetCommand(db));
         getCommand("fasttravelpointdelete").setExecutor(new FastTravelPointDeleteCommand(db));
-        getCommand("fasttravel").setExecutor(new FastTravelCommand(db));
+        getCommand("fasttravel").setExecutor(new FastTravelCommand(db, this));
 
         // LOADED
         super.onEnable();

@@ -1,3 +1,4 @@
+import fasttravel.FastTravelPointDeleteCommand;
 import fasttravel.FastTravelPointSetCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -54,6 +55,7 @@ public class HoodPlugin extends JavaPlugin {
         }
 
         getCommand("fasttravelpointset").setExecutor(new FastTravelPointSetCommand(db));
+        getCommand("fasttravelpointdelete").setExecutor(new FastTravelPointDeleteCommand(db));
 
         // LOADED
         super.onEnable();

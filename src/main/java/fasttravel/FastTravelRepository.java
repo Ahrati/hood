@@ -75,9 +75,9 @@ public class FastTravelRepository {
     }
 
     /**
-     * Returns an array of all fast travel point names.
+     * Returns a list of all fast travel point names.
      */
-    public String[] GetFastTravelPointNames() throws SQLException {
+    public List<String> GetFastTravelPointNames() throws SQLException {
         List<String> names = new ArrayList<>();
 
         PreparedStatement statement = db.getConnection().prepareStatement("SELECT name FROM fasttravelpoints");
@@ -89,6 +89,6 @@ public class FastTravelRepository {
 
         statement.close();
 
-        return names.toArray(new String[0]);
+        return names;
     }
 }

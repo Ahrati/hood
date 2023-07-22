@@ -1,3 +1,4 @@
+import economy.repository.PlayerRepository;
 import fasttravel.FastTravelPointSetCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -5,8 +6,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.logging.Level;
 import db.database;
+import economy.*;
 public class HoodPlugin extends JavaPlugin {
     FileConfiguration config = getConfig();
     private database db;
@@ -39,11 +42,18 @@ public class HoodPlugin extends JavaPlugin {
 
         // ECONOMY
         try {
-            this.db.initializeTable("CREATE TABLE IF NOT EXISTS player (player_uuid CHAR(36) PRIMARY KEY, username VARCHAR(255), money INT);");
+            this.db.initializeTable("CREATE TABLE IF NOT EXISTS user (player_uuid CHAR(36) PRIMARY KEY, username VARCHAR(255), money INT);");
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Could not initialize economy tables.");
         }
+
+        PlayerRepository prepo = new PlayerRepository(db);
+        Objects.requireNonNull(getCommand("bal")).setExecutor(new balCommand(prepo));
+        Objects.requireNonNull(getCommand("bal")).setTabCompleter(new balCommand(prepo));
+
+        Objects.requireNonNull(getCommand("pay")).setExecutor(new payCommand(prepo));
+        Objects.requireNonNull(getCommand("pay")).setTabCompleter(new payCommand(prepo));
 
         // FAST TRAVEL
         try {

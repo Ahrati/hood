@@ -91,4 +91,29 @@ public class FastTravelRepository {
 
         return names;
     }
+
+    /**
+     * Returns a list of all fast travel points.
+     */
+    public List<FastTravelPoint> GetFastTravelPoints() throws SQLException {
+        List<FastTravelPoint> fastTravelPoints = new ArrayList<>();
+
+        PreparedStatement statement = db.getConnection().prepareStatement("SELECT * FROM fasttravelpoints");
+        ResultSet resultSet = statement.executeQuery();
+
+        while (resultSet.next()) {
+            String name = resultSet.getString("name");
+            int x = resultSet.getInt("x");
+            int y = resultSet.getInt("y");
+            int z = resultSet.getInt("z");
+            int radius = resultSet.getInt("radius");
+
+            FastTravelPoint fastTravelPoint = new FastTravelPoint(name, x, y, z, radius);
+            fastTravelPoints.add(fastTravelPoint);
+        }
+
+        statement.close();
+
+        return fastTravelPoints;
+    }
 }

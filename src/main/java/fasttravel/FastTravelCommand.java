@@ -83,16 +83,11 @@ public class FastTravelCommand implements CommandExecutor {
                 player.teleport(teleportLocation);
                 player.sendMessage("Fast Traveled to " + name);
                 player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
-                for (int i = 0; i < 200; i++) {
+                for (int i = 0; i < 100; i++) {
                     double offsetX = Math.random() * 2.0 - 1.0;
                     double offsetY = Math.random() * 2.0 - 1.0;
                     double offsetZ = Math.random() * 2.0 - 1.0;
-                    Color color = Color.fromRGB(
-                            (int) (Math.random() * 255),
-                            (int) (Math.random() * 255),
-                            (int) (Math.random() * 255)
-                    );
-                    player.getWorld().spawnParticle(
+                    player.spawnParticle(
                             Particle.REDSTONE,
                             teleportLocation.getX(),
                             teleportLocation.getY(),
@@ -100,7 +95,11 @@ public class FastTravelCommand implements CommandExecutor {
                             1,
                             offsetX, offsetY, offsetZ,
                             1.0,
-                            new Particle.DustOptions(color, 2.0f)
+                            new Particle.DustOptions(Color.fromRGB(
+                                    (int) (Math.random() * 255),
+                                    (int) (Math.random() * 255),
+                                    (int) (Math.random() * 255)
+                            ), 2.0f)
                     );
                 }
             }

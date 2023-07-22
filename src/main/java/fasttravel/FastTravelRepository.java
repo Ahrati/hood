@@ -49,7 +49,7 @@ public class FastTravelRepository {
 
         ResultSet resultSet = statement.executeQuery();
 
-        FastTravelPoint fastTravelPoint;
+        FastTravelPoint fastTravelPoint = null;
 
         if(resultSet.next()){
             fastTravelPoint = new FastTravelPoint(resultSet.getString("name"), resultSet.getInt("x"), resultSet.getInt("y"), resultSet.getInt("z"),resultSet.getInt("radius"));

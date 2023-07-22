@@ -1,3 +1,6 @@
+import fasttravel.FastTravelPointSetCommand;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -11,6 +14,8 @@ public class HoodPlugin extends JavaPlugin {
     public void onDisable() {
         super.onDisable();
     }
+
+
 
     @Override
     public void onEnable() {
@@ -40,13 +45,15 @@ public class HoodPlugin extends JavaPlugin {
             System.out.println("Could not initialize economy tables.");
         }
 
-        // FASTTRAVEL
+        // FAST TRAVEL
         try {
             this.db.initializeTable("CREATE TABLE IF NOT EXISTS fasttravelpoints (name VARCHAR(255) PRIMARY KEY, x INT NOT NULL, y INT NOT NULL, z INT NOT NULL, radius INT NOT NULL);");
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Could not initialize fast travel table.");
         }
+
+        getCommand("fasttravelpointset").setExecutor(new FastTravelPointSetCommand(db));
 
         // LOADED
         super.onEnable();

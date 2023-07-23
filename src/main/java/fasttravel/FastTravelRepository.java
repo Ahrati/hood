@@ -20,7 +20,6 @@ public class FastTravelRepository {
      * Creates a fast travel point.
      */
     public void CreateFastTravelPoint(FastTravelPoint fastTravelPoint) throws SQLException {
-        System.out.println("in create ftp function");
 
         PreparedStatement statement = db.getConnection().prepareStatement("INSERT INTO fasttravelpoints(name,x,y,z,radius) VALUES (?, ?, ?, ?, ?)");
         statement.setString(1, fastTravelPoint.getName());
@@ -29,11 +28,7 @@ public class FastTravelRepository {
         statement.setInt(4, fastTravelPoint.getZ());
         statement.setInt(5, fastTravelPoint.getRadius());
 
-        System.out.println("executing statement");
-
         statement.executeUpdate();
-
-        System.out.println("statement executed");
 
         statement.close();
 
@@ -49,7 +44,7 @@ public class FastTravelRepository {
 
         ResultSet resultSet = statement.executeQuery();
 
-        FastTravelPoint fastTravelPoint = null;
+        FastTravelPoint fastTravelPoint;
 
         if(resultSet.next()){
             fastTravelPoint = new FastTravelPoint(resultSet.getString("name"), resultSet.getInt("x"), resultSet.getInt("y"), resultSet.getInt("z"),resultSet.getInt("radius"));

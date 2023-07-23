@@ -1,6 +1,7 @@
 name: HoodPlugin
 version: 0.1
 main: HoodPlugin
+api-version: 1.20.1
 commands:
   fasttravelpointset:
     description: Sets a fast travel point
@@ -12,10 +13,10 @@ commands:
     description: Deletes a fast travel point
     aliases:
       - ftpd
-    usage: /fasttravelpointdelete <name>
+    usage: /fasttravelpointdelete name
 
   fasttravel:
-    description: Go to a fast travel point
+    description: Go to a fast travel <name>
     aliases:
       - ft
     usage: /fasttravel <name>
@@ -25,3 +26,11 @@ commands:
     aliases:
       - fts
     usage: /fasttravellist
+
+  bal:
+    description: Check balance
+    usage: /<command>
+
+  pay:
+    description: Pay someone an amount
+    usage: /<command> <player> <amount>

@@ -4,12 +4,19 @@ import fasttravel.FastTravelPointDeleteCommand;
 import fasttravel.FastTravelPointSetCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import economy.listeners.economyListeners;
+import economy.repository.PlayerRepository;
+import fasttravel.FastTravelPointSetCommand;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.logging.Level;
 import db.database;
+import economy.*;
 public class HoodPlugin extends JavaPlugin {
     FileConfiguration config = getConfig();
     private database db;
@@ -17,8 +24,6 @@ public class HoodPlugin extends JavaPlugin {
     public void onDisable() {
         super.onDisable();
     }
-
-
 
     @Override
     public void onEnable() {
@@ -47,6 +52,16 @@ public class HoodPlugin extends JavaPlugin {
             e.printStackTrace();
             System.out.println("Could not initialize economy tables.");
         }
+
+        // FAST TRAVEL
+        PlayerRepository prepo = new PlayerRepository(db);
+        Objects.requireNonNull(getCommand("bal")).setExecutor(new balCommand(prepo));
+        Objects.requireNonNull(getCommand("bal")).setTabCompleter(new balCommand(prepo));
+
+        Objects.requireNonNull(getCommand("pay")).setExecutor(new payCommand(prepo));
+        Objects.requireNonNull(getCommand("pay")).setTabCompleter(new payCommand(prepo));
+
+        getServer().getPluginManager().registerEvents(new economyListeners(prepo), this);
 
         // FAST TRAVEL
         try {

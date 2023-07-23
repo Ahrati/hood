@@ -38,7 +38,7 @@ public class balopCommand implements TabExecutor {
 
         int amount;
         try {
-            amount = Integer.parseInt(args[3]);
+            amount = Integer.parseInt(args[2]);
         } catch (NumberFormatException e) {
             e.printStackTrace();
             sender.sendMessage("Not a valid number");
@@ -50,10 +50,10 @@ public class balopCommand implements TabExecutor {
             return true;
         }
 
-        switch (args[1]) {
+        switch (args[0]) {
             case "set" -> {
                 try {
-                    User receiver = playerRepository.fetchPlayer(args[2]);
+                    User receiver = playerRepository.fetchPlayer(args[1]);
                     playerRepository.updateMoney(receiver, amount);
                 } catch (SQLException e) {
                     e.printStackTrace();

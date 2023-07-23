@@ -53,7 +53,6 @@ public class HoodPlugin extends JavaPlugin {
             System.out.println("Could not initialize economy tables.");
         }
 
-        // FAST TRAVEL
         PlayerRepository prepo = new PlayerRepository(db);
         Objects.requireNonNull(getCommand("bal")).setExecutor(new balCommand(prepo));
         Objects.requireNonNull(getCommand("bal")).setTabCompleter(new balCommand(prepo));
@@ -63,7 +62,7 @@ public class HoodPlugin extends JavaPlugin {
 
         Objects.requireNonNull(getCommand("balop")).setExecutor(new balopCommand(prepo));
         Objects.requireNonNull(getCommand("balop")).setTabCompleter(new balopCommand(prepo));
-        getCommand("balop").setPermission("myplugin.admin");
+        Objects.requireNonNull(getCommand("balop")).setPermission("myplugin.admin");
 
         getServer().getPluginManager().registerEvents(new economyListeners(prepo), this);
 

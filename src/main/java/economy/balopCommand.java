@@ -63,7 +63,7 @@ public class balopCommand implements TabExecutor {
             }
             case "add" -> {
                 try {
-                    User receiver = playerRepository.fetchPlayer(args[2]);
+                    User receiver = playerRepository.fetchPlayer(args[1]);
                     playerRepository.updateMoney(receiver, receiver.getMoney() + amount);
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -73,7 +73,7 @@ public class balopCommand implements TabExecutor {
             }
             case "sub" -> {
                 try {
-                    User receiver = playerRepository.fetchPlayer(args[2]);
+                    User receiver = playerRepository.fetchPlayer(args[1]);
                     playerRepository.updateMoney(receiver, receiver.getMoney() - amount);
                 } catch (SQLException e) {
                     e.printStackTrace();

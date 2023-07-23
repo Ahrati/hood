@@ -107,10 +107,10 @@ public class FastTravelCommand implements TabExecutor {
         x = fastTravelPoint.getX() + getRandomOffset(fastTravelPoint.getRadius());
         y = fastTravelPoint.getY();
         z = fastTravelPoint.getZ() + getRandomOffset(fastTravelPoint.getRadius());
-        Location teleportLocation = new Location(player.getWorld(), x, y, z, player.getLocation().getYaw(), player.getLocation().getPitch());
 
+        World overworld = Bukkit.getWorld("world");
 
-        int delay = 3;
+        int delay = 5;
 
         player.sendMessage("§aFast Traveling in §d" + delay + " §aseconds");
 
@@ -118,6 +118,7 @@ public class FastTravelCommand implements TabExecutor {
             @Override
             public void run() {
                 playParticleEffects(player.getLocation(), player, player.getWorld());
+                Location teleportLocation = new Location(overworld, x, y, z, player.getLocation().getYaw(), player.getLocation().getPitch());
                 player.teleport(teleportLocation);
                 player.sendMessage("§aFast Traveled to §6" + fastTravelPoint.getName());
                 player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);

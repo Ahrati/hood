@@ -17,7 +17,7 @@ public class balCommand implements TabExecutor {
     }
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if(args.length != 1){
+        if(args.length != 0){
             return false;
         }
 

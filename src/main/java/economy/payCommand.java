@@ -16,7 +16,7 @@ public class payCommand implements TabExecutor {
     }
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if(args.length != 3) {
+        if(args.length != 2) {
             return false;
         }
 

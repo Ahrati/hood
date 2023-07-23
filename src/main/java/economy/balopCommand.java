@@ -22,7 +22,7 @@ public class balopCommand implements TabExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        if(args.length != 4) {
+        if(args.length != 3) {
             return false;
         }
 

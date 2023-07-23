@@ -2,10 +2,7 @@ import fasttravel.FastTravelCommand;
 import fasttravel.FastTravelListCommand;
 import fasttravel.FastTravelPointDeleteCommand;
 import fasttravel.FastTravelPointSetCommand;
-import jail.JailCommand;
-import jail.JailFreeCommand;
-import jail.JailListCommand;
-import jail.JailSetCommand;
+import jail.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import economy.listeners.economyListeners;
@@ -110,6 +107,11 @@ public class HoodPlugin extends JavaPlugin {
         getCommand("jailfree").setPermission("myplugin.admin");
 
         getCommand("jaillist").setExecutor(new JailListCommand(db));
+        getCommand("jaillist").setPermission("myplugin.admin");
+
+        getCommand("jaildelete").setExecutor(new JailDeleteCommand(db));
+        getCommand("jaildelete").setPermission("myplugin.admin");
+        getCommand("jaildelete").setTabCompleter(new JailDeleteCommand(db));
 
         // LOADED
         super.onEnable();

@@ -74,6 +74,10 @@ public class balopCommand implements TabExecutor {
             case "sub" -> {
                 try {
                     User receiver = playerRepository.fetchPlayer(args[1]);
+                    if(amount > receiver.getMoney()) {
+                        sender.sendMessage("Cannot put user into negative balance");
+                        return true;
+                    }
                     playerRepository.updateMoney(receiver, receiver.getMoney() - amount);
                 } catch (SQLException e) {
                     e.printStackTrace();

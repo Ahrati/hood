@@ -64,7 +64,7 @@ public class PlayerRepository {
         statement.setString(1, player.getUuid().toString());
         statement.setString(2, player.getUsername());
         statement.setInt(3, player.getMoney() + amount);
-        statement.setString(5, player.getUsername());
+        statement.setString(4, player.getUsername());
         statement.executeUpdate();
         statement.close();
     }

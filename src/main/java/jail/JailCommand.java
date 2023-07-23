@@ -74,7 +74,9 @@ public class JailCommand implements TabExecutor {
 
         targetPlayer.teleport(teleportLocation);
 
-        commandSender.sendMessage("Player " + playerName + " has been jailed in " + jailName + ".");
+        commandSender.sendMessage("§aPlayer §b" + playerName + " §ahas been jailed in §6" + jailName + ".");
+        targetPlayer.sendMessage("§cYOU ARE UNDER ARREST!");
+        targetPlayer.sendMessage("§aYou have been jailed in §6" + jailName + ".");
         return true;
     }
 

@@ -43,6 +43,7 @@ public class JailFreeCommand implements CommandExecutor {
         //TO DO Remove the fast travel ban
 
         commandSender.sendMessage("§a" + playerName + " §rhas been freed from jail.");
+        targetPlayer.sendMessage("§aYou have been freed from jail.");
         return true;
     }
 }

@@ -2,6 +2,9 @@ import fasttravel.FastTravelCommand;
 import fasttravel.FastTravelListCommand;
 import fasttravel.FastTravelPointDeleteCommand;
 import fasttravel.FastTravelPointSetCommand;
+import jail.JailCommand;
+import jail.JailFreeCommand;
+import jail.JailSetCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import economy.listeners.economyListeners;
@@ -86,6 +89,23 @@ public class HoodPlugin extends JavaPlugin {
         Objects.requireNonNull(getCommand("fasttravelpointdelete")).setExecutor(new FastTravelPointDeleteCommand(db));
         Objects.requireNonNull(getCommand("fasttravelpointdelete")).setTabCompleter(new FastTravelPointDeleteCommand(db));
         getCommand("fasttravelpointdelete").setPermission("myplugin.admin");
+
+        //JAIL
+        try {
+            this.db.initializeTable("CREATE TABLE IF NOT EXISTS jails (name VARCHAR(255) PRIMARY KEY, x INT NOT NULL, y INT NOT NULL, z INT NOT NULL);");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Could not initialize jails table.");
+        }
+
+        getCommand("jailset").setExecutor(new JailSetCommand(db));
+        getCommand("jailset").setPermission("myplugin.admin");
+
+        getCommand("jail").setExecutor(new JailCommand(db));
+        getCommand("jail").setPermission("myplugin.admin");
+
+        getCommand("jailfree").setExecutor(new JailFreeCommand(db));
+        getCommand("jailfree").setPermission("myplugin.admin");
 
         // LOADED
         super.onEnable();

@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="df137c7b-ef4f-4318-9f8a-a98351848362" name="Changes" comment="Database groundwork">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="df137c7b-ef4f-4318-9f8a-a98351848362" name="Changes" comment="Created JailRepository class.">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/HoodPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/HoodPlugin.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,9 +33,22 @@
               </list>
             </value>
           </entry>
+          <entry type="REMOTE">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="origin/debug" />
+              </list>
+            </value>
+          </entry>
         </map>
       </branch-storage>
     </favorite-branches>
+    <option name="PUSH_TAGS">
+      <GitPushTagMode>
+        <option name="argument" value="--tags" />
+        <option name="title" value="All" />
+      </GitPushTagMode>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
@@ -44,20 +59,23 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="2SqcMv8IgOz8pZ5Ddp5g7oIlvSD" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Ivan/rando shiz/HoodPlugin&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "last_opened_file_path": "C:/Users/Ivan/rando shiz/HoodPlugin",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0"
   }
-}</component>
+}]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -91,31 +109,122 @@
       <option name="presentableId" value="LOCAL−00004" />
       <updated>1689943051101</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Added FastTravelPointDeleteCommand class.">
+      <option name="closed" value="true" />
+      <created>1690035798904</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1690035798904</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Fast travel setting, deleting and teleporting now works. Needs polishing.">
+      <option name="closed" value="true" />
+      <created>1690055869607</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1690055869607</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Added delay and effects when fast travelling. Bug with particle effects. None appear when teleporting from further away.">
+      <option name="closed" value="true" />
+      <created>1690059801760</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1690059801760</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Fixed the particle bug.">
+      <option name="closed" value="true" />
+      <created>1690060127928</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1690060127928</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Created GetFastTravelPoints method.">
+      <option name="closed" value="true" />
+      <created>1690060523116</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1690060523116</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Added fasttravellist to .yml">
+      <option name="closed" value="true" />
+      <created>1690060742116</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1690060742116</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Added fasttravellist command.">
+      <option name="closed" value="true" />
+      <created>1690062162420</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1690062162420</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Added a condition so that only players in the overworld can fast travel.">
+      <option name="closed" value="true" />
+      <created>1690114707342</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1690114707342</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Only admins can issue some ft commands now.">
+      <option name="closed" value="true" />
+      <created>1690120724203</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1690120724203</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Fixed a bug where others couldn't see your particle effects when ft.">
+      <option name="closed" value="true" />
+      <created>1690130203623</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1690130203623</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Added color to ft command messages.">
+      <option name="closed" value="true" />
+      <created>1690136662393</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1690136662393</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Added color to economy command messages.">
+      <option name="closed" value="true" />
+      <created>1690137857697</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1690137857697</updated>
+    </task>
+    <task id="LOCAL-00017" summary="Created Jail class.">
+      <option name="closed" value="true" />
+      <created>1690145108993</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1690145108993</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Created JailRepository class.">
+      <option name="closed" value="true" />
+      <created>1690145697095</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1690145697095</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State>
-              <option name="FILTERS">
-                <map>
-                  <entry key="branch">
-                    <value>
-                      <list>
-                        <option value="main" />
-                      </list>
-                    </value>
-                  </entry>
-                </map>
-              </option>
-            </State>
-          </value>
-        </entry>
-      </map>
-    </option>
     <option name="RECENT_FILTERS">
       <map>
         <entry key="Branch">
@@ -136,10 +245,50 @@
         </entry>
       </map>
     </option>
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="CUSTOM_BOOLEAN_PROPERTIES">
+                <map>
+                  <entry key="Show.Git.Branches" value="false" />
+                </map>
+              </option>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="main" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Project setup" />
     <MESSAGE value="Database groundwork" />
-    <option name="LAST_COMMIT_MESSAGE" value="Database groundwork" />
+    <MESSAGE value="Added FastTravelPointDeleteCommand class." />
+    <MESSAGE value="Fast travel setting, deleting and teleporting now works. Needs polishing." />
+    <MESSAGE value="Added delay and effects when fast travelling. Bug with particle effects. None appear when teleporting from further away." />
+    <MESSAGE value="Fixed the particle bug." />
+    <MESSAGE value="Created GetFastTravelPoints method." />
+    <MESSAGE value="Added fasttravellist to .yml" />
+    <MESSAGE value="Added fasttravellist command." />
+    <MESSAGE value="Added a condition so that only players in the overworld can fast travel." />
+    <MESSAGE value="Only admins can issue some ft commands now." />
+    <MESSAGE value="Fixed a bug where others couldn't see your particle effects when ft." />
+    <MESSAGE value="Added color to ft command messages." />
+    <MESSAGE value="Added color to economy command messages." />
+    <MESSAGE value="Created Jail class." />
+    <MESSAGE value="Created JailRepository class." />
+    <option name="LAST_COMMIT_MESSAGE" value="Created JailRepository class." />
   </component>
 </project>

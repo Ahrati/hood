@@ -45,6 +45,17 @@ public class payCommand implements TabExecutor {
             sender.sendMessage("The amount must be a positive number");
             return true;
         }
+        int maxAmount;
+        try {
+            maxAmount = playerRepository.fetchPlayer(username).getMoney();
+        } catch(SQLException e) {
+            maxAmount = 0;
+            e.printStackTrace();
+        }
+        if(amount > maxAmount) {
+            sender.sendMessage("You dont have enough funds");
+            return true;
+        }
 
         try {
             playerRepository.transferMoney(username, reciever, amount);

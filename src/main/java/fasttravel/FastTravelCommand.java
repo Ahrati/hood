@@ -1,21 +1,20 @@
 package fasttravel;
 
 import org.bukkit.*;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import db.database;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.List;
 import java.util.Random;
 
 
 import java.sql.SQLException;
 
-public class FastTravelCommand implements CommandExecutor {
+public class FastTravelCommand implements TabExecutor {
 
     private final database db;
     private static Plugin plugin = null;
@@ -109,5 +108,19 @@ public class FastTravelCommand implements CommandExecutor {
 
 
         return true;
+    }
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+        if(args.length == 1) {
+            FastTravelRepository fastTravelRepository = new FastTravelRepository(db);
+            try {
+                return fastTravelRepository.GetFastTravelPointNames();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                System.out.println("Could not fetch ftp names");
+            }
+            return null;
+        }
+        return null;
     }
 }

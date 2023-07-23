@@ -14,7 +14,6 @@ import java.util.List;
 import static org.bukkit.Bukkit.getServer;
 
 public class balopCommand implements TabExecutor {
-    // /balop <set/add/sub> <player> <amount>
     private final PlayerRepository playerRepository;
     public balopCommand(PlayerRepository playerRepository) {
         this.playerRepository = playerRepository;
@@ -22,17 +21,21 @@ public class balopCommand implements TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+
         if(args.length != 4) {
             return false;
         }
+
         if (!(sender instanceof Player)) {
             sender.sendMessage("This command can only be used by players.");
             return true;
         }
+
         if(!(sender.isOp())) {
             sender.sendMessage("This command can only be used by operators!");
             return true;
         }
+
         int amount;
         try {
             amount = Integer.parseInt(args[3]);
@@ -41,10 +44,12 @@ public class balopCommand implements TabExecutor {
             sender.sendMessage("Not a valid number");
             return true;
         }
+
         if(amount < 0) {
             sender.sendMessage("Amount cant be negative");
             return true;
         }
+
         switch (args[1]) {
             case "set" -> {
                 try {

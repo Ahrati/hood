@@ -79,6 +79,9 @@ public class HoodPlugin extends JavaPlugin {
         getCommand("fasttravel").setExecutor(new FastTravelCommand(db, this));
         getCommand("fasttravellist").setExecutor(new FastTravelListCommand(db));
 
+        Objects.requireNonNull(getCommand("fasttravel")).setExecutor(new FastTravelCommand(db, this));
+        Objects.requireNonNull(getCommand("fasttravel")).setTabCompleter(new FastTravelCommand(db, this));
+
         // LOADED
         super.onEnable();
         this.getLogger().log(Level.INFO, "Hood loaded.");

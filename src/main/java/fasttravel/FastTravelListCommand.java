@@ -31,14 +31,15 @@ public class FastTravelListCommand implements CommandExecutor {
         }
 
         if (fastTravelPoints.isEmpty()) {
-            commandSender.sendMessage("There are no fast travel locations available.");
+            commandSender.sendMessage("§cThere are no fast travel locations available.");
         } else {
-            commandSender.sendMessage("FAST TRAVEL LOCATIONS");
+            commandSender.sendMessage("§aFAST TRAVEL LOCATIONS");
+            commandSender.sendMessage("---------------------");
             for (FastTravelPoint point : fastTravelPoints) {
-                commandSender.sendMessage("- " + point.getName() + " " +
-                        " (" + point.getX() +
+                commandSender.sendMessage("- §6" + point.getName() + " §r" +
+                        " (§b" + point.getX() +
                         ", " + point.getY() +
-                        ", " + point.getZ() + ")");
+                        ", " + point.getZ() + "§r)");
             }
         }
         return true;

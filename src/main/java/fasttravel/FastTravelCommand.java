@@ -68,7 +68,6 @@ public class FastTravelCommand implements TabExecutor {
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
         System.out.println("running ft command");
 
-
         if (!(commandSender instanceof Player)){
             commandSender.sendMessage("This command is for players only!");
             return true;
@@ -82,7 +81,7 @@ public class FastTravelCommand implements TabExecutor {
         Player player = (Player) commandSender;
 
         if (!player.getWorld().getEnvironment().equals(World.Environment.NORMAL)) {
-            commandSender.sendMessage("You can only fast travel in the overworld.");
+            commandSender.sendMessage("§cYou can only fast travel in the overworld.");
             return true;
         }
 
@@ -99,7 +98,7 @@ public class FastTravelCommand implements TabExecutor {
         }
 
         if (fastTravelPoint == null){
-            commandSender.sendMessage("That Fast Travel Point does not exist.");
+            commandSender.sendMessage("§cThat Fast Travel Point does not exist.");
             return true;
         }
 
@@ -113,14 +112,14 @@ public class FastTravelCommand implements TabExecutor {
 
         int delay = 3;
 
-        player.sendMessage("Fast Traveling in " + delay + " seconds");
+        player.sendMessage("§aFast Traveling in §d" + delay + " §aseconds");
 
         new BukkitRunnable() {
             @Override
             public void run() {
                 playParticleEffects(player.getLocation(), player, player.getWorld());
                 player.teleport(teleportLocation);
-                player.sendMessage("Fast Traveled to " + name);
+                player.sendMessage("§aFast Traveled to §6" + fastTravelPoint.getName());
                 player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
                 playParticleEffects(teleportLocation, player, player.getWorld());
             }

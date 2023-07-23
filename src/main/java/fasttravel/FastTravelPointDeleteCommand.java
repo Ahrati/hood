@@ -18,8 +18,6 @@ public class FastTravelPointDeleteCommand implements TabExecutor{
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
-        System.out.println("running ftp delete command");
-
 
         if (args.length != 1) {
             commandSender.sendMessage("Usage: /fasttravelpointdelete <Name>");
@@ -30,7 +28,7 @@ public class FastTravelPointDeleteCommand implements TabExecutor{
 
         try {
             fastTravelRepository.DeleteFastTravelPoint(name);
-            commandSender.sendMessage("Fast Travel Point by the name of " + name + " was deleted");
+            commandSender.sendMessage("§aFast Travel Point§r by the name of §6" + name + "§r was §adeleted");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

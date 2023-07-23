@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FastTravelPointDeleteCommand implements CommandExecutor{
+public class FastTravelPointDeleteCommand implements TabExecutor{
     private final database db;
     FastTravelRepository fastTravelRepository;
     public FastTravelPointDeleteCommand(database db){
@@ -37,5 +37,18 @@ public class FastTravelPointDeleteCommand implements CommandExecutor{
 
         return true;
     }
-
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+        if(args.length == 1) {
+            FastTravelRepository fastTravelRepository = new FastTravelRepository(db);
+            try {
+                return fastTravelRepository.GetFastTravelPointNames();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                System.out.println("Could not fetch ftp names");
+            }
+            return null;
+        }
+        return null;
+    }
 }

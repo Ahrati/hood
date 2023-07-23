@@ -75,6 +75,9 @@ public class HoodPlugin extends JavaPlugin {
         }
 
         getCommand("fasttravelpointset").setExecutor(new FastTravelPointSetCommand(db));
+        getCommand("fasttravelpointset").setPermission("myplugin.admin");
+
+
         getCommand("fasttravellist").setExecutor(new FastTravelListCommand(db));
 
         Objects.requireNonNull(getCommand("fasttravel")).setExecutor(new FastTravelCommand(db, this));
@@ -82,6 +85,7 @@ public class HoodPlugin extends JavaPlugin {
 
         Objects.requireNonNull(getCommand("fasttravelpointdelete")).setExecutor(new FastTravelPointDeleteCommand(db));
         Objects.requireNonNull(getCommand("fasttravelpointdelete")).setTabCompleter(new FastTravelPointDeleteCommand(db));
+        getCommand("fasttravelpointdelete").setPermission("myplugin.admin");
 
         // LOADED
         super.onEnable();

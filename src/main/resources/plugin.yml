@@ -1,26 +1,23 @@
 name: HoodPlugin
 version: 0.1
 main: HoodPlugin
-api-version: 1.20.1-R0.1-SNAPSHOT
+
 commands:
   fasttravelpointset:
     description: Sets a fast travel point
     aliases:
       - ftps
     usage: /fasttravelpointset <Name> <X> <Y> <Z> <Radius>
-
   fasttravelpointdelete:
     description: Deletes a fast travel point
     aliases:
       - ftpd
     usage: /fasttravelpointdelete name
-
   fasttravel:
     description: Go to a fast travel <name>
     aliases:
       - ft
     usage: /fasttravel <name>
-
   fasttravellist:
     description: Lists all fast travel points and their coordinates
     aliases:
@@ -30,10 +27,14 @@ commands:
   bal:
     description: Check balance
     usage: /<command>
-
   pay:
     description: Pay someone an amount
     usage: /<command> <player> <amount>
   balop:
     description: Operator command for editing balances
     usage: /balop <set/add/sub> <player> <amount>
+
+  permissions:
+    myplugin.admin:
+      description: Allows access to admin commands in MyPlugin
+      default: op

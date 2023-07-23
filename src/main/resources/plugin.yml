@@ -8,19 +8,29 @@ commands:
     aliases:
       - ftps
     usage: /fasttravelpointset <Name> <X> <Y> <Z> <Radius>
+
   fasttravelpointdelete:
     description: Deletes a fast travel point
     aliases:
       - ftpd
     usage: /fasttravelpointdelete name
+
   fasttravel:
-    description: Go to a fast travel point
+    description: Go to a fast travel <name>
     aliases:
       - ft
-    usage: /fasttravel name
+    usage: /fasttravel <name>
+
+  fasttravellist:
+    description: Lists all fast travel points and their coordinates
+    aliases:
+      - fts
+    usage: /fasttravellist
+
   bal:
     description: Check balance
     usage: /<command>
+
   pay:
     description: Pay someone an amount
     usage: /<command> <player> <amount>

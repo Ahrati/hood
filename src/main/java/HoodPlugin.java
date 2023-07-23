@@ -1,3 +1,9 @@
+import fasttravel.FastTravelCommand;
+import fasttravel.FastTravelListCommand;
+import fasttravel.FastTravelPointDeleteCommand;
+import fasttravel.FastTravelPointSetCommand;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import economy.listeners.economyListeners;
 import economy.repository.PlayerRepository;
 import fasttravel.FastTravelPointSetCommand;
@@ -18,8 +24,6 @@ public class HoodPlugin extends JavaPlugin {
     public void onDisable() {
         super.onDisable();
     }
-
-
 
     @Override
     public void onEnable() {
@@ -43,12 +47,13 @@ public class HoodPlugin extends JavaPlugin {
 
         // ECONOMY
         try {
-            this.db.initializeTable("CREATE TABLE IF NOT EXISTS user (player_uuid CHAR(36) PRIMARY KEY, username VARCHAR(255), money INT);");
+            this.db.initializeTable("CREATE TABLE IF NOT EXISTS player (player_uuid CHAR(36) PRIMARY KEY, username VARCHAR(255), money INT);");
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Could not initialize economy tables.");
         }
 
+        // FAST TRAVEL
         PlayerRepository prepo = new PlayerRepository(db);
         Objects.requireNonNull(getCommand("bal")).setExecutor(new balCommand(prepo));
         Objects.requireNonNull(getCommand("bal")).setTabCompleter(new balCommand(prepo));
@@ -70,6 +75,9 @@ public class HoodPlugin extends JavaPlugin {
         }
 
         getCommand("fasttravelpointset").setExecutor(new FastTravelPointSetCommand(db));
+        getCommand("fasttravelpointdelete").setExecutor(new FastTravelPointDeleteCommand(db));
+        getCommand("fasttravel").setExecutor(new FastTravelCommand(db, this));
+        getCommand("fasttravellist").setExecutor(new FastTravelListCommand(db));
 
         // LOADED
         super.onEnable();

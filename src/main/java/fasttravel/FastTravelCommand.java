@@ -1,9 +1,6 @@
 package fasttravel;
 
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -47,6 +44,11 @@ public class FastTravelCommand implements CommandExecutor {
         }
 
         Player player = (Player) commandSender;
+
+        if (!player.getWorld().getEnvironment().equals(World.Environment.NORMAL)) {
+            commandSender.sendMessage("You can only fast travel in the overworld.");
+            return true;
+        }
 
         String name = args[0];
 

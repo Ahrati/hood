@@ -52,8 +52,8 @@ public class PlayerRepository {
             return;
         }
 
-        updateMoney(fetchPlayer(from), -amount);
-        updateMoney(fetchPlayer(to), amount);
+        updateMoney(fetchPlayer(from), fetchPlayer(from).getMoney()-amount);
+        updateMoney(fetchPlayer(to), fetchPlayer(to).getMoney()+amount);
 
         sender.sendMessage("Transferred $" + amount + " to " + to);
         receiver.sendMessage("Received $" + amount + " from " + from);
@@ -63,7 +63,7 @@ public class PlayerRepository {
         PreparedStatement statement = db.getConnection().prepareStatement("UPDATE user SET player_uuid = ?, username = ?, money = ? WHERE username = ?");
         statement.setString(1, player.getUuid().toString());
         statement.setString(2, player.getUsername());
-        statement.setInt(3, player.getMoney() + amount);
+        statement.setInt(3, amount);
         statement.setString(4, player.getUsername());
         statement.executeUpdate();
         statement.close();

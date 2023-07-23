@@ -37,12 +37,12 @@ public class payCommand implements TabExecutor {
         }
 
         if(sender.getName().equalsIgnoreCase(reciever)) {
-            sender.sendMessage("You cannot transfer to yourself!");
+            sender.sendMessage("§cYou can not transfer to yourself!");
             return true;
         }
 
         if(amount < 1) {
-            sender.sendMessage("The amount must be a positive number");
+            sender.sendMessage("§cThe amount must be a positive number!");
             return true;
         }
         int maxAmount;
@@ -53,7 +53,7 @@ public class payCommand implements TabExecutor {
             e.printStackTrace();
         }
         if(amount > maxAmount) {
-            sender.sendMessage("You dont have enough funds");
+            sender.sendMessage("§cYou do not have enough funds!");
             return true;
         }
 
@@ -62,7 +62,7 @@ public class payCommand implements TabExecutor {
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
-            sender.sendMessage("Couldn't transfer money");
+            sender.sendMessage("§cCould not transfer money!");
             System.out.println("Could not transfer money from " + username + " to " + reciever + "!");
             return false;
         }

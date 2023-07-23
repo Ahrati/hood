@@ -29,11 +29,11 @@ public class balCommand implements TabExecutor {
         User player;
         try {
             player = playerRepository.getPlayer((Player) sender);
-            sender.sendMessage("Balance: " + player.getMoney() + "$");
+            sender.sendMessage("§eBalance: §a$" + player.getMoney());
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
-            sender.sendMessage("Couldn't fetch balance");
+            sender.sendMessage("§cCould not fetch balance");
             System.out.println("Could not get Player from database.");
         }
 

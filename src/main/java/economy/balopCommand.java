@@ -32,7 +32,7 @@ public class balopCommand implements TabExecutor {
         }
 
         if(!(sender.isOp())) {
-            sender.sendMessage("This command can only be used by operators!");
+            sender.sendMessage("§cThis command can only be used by operators!");
             return true;
         }
 
@@ -41,12 +41,12 @@ public class balopCommand implements TabExecutor {
             amount = Integer.parseInt(args[2]);
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            sender.sendMessage("Not a valid number");
+            sender.sendMessage("§cNot a valid number!");
             return true;
         }
 
         if(amount < 0) {
-            sender.sendMessage("Amount cant be negative");
+            sender.sendMessage("§cAmount can not be negative!");
             return true;
         }
 
@@ -57,7 +57,7 @@ public class balopCommand implements TabExecutor {
                     playerRepository.updateMoney(receiver, amount);
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    sender.sendMessage("Could not fetch player from database");
+                    sender.sendMessage("§cCould not fetch player from database!");
                 }
                 return true;
             }
@@ -67,7 +67,7 @@ public class balopCommand implements TabExecutor {
                     playerRepository.updateMoney(receiver, receiver.getMoney() + amount);
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    sender.sendMessage("Could not fetch player from database");
+                    sender.sendMessage("§cCould not fetch player from database!");
                 }
                 return true;
             }
@@ -75,13 +75,13 @@ public class balopCommand implements TabExecutor {
                 try {
                     User receiver = playerRepository.fetchPlayer(args[1]);
                     if(amount > receiver.getMoney()) {
-                        sender.sendMessage("Cannot put user into negative balance");
+                        sender.sendMessage("§cCan not put user into negative balance!");
                         return true;
                     }
                     playerRepository.updateMoney(receiver, receiver.getMoney() - amount);
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    sender.sendMessage("Could not fetch player from database");
+                    sender.sendMessage("§cCould not fetch player from database!");
                 }
                 return true;
             }

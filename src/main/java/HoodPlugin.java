@@ -47,7 +47,7 @@ public class HoodPlugin extends JavaPlugin {
 
         // ECONOMY
         try {
-            this.db.initializeTable("CREATE TABLE IF NOT EXISTS player (player_uuid CHAR(36) PRIMARY KEY, username VARCHAR(255), money INT);");
+            this.db.initializeTable("CREATE TABLE IF NOT EXISTS user (player_uuid CHAR(36) PRIMARY KEY, username VARCHAR(255), money INT);");
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Could not initialize economy tables.");

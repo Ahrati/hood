@@ -27,6 +27,43 @@ public class FastTravelCommand implements TabExecutor {
         Random random = new Random();
         return random.nextInt(2 * radius + 1) - radius;
     }
+
+    private void playParticleEffects(Location location, Player player, World world) {
+        for (int i = 0; i < 100; i++) {
+            double offsetX = Math.random() * 2.0 - 1.0;
+            double offsetY = Math.random() * 2.0 - 1.0;
+            double offsetZ = Math.random() * 2.0 - 1.0;
+            player.spawnParticle(
+                    Particle.REDSTONE,
+                    location.getX(),
+                    location.getY(),
+                    location.getZ(),
+                    1,
+                    offsetX, offsetY, offsetZ,
+                    1.0,
+                    new Particle.DustOptions(Color.fromRGB(
+                            (int) (Math.random() * 255),
+                            (int) (Math.random() * 255),
+                            (int) (Math.random() * 255)
+                    ), 2.0f)
+            );
+            world.spawnParticle(
+                    Particle.REDSTONE,
+                    location.getX(),
+                    location.getY(),
+                    location.getZ(),
+                    1,
+                    offsetX, offsetY, offsetZ,
+                    1.0,
+                    new Particle.DustOptions(Color.fromRGB(
+                            (int) (Math.random() * 255),
+                            (int) (Math.random() * 255),
+                            (int) (Math.random() * 255)
+                    ), 2.0f)
+            );
+        }
+    }
+
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
         System.out.println("running ft command");
@@ -71,38 +108,21 @@ public class FastTravelCommand implements TabExecutor {
         x = fastTravelPoint.getX() + getRandomOffset(fastTravelPoint.getRadius());
         y = fastTravelPoint.getY();
         z = fastTravelPoint.getZ() + getRandomOffset(fastTravelPoint.getRadius());
+        Location teleportLocation = new Location(player.getWorld(), x, y, z, player.getLocation().getYaw(), player.getLocation().getPitch());
 
-        int delay = 5;
+
+        int delay = 3;
 
         player.sendMessage("Fast Traveling in " + delay + " seconds");
-
 
         new BukkitRunnable() {
             @Override
             public void run() {
-                Location teleportLocation = new Location(player.getWorld(), x, y, z, player.getLocation().getYaw(), player.getLocation().getPitch());
+                playParticleEffects(player.getLocation(), player, player.getWorld());
                 player.teleport(teleportLocation);
                 player.sendMessage("Fast Traveled to " + name);
                 player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
-                for (int i = 0; i < 100; i++) {
-                    double offsetX = Math.random() * 2.0 - 1.0;
-                    double offsetY = Math.random() * 2.0 - 1.0;
-                    double offsetZ = Math.random() * 2.0 - 1.0;
-                    player.spawnParticle(
-                            Particle.REDSTONE,
-                            teleportLocation.getX(),
-                            teleportLocation.getY(),
-                            teleportLocation.getZ(),
-                            1,
-                            offsetX, offsetY, offsetZ,
-                            1.0,
-                            new Particle.DustOptions(Color.fromRGB(
-                                    (int) (Math.random() * 255),
-                                    (int) (Math.random() * 255),
-                                    (int) (Math.random() * 255)
-                            ), 2.0f)
-                    );
-                }
+                playParticleEffects(teleportLocation, player, player.getWorld());
             }
         }.runTaskLater(plugin, 20 * delay);
 

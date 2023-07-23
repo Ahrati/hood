@@ -21,7 +21,7 @@ commands:
   fasttravellist:
     description: Lists all fast travel points and their coordinates
     aliases:
-      - fts
+      - ftl
     usage: /fasttravellist
 
   bal:

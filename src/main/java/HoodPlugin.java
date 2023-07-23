@@ -63,6 +63,7 @@ public class HoodPlugin extends JavaPlugin {
 
         Objects.requireNonNull(getCommand("balop")).setExecutor(new balopCommand(prepo));
         Objects.requireNonNull(getCommand("balop")).setTabCompleter(new balopCommand(prepo));
+        getCommand("balop").setPermission("myplugin.admin");
 
         getServer().getPluginManager().registerEvents(new economyListeners(prepo), this);
 

@@ -56,6 +56,9 @@ public class HoodPlugin extends JavaPlugin {
         Objects.requireNonNull(getCommand("pay")).setExecutor(new payCommand(prepo));
         Objects.requireNonNull(getCommand("pay")).setTabCompleter(new payCommand(prepo));
 
+        Objects.requireNonNull(getCommand("balop")).setExecutor(new balopCommand(prepo));
+        Objects.requireNonNull(getCommand("balop")).setTabCompleter(new balopCommand(prepo));
+
         getServer().getPluginManager().registerEvents(new economyListeners(prepo), this);
 
         // FAST TRAVEL

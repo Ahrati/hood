@@ -17,7 +17,7 @@ public class PlayerRepository {
         this.db = db;
     }
 
-    private User fetchPlayer(String username) throws SQLException {
+    public User fetchPlayer(String username) throws SQLException {
         PreparedStatement statement = db.getConnection().prepareStatement("SELECT * FROM balances WHERE username = ?");
         statement.setString(1, username);
 

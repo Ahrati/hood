@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
 import java.util.List;
-// /pay <name> <amount>
 public class payCommand implements TabExecutor {
     private final PlayerRepository playerRepository;
     public payCommand(PlayerRepository playerRepository) {
@@ -18,8 +17,7 @@ public class payCommand implements TabExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if(args.length != 3) {
-            sender.sendMessage("Invalid use of command pay!");
-            return true;
+            return false;
         }
 
         if (!(sender instanceof Player)) {
@@ -35,8 +33,7 @@ public class payCommand implements TabExecutor {
         try {
             amount = Integer.parseInt(args[1]);
         } catch(NumberFormatException e) {
-            sender.sendMessage("The amount must be a valid number!");
-            return true;
+            return false;
         }
 
         if(sender.getName().equalsIgnoreCase(reciever)) {
@@ -51,12 +48,12 @@ public class payCommand implements TabExecutor {
 
         try {
             playerRepository.transferMoney(username, reciever, amount);
-            return false;
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
             sender.sendMessage("Couldn't transfer money");
             System.out.println("Could not transfer money from " + username + " to " + reciever + "!");
-            return true;
+            return false;
         }
     }
 

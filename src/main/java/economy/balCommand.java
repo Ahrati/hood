@@ -18,8 +18,7 @@ public class balCommand implements TabExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if(args.length != 1){
-            sender.sendMessage("Invalid use of command bal");
-            return true;
+            return false;
         }
 
         if (!(sender instanceof Player)) {
@@ -31,7 +30,7 @@ public class balCommand implements TabExecutor {
         try {
             player = playerRepository.getPlayer((Player) sender);
             sender.sendMessage("Balance: " + player.getMoney() + "$");
-            return false;
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
             sender.sendMessage("Couldn't fetch balance");

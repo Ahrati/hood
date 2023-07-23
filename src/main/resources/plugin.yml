@@ -1,7 +1,7 @@
 name: HoodPlugin
 version: 0.1
 main: HoodPlugin
-api-version: 1.20.1
+api-version: 1.20.1-R0.1-SNAPSHOT
 commands:
   fasttravelpointset:
     description: Sets a fast travel point

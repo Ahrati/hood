@@ -1,5 +1,6 @@
 package economy;
 
+import economy.handler.MoneyHandler;
 import economy.model.User;
 import economy.repository.PlayerRepository;
 import org.bukkit.command.Command;
@@ -14,9 +15,9 @@ import java.util.List;
 import static org.bukkit.Bukkit.getServer;
 
 public class balopCommand implements TabExecutor {
-    private final PlayerRepository playerRepository;
-    public balopCommand(PlayerRepository playerRepository) {
-        this.playerRepository = playerRepository;
+    private final MoneyHandler moneyHandler;
+    public balopCommand(MoneyHandler moneyHandler) {
+        this.moneyHandler = moneyHandler;
     }
 
     @Override
@@ -32,7 +33,7 @@ public class balopCommand implements TabExecutor {
         }
 
         if(!(sender.isOp())) {
-            sender.sendMessage("§cThis command can only be used by operators!");
+            sender.sendMessage("This command can only be used by operators!");
             return true;
         }
 
@@ -41,47 +42,44 @@ public class balopCommand implements TabExecutor {
             amount = Integer.parseInt(args[2]);
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            sender.sendMessage("§cNot a valid number!");
+            sender.sendMessage("Not a valid number");
             return true;
         }
 
         if(amount < 0) {
-            sender.sendMessage("§cAmount can not be negative!");
+            sender.sendMessage("Amount cant be negative");
             return true;
         }
 
         switch (args[0]) {
             case "set" -> {
                 try {
-                    User receiver = playerRepository.fetchPlayer(args[1]);
-                    playerRepository.updateMoney(receiver, amount);
+                    moneyHandler.setBalance(args[1], amount, "p");
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    sender.sendMessage("§cCould not fetch player from database!");
+                    sender.sendMessage("Could not fetch player from database");
                 }
                 return true;
             }
             case "add" -> {
                 try {
-                    User receiver = playerRepository.fetchPlayer(args[1]);
-                    playerRepository.updateMoney(receiver, receiver.getMoney() + amount);
+                    moneyHandler.setBalance(args[1], moneyHandler.getBalance(args[1], "p") + amount, "p");
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    sender.sendMessage("§cCould not fetch player from database!");
+                    sender.sendMessage("Could not fetch player from database");
                 }
                 return true;
             }
             case "sub" -> {
                 try {
-                    User receiver = playerRepository.fetchPlayer(args[1]);
-                    if(amount > receiver.getMoney()) {
-                        sender.sendMessage("§cCan not put user into negative balance!");
+                    if(amount > moneyHandler.getBalance(args[1], "p")) {
+                        sender.sendMessage("Cannot put user into negative balance");
                         return true;
                     }
-                    playerRepository.updateMoney(receiver, receiver.getMoney() - amount);
+                    moneyHandler.setBalance(args[1], moneyHandler.getBalance(args[1], "p") - amount, "p");
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    sender.sendMessage("§cCould not fetch player from database!");
+                    sender.sendMessage("Could not fetch player from database");
                 }
                 return true;
             }

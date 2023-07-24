@@ -43,18 +43,18 @@ public class payCommand implements TabExecutor {
 
         String receiver = args[0];
         try {
-            moneyHandler.transferMoney((Player) sender, receiver, amount, "p2p");
+            if(moneyHandler.transferMoney((Player) sender, receiver, amount, "p2p")) {
+                sender.sendMessage("Transferred $" + amount + " to " + receiver);
+                Player target = getServer().getPlayer(receiver);
+                if(target != null) {
+                    target.sendMessage("Received $" + amount + " from " + sender.getName());
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             sender.sendMessage("Couldn't transfer money");
             System.out.println("Could not transfer money from " + sender.getName() + " to " + receiver + "!");
             return false;
-        }
-
-        sender.sendMessage("Transferred $" + amount + " to " + receiver);
-        Player target = getServer().getPlayer(receiver);
-        if(target != null) {
-            target.sendMessage("Received $" + amount + " from " + sender.getName());
         }
         return true;
     }

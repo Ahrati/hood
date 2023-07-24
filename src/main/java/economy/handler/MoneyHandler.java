@@ -43,7 +43,7 @@ public class MoneyHandler {
         }
     }
 
-    public void transferMoney(Player sender, String to, int amount, String mode) throws SQLException {
+    public boolean transferMoney(Player sender, String to, int amount, String mode) throws SQLException {
         if(Objects.equals(mode, "p2p")) {
             String from = sender.getName();
             User userFrom = prepo.fetchPlayer(from);
@@ -52,12 +52,12 @@ public class MoneyHandler {
 
             if(from.equalsIgnoreCase(to)) {
                 sender.sendMessage("Cannot transfer funds to yourself!");
-                return;
+                return false;
             }
 
             if (receiver == null) {
                 sender.sendMessage("Player not online!");
-                return;
+                return false;
             }
             User userTo = prepo.fetchPlayer(to);
 
@@ -65,7 +65,7 @@ public class MoneyHandler {
             maxAmount = userFrom.getMoney();
             if(amount > maxAmount) {
                 sender.sendMessage("You dont have enough funds");
-                return;
+                return false;
             }
 
             userFrom.setMoney(userFrom.getMoney() - amount);
@@ -73,7 +73,11 @@ public class MoneyHandler {
 
             prepo.updatePlayer(userFrom);
             prepo.updatePlayer(userTo);
+
+            return true;
         } else if(Objects.equals(mode, "p2o")) {
+            return false;
         }
+        return false;
     }
 }

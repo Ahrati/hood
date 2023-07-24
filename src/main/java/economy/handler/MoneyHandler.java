@@ -78,5 +78,6 @@ public class MoneyHandler {
         } else if(Objects.equals(mode, "p2o")) {
             return false;
         }
+        return false;
     }
 }

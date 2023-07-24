@@ -1,9 +1,6 @@
 import economy.handler.MoneyHandler;
 import economy.repository.OrganisationRepository;
-import fasttravel.FastTravelCommand;
-import fasttravel.FastTravelListCommand;
-import fasttravel.FastTravelPointDeleteCommand;
-import fasttravel.FastTravelPointSetCommand;
+import fasttravel.*;
 import jail.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -94,6 +91,12 @@ public class HoodPlugin extends JavaPlugin {
         Objects.requireNonNull(getCommand("fasttravelpointdelete")).setExecutor(new FastTravelPointDeleteCommand(db));
         Objects.requireNonNull(getCommand("fasttravelpointdelete")).setTabCompleter(new FastTravelPointDeleteCommand(db));
         getCommand("fasttravelpointdelete").setPermission("myplugin.admin");
+
+        getCommand("fasttravelban").setExecutor(new FastTravelBanCommand(this));
+        getCommand("fasttravelban").setPermission("myplugin.admin");
+
+        getCommand("fasttravelunban").setExecutor(new FastTravelUnbanCommand(this));
+        getCommand("fasttravelunban").setPermission("myplugin.admin");
 
         //JAIL
         try {

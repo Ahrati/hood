@@ -23,6 +23,12 @@ commands:
     aliases:
       - ftl
     usage: /fasttravellist
+  fasttravelban:
+    description: Bans a player from fast travelling
+    usage: /fasttravelban <name>
+  fasttravelunban:
+    description: Unbans a player from fast travelling
+    usage: /fasttravelunban <name>
 
   jailset:
     description: Sets a jail
@@ -54,6 +60,9 @@ commands:
     myplugin.admin:
       description: Allows access to admin commands in MyPlugin
       default: op
+    fasttravel.use:
+      description: Allows players to use the fast travel command.
+      default: true
 
   org:
     description: Organisation based commands

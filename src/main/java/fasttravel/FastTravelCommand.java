@@ -85,6 +85,11 @@ public class FastTravelCommand implements TabExecutor {
             return true;
         }
 
+        if (!player.hasPermission("fasttravel.use")){
+            commandSender.sendMessage("§cYou are banned from fast traveling.");
+            return true;
+        }
+
         String name = args[0];
 
         FastTravelRepository fastTravelRepository = new FastTravelRepository(db);

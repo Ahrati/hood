@@ -1,49 +1,48 @@
-package fasttravel;
+package jail;
 
 import db.database;
+import jail.JailRepository;
 import org.bukkit.command.*;
-
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
-public class FastTravelPointDeleteCommand implements TabExecutor{
+public class JailDeleteCommand implements TabExecutor {
     private final database db;
-    FastTravelRepository fastTravelRepository;
-    public FastTravelPointDeleteCommand(database db){
-        this.db = db;
-        fastTravelRepository = new FastTravelRepository(db);
-    }
+    private final JailRepository jailRepository;
 
+    public JailDeleteCommand(database db) {
+        this.db = db;
+        this.jailRepository = new JailRepository(db);
+    }
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
 
         if (args.length != 1) {
-            commandSender.sendMessage("Usage: /fasttravelpointdelete <Name>");
+            commandSender.sendMessage("Usage: /jaildelete <Name>");
             return true;
         }
 
         String name = args[0];
 
         try {
-            fastTravelRepository.DeleteFastTravelPoint(name);
-            commandSender.sendMessage("§aFast Travel Point§r by the name of §6" + name + "§r was §adeleted");
+            jailRepository.DeleteJail(name);
+            commandSender.sendMessage("§aJail§r by the name of §6" + name + "§r was §adeleted");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
         return true;
     }
+
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        if(args.length == 1) {
-            FastTravelRepository fastTravelRepository = new FastTravelRepository(db);
+        if (args.length == 1) {
             try {
-                return fastTravelRepository.GetFastTravelPointNames();
+                return jailRepository.GetJailNames();
             } catch (SQLException e) {
                 e.printStackTrace();
-                System.out.println("Could not fetch ftp names");
+                System.out.println("Could not fetch jail names");
             }
             return null;
         }

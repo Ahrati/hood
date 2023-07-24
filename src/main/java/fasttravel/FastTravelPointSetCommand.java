@@ -36,7 +36,7 @@ public class FastTravelPointSetCommand implements CommandExecutor {
             System.out.println("coords set");
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            commandSender.sendMessage("Invalid coordinates or radius.");
+            commandSender.sendMessage("§cInvalid coordinates or radius.");
             System.out.println("wrong coords");
             return true;
         }
@@ -53,9 +53,7 @@ public class FastTravelPointSetCommand implements CommandExecutor {
             System.out.println("cant write ftp into db");
             throw new RuntimeException(e);
         }
-
-        System.out.println("Fast travel point set for " + name + " at coordinates (" + x + ", " + y + ", " + z + ") with a radius of " + radius);
-        commandSender.sendMessage("Fast travel point set for " + name + " at coordinates (" + x + ", " + y + ", " + z + ") with a radius of " + radius);
+        commandSender.sendMessage("§aFast Travel Point §rset for §6" + name + " §rat coordinates (§b" + x + ", " + y + ", " + z + "§r) with a radius of §a" + radius);
         return true;
     }
 }

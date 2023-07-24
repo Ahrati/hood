@@ -24,6 +24,22 @@ commands:
       - ftl
     usage: /fasttravellist
 
+  jailset:
+    description: Sets a jail
+    usage: /jailset <Name> <X> <Y> <Z>
+  jail:
+    description: Sends the targeted player to jail.
+    usage: /jail <Name>
+  jailfree:
+    description: Sets a player free from jail.
+    usage: /jailfree <Name>
+  jaildelete:
+    description: Deletes a jail.
+    usage: /jaildelete <Name>
+  jaillist:
+    description: Lists all jails and their coordinates
+    usage: /jaillist
+
   bal:
     description: Check balance
     usage: /<command>

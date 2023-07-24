@@ -1,5 +1,6 @@
 package economy;
 
+import economy.handler.MoneyHandler;
 import economy.model.User;
 import economy.repository.PlayerRepository;
 import org.bukkit.command.Command;
@@ -14,9 +15,9 @@ import java.util.List;
 import static org.bukkit.Bukkit.getServer;
 
 public class balopCommand implements TabExecutor {
-    private final PlayerRepository playerRepository;
-    public balopCommand(PlayerRepository playerRepository) {
-        this.playerRepository = playerRepository;
+    private final MoneyHandler moneyHandler;
+    public balopCommand(MoneyHandler moneyHandler) {
+        this.moneyHandler = moneyHandler;
     }
 
     @Override
@@ -53,8 +54,7 @@ public class balopCommand implements TabExecutor {
         switch (args[0]) {
             case "set" -> {
                 try {
-                    User receiver = playerRepository.fetchPlayer(args[1]);
-                    playerRepository.updateMoney(receiver, amount);
+                    moneyHandler.setBalance(args[1], amount, "p");
                 } catch (SQLException e) {
                     e.printStackTrace();
                     sender.sendMessage("Could not fetch player from database");
@@ -63,8 +63,7 @@ public class balopCommand implements TabExecutor {
             }
             case "add" -> {
                 try {
-                    User receiver = playerRepository.fetchPlayer(args[1]);
-                    playerRepository.updateMoney(receiver, receiver.getMoney() + amount);
+                    moneyHandler.setBalance(args[1], moneyHandler.getBalance(args[1], "p") + amount, "p");
                 } catch (SQLException e) {
                     e.printStackTrace();
                     sender.sendMessage("Could not fetch player from database");
@@ -73,12 +72,11 @@ public class balopCommand implements TabExecutor {
             }
             case "sub" -> {
                 try {
-                    User receiver = playerRepository.fetchPlayer(args[1]);
-                    if(amount > receiver.getMoney()) {
+                    if(amount > moneyHandler.getBalance(args[1], "p")) {
                         sender.sendMessage("Cannot put user into negative balance");
                         return true;
                     }
-                    playerRepository.updateMoney(receiver, receiver.getMoney() - amount);
+                    moneyHandler.setBalance(args[1], moneyHandler.getBalance(args[1], "p") - amount, "p");
                 } catch (SQLException e) {
                     e.printStackTrace();
                     sender.sendMessage("Could not fetch player from database");

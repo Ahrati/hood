@@ -1,3 +1,5 @@
+import economy.handler.MoneyHandler;
+import economy.repository.OrganisationRepository;
 import fasttravel.FastTravelCommand;
 import fasttravel.FastTravelListCommand;
 import fasttravel.FastTravelPointDeleteCommand;
@@ -48,20 +50,25 @@ public class HoodPlugin extends JavaPlugin {
         // ECONOMY
         try {
             this.db.initializeTable("CREATE TABLE IF NOT EXISTS user (player_uuid CHAR(36) PRIMARY KEY, username VARCHAR(255), money INT);");
+            this.db.initializeTable("CREATE TABLE IF NOT EXISTS organisation (id INT NOT NULL IDENTITY PRIMARY KEY, name VARCHAR(255) NOT NULL, description VARCHAR(255), memberlistid INT, money INT, FOREIGN KEY (memberlistid) REFERENCES memberlist(id));");
+            this.db.initializeTable("CREATE TABLE IF NOT EXISTS memberlist (uuid CHAR(36), organisationid INT, FOREIGN KEY (uuid) REFERENCES user(player_uuid), FOREIGN KEY (organisationid) REFERENCES organisation(id));");
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Could not initialize economy tables.");
         }
 
         PlayerRepository prepo = new PlayerRepository(db);
-        Objects.requireNonNull(getCommand("bal")).setExecutor(new balCommand(prepo));
-        Objects.requireNonNull(getCommand("bal")).setTabCompleter(new balCommand(prepo));
+        OrganisationRepository orepo = new OrganisationRepository();
+        MoneyHandler moneyHandler = new MoneyHandler(prepo, orepo);
 
-        Objects.requireNonNull(getCommand("pay")).setExecutor(new payCommand(prepo));
-        Objects.requireNonNull(getCommand("pay")).setTabCompleter(new payCommand(prepo));
+        Objects.requireNonNull(getCommand("bal")).setExecutor(new balCommand(moneyHandler));
+        Objects.requireNonNull(getCommand("bal")).setTabCompleter(new balCommand(moneyHandler));
 
-        Objects.requireNonNull(getCommand("balop")).setExecutor(new balopCommand(prepo));
-        Objects.requireNonNull(getCommand("balop")).setTabCompleter(new balopCommand(prepo));
+        Objects.requireNonNull(getCommand("pay")).setExecutor(new payCommand(moneyHandler));
+        Objects.requireNonNull(getCommand("pay")).setTabCompleter(new payCommand(moneyHandler));
+
+        Objects.requireNonNull(getCommand("balop")).setExecutor(new balopCommand(moneyHandler));
+        Objects.requireNonNull(getCommand("balop")).setTabCompleter(new balopCommand(moneyHandler));
         Objects.requireNonNull(getCommand("balop")).setPermission("myplugin.admin");
 
         getServer().getPluginManager().registerEvents(new economyListeners(prepo), this);

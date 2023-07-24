@@ -1,5 +1,6 @@
 package economy;
 
+import economy.handler.MoneyHandler;
 import economy.model.User;
 import economy.repository.PlayerRepository;
 import org.bukkit.command.Command;
@@ -9,10 +10,13 @@ import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
 import java.util.List;
+
+import static org.bukkit.Bukkit.getServer;
+
 public class payCommand implements TabExecutor {
-    private final PlayerRepository playerRepository;
-    public payCommand(PlayerRepository playerRepository) {
-        this.playerRepository = playerRepository;
+    private final MoneyHandler moneyHandler;
+    public payCommand(MoneyHandler moneyHandler) {
+        this.moneyHandler = moneyHandler;
     }
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -25,10 +29,6 @@ public class payCommand implements TabExecutor {
             return true;
         }
 
-        Player player = (Player) sender;
-        String username = player.getName();
-
-        String reciever = args[0];
         int amount;
         try {
             amount = Integer.parseInt(args[1]);
@@ -36,36 +36,27 @@ public class payCommand implements TabExecutor {
             return false;
         }
 
-        if(sender.getName().equalsIgnoreCase(reciever)) {
-            sender.sendMessage("You cannot transfer to yourself!");
-            return true;
-        }
-
         if(amount < 1) {
             sender.sendMessage("The amount must be a positive number");
             return true;
         }
-        int maxAmount;
-        try {
-            maxAmount = playerRepository.fetchPlayer(username).getMoney();
-        } catch(SQLException e) {
-            maxAmount = 0;
-            e.printStackTrace();
-        }
-        if(amount > maxAmount) {
-            sender.sendMessage("You dont have enough funds");
-            return true;
-        }
 
+        String receiver = args[0];
         try {
-            playerRepository.transferMoney(username, reciever, amount);
-            return true;
+            moneyHandler.transferMoney((Player) sender, receiver, amount, "p2p");
         } catch (SQLException e) {
             e.printStackTrace();
             sender.sendMessage("Couldn't transfer money");
-            System.out.println("Could not transfer money from " + username + " to " + reciever + "!");
+            System.out.println("Could not transfer money from " + sender.getName() + " to " + receiver + "!");
             return false;
         }
+
+        sender.sendMessage("Transferred $" + amount + " to " + receiver);
+        Player target = getServer().getPlayer(receiver);
+        if(target != null) {
+            target.sendMessage("Received $" + amount + " from " + sender.getName());
+        }
+        return true;
     }
 
     @Override

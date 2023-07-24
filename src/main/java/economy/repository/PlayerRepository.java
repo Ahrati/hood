@@ -1,6 +1,7 @@
 package economy.repository;
 
 import db.database;
+import economy.handler.MoneyHandler;
 import economy.model.User;
 import org.bukkit.entity.Player;
 
@@ -43,28 +44,12 @@ public class PlayerRepository {
         return user;
     }
 
-    public void transferMoney(String from, String to, int amount) throws SQLException {
-        Player sender = getServer().getPlayer(from);
-        Player receiver = getServer().getPlayer(to);
-
-        if (receiver == null) {
-            sender.sendMessage("Player not found!");
-            return;
-        }
-
-        updateMoney(fetchPlayer(from), fetchPlayer(from).getMoney()-amount);
-        updateMoney(fetchPlayer(to), fetchPlayer(to).getMoney()+amount);
-
-        sender.sendMessage("Transferred $" + amount + " to " + to);
-        receiver.sendMessage("Received $" + amount + " from " + from);
-    }
-
-    public void updateMoney(User player, int amount) throws SQLException {
-        PreparedStatement statement = db.getConnection().prepareStatement("UPDATE user SET player_uuid = ?, username = ?, money = ? WHERE username = ?");
+    public void updatePlayer(User player) throws SQLException {
+        PreparedStatement statement = db.getConnection().prepareStatement("UPDATE user SET player_uuid = ?, username = ?, money = ? WHERE player_uuid = ?");
         statement.setString(1, player.getUuid().toString());
         statement.setString(2, player.getUsername());
-        statement.setInt(3, amount);
-        statement.setString(4, player.getUsername());
+        statement.setInt(3, player.getMoney());
+        statement.setString(4, player.getUuid().toString());
         statement.executeUpdate();
         statement.close();
     }

@@ -1,5 +1,6 @@
 package economy;
 
+import economy.handler.MoneyHandler;
 import economy.model.User;
 import economy.repository.PlayerRepository;
 import org.bukkit.command.Command;
@@ -11,9 +12,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class balCommand implements TabExecutor {
-    private final PlayerRepository playerRepository;
-    public balCommand(PlayerRepository playerRepository) {
-        this.playerRepository = playerRepository;
+    private final MoneyHandler moneyHandler;
+    public balCommand(MoneyHandler moneyHandler) {
+        this.moneyHandler = moneyHandler;
     }
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -26,11 +27,8 @@ public class balCommand implements TabExecutor {
             return true;
         }
 
-        User player;
         try {
-            player = playerRepository.getPlayer((Player) sender);
-            sender.sendMessage("Balance: " + player.getMoney() + "$");
-            return true;
+            sender.sendMessage("Balance: " + moneyHandler.getBalance((Player) sender) + "$");
         } catch (SQLException e) {
             e.printStackTrace();
             sender.sendMessage("Couldn't fetch balance");

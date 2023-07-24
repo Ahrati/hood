@@ -38,3 +38,9 @@ commands:
     myplugin.admin:
       description: Allows access to admin commands in MyPlugin
       default: op
+
+  org:
+    description: Organisation based commands
+    usage: /org <create/join/leave/[name]>
+    aliases:
+      - o

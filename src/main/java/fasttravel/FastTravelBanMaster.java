@@ -4,8 +4,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 public class FastTravelBanMaster {
-    Plugin plugin;
-    FastTravelBanMaster(Plugin plugin){
+    private Plugin plugin;
+    public FastTravelBanMaster(Plugin plugin){
         this.plugin = plugin;
     }
 

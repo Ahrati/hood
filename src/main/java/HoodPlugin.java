@@ -109,11 +109,11 @@ public class HoodPlugin extends JavaPlugin {
         getCommand("jailset").setExecutor(new JailSetCommand(db));
         getCommand("jailset").setPermission("myplugin.admin");
 
-        getCommand("jail").setExecutor(new JailCommand(db));
+        getCommand("jail").setExecutor(new JailCommand(db,this));
         getCommand("jail").setPermission("myplugin.admin");
-        getCommand("jail").setTabCompleter(new JailCommand(db));
+        getCommand("jail").setTabCompleter(new JailCommand(db,this));
 
-        getCommand("jailfree").setExecutor(new JailFreeCommand());
+        getCommand("jailfree").setExecutor(new JailFreeCommand(this));
         getCommand("jailfree").setPermission("myplugin.admin");
 
         getCommand("jaillist").setExecutor(new JailListCommand(db));

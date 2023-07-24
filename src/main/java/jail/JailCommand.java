@@ -1,5 +1,6 @@
 package jail;
 
+import fasttravel.FastTravelBanMaster;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -8,6 +9,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import db.database;
@@ -18,8 +20,10 @@ import java.util.List;
 public class JailCommand implements TabExecutor {
 
     private final database db;
-    public JailCommand(database db) {
+    private FastTravelBanMaster banMaster;
+    public JailCommand(database db, Plugin plugin) {
         this.db = db;
+        banMaster = new FastTravelBanMaster(plugin);
     }
 
     @Override
@@ -60,7 +64,7 @@ public class JailCommand implements TabExecutor {
 
         targetPlayer.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 1, false, false));
         targetPlayer.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, Integer.MAX_VALUE, 0, false, false));
-        //TO DO add fast travel ban
+        banMaster.FastTravelBan(targetPlayer);
 
         int x, y, z;
 

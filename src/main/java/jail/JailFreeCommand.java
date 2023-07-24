@@ -1,10 +1,12 @@
 package jail;
 
+import fasttravel.FastTravelBanMaster;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import db.database;
@@ -12,6 +14,10 @@ import db.database;
 import java.sql.SQLException;
 
 public class JailFreeCommand implements CommandExecutor {
+    private FastTravelBanMaster banMaster;
+    public JailFreeCommand(Plugin plugin){
+        this.banMaster = new FastTravelBanMaster(plugin);
+    }
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
@@ -40,7 +46,7 @@ public class JailFreeCommand implements CommandExecutor {
 
         targetPlayer.removePotionEffect(PotionEffectType.SLOW);
         targetPlayer.removePotionEffect(PotionEffectType.WEAKNESS);
-        //TO DO Remove the fast travel ban
+        banMaster.FastTravelUnban(targetPlayer);
 
         commandSender.sendMessage("§a" + playerName + " §rhas been freed from jail.");
         targetPlayer.sendMessage("§aYou have been freed from jail.");

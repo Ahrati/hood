@@ -11,7 +11,7 @@ import java.util.List;
 
 public class FastTravelListCommand implements CommandExecutor {
     private final database db;
-    FastTravelRepository fastTravelRepository;
+    private FastTravelRepository fastTravelRepository;
     public FastTravelListCommand(database db){
         this.db = db;
         fastTravelRepository = new FastTravelRepository(db);

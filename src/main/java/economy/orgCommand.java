@@ -30,12 +30,12 @@ public class orgCommand implements TabExecutor {
             case "create" -> {
                 String desc;
                 if(args.length == 2) {
-                    desc = args [1];
+                    desc = args [2];
                 } else {
                     desc = "";
                 }
                 try {
-                    organisationHandler.createOrganisation(args[0], desc, (Player) sender);
+                    organisationHandler.createOrganisation(args[1], desc, (Player) sender);
                 } catch (SQLException e) {
                     e.printStackTrace();
                     sender.sendMessage("Error creating organisation");
@@ -47,7 +47,7 @@ public class orgCommand implements TabExecutor {
                     return false;
                 }
                 try {
-                    organisationHandler.joinOrganisation(args[0], (Player) sender);
+                    organisationHandler.joinOrganisation(args[1], (Player) sender);
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -58,7 +58,7 @@ public class orgCommand implements TabExecutor {
                 if(args.length > 1) {
                     return false;
                 }
-                organisationHandler.leaveOrganisation(args[0]);
+                organisationHandler.leaveOrganisation(args[1]);
                 return true;
             }
             case "invite" -> {

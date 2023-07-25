@@ -42,14 +42,14 @@ public class OrganisationRepository {
     public List<User> fetchOrganisationMembers(String organisationName) throws SQLException {
         List<User> members = new ArrayList<>();
         PreparedStatement statement = db.getConnection().prepareStatement("SELECT user.* FROM user " +
-                "JOIN memberlist ON user.user_uuid = memberlist.uuid " +
+                "JOIN memberlist ON user.player_uuid = memberlist.uuid " +
                 "JOIN organisation ON organisation.id = memberlist.organisationid " +
                 "WHERE organisation.name = ?");
         statement.setString(1, organisationName);
 
         ResultSet resultSet = statement.executeQuery();
         while (resultSet.next()) {
-            UUID uuid = UUID.fromString(resultSet.getString("user_uuid"));
+            UUID uuid = UUID.fromString(resultSet.getString("player_uuid"));
             String username = resultSet.getString("username");
             int money = resultSet.getInt("money");
             members.add(new User(uuid, username, money));

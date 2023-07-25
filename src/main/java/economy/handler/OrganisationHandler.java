@@ -90,7 +90,9 @@ public class OrganisationHandler {
 
         if(invited.get(joiner.getName()).contains(org)) {
             orepo.insertMemberList(org, prepo.getPlayer(joiner));
+            invited.get(joiner.getName()).remove(org);
             joiner.sendMessage("You successfully joined the org");
+            return true;
         } else {
             joiner.sendMessage("You haven't been invited to this organisation yet");
         }
@@ -113,10 +115,11 @@ public class OrganisationHandler {
     }
 
     public Organisation checkOrganisation(String name, Player checker) throws SQLException{
-        if(!orepo.fetchOrganisationMembers(name).contains(prepo.fetchPlayer(checker.getName()))) {
-            checker.sendMessage("You aren't a member of that org");
-            return null;
+        for(User member : orepo.fetchOrganisationMembers(name)) {
+            if(Objects.equals(member.getUsername(), checker.getName())) {
+                return orepo.fetchOrganisation(name);
+            }
         }
-        return orepo.fetchOrganisation(name);
+        return null;
     }
 }

@@ -46,7 +46,7 @@ public class orgCommand implements TabExecutor {
                 return true;
             }
             case "join" -> {
-                if(args.length > 1) {
+                if(args.length > 2) {
                     return false;
                 }
                 try {
@@ -58,7 +58,7 @@ public class orgCommand implements TabExecutor {
                 return true;
             }
             case "leave" -> {
-                if(args.length > 1) {
+                if(args.length > 2) {
                     return false;
                 }
                 organisationHandler.leaveOrganisation(args[1]);
@@ -80,18 +80,18 @@ public class orgCommand implements TabExecutor {
                 if(args.length > 1) {
                     return false;
                 }
-                Organisation org = null;
                 try {
-                    org = organisationHandler.checkOrganisation(args[0], (Player) sender);
+                    Organisation org = organisationHandler.checkOrganisation(args[0], (Player) sender);
+                    if(org != null) {
+                        sender.sendMessage(org.getName() + "\n" + org.getDescription() + "\nmembers:");
+                        for(User member : org.getMembers()) {
+                            sender.sendMessage(member.getUsername());
+                        }
+                    }
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-                if(org != null) {
-                    sender.sendMessage(org.getName() + "\n" + org.getDescription() + "\nmembers:");
-                    for(User member : org.getMembers()) {
-                        sender.sendMessage(member.getUsername());
-                    }
-                }
+
 
                 return true;
             }

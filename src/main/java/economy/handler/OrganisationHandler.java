@@ -9,10 +9,7 @@ import org.bukkit.entity.Player;
 
 import java.sql.Array;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class OrganisationHandler {
     private final PlayerRepository prepo;
@@ -25,6 +22,7 @@ public class OrganisationHandler {
         this.prepo = prepo;
         this.orepo = orepo;
         this.config = config;
+        invited = new HashMap<>();
     }
 
     public void createOrganisation(String org, String desc, Player creator) throws SQLException {

@@ -1,4 +1,5 @@
 import economy.handler.MoneyHandler;
+import economy.handler.OrganisationHandler;
 import economy.repository.OrganisationRepository;
 import fasttravel.FastTravelCommand;
 import fasttravel.FastTravelListCommand;
@@ -36,6 +37,8 @@ public class HoodPlugin extends JavaPlugin {
         config.addDefault("database", "database");
         config.addDefault("user", "root");
         config.addDefault("password", "");
+        config.addDefault("maxOrg", "5");
+        config.addDefault("maxOrgMembers", "30");
         config.options().copyDefaults(true);
         saveConfig();
 
@@ -51,16 +54,18 @@ public class HoodPlugin extends JavaPlugin {
         // ECONOMY
         try {
             this.db.initializeTable("CREATE TABLE IF NOT EXISTS user (player_uuid CHAR(36) PRIMARY KEY, username VARCHAR(255), money INT);");
-            this.db.initializeTable("CREATE TABLE IF NOT EXISTS organisation (id INT NOT NULL IDENTITY PRIMARY KEY, name VARCHAR(255) NOT NULL, description VARCHAR(255), memberlistid INT, money INT, FOREIGN KEY (memberlistid) REFERENCES memberlist(id));");
+            this.db.initializeTable("CREATE TABLE IF NOT EXISTS organisation (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) NOT NULL, description VARCHAR(255), memberlistid INT, money INT, FOREIGN KEY (memberlistid) REFERENCES memberlist(id));");
             this.db.initializeTable("CREATE TABLE IF NOT EXISTS memberlist (uuid CHAR(36), organisationid INT, FOREIGN KEY (uuid) REFERENCES user(player_uuid), FOREIGN KEY (organisationid) REFERENCES organisation(id));");
+            this.db.initializeTable("");
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Could not initialize economy tables.");
         }
 
         PlayerRepository prepo = new PlayerRepository(db);
-        OrganisationRepository orepo = new OrganisationRepository();
+        OrganisationRepository orepo = new OrganisationRepository(db);
         MoneyHandler moneyHandler = new MoneyHandler(prepo, orepo);
+        OrganisationHandler organisationHandler = new OrganisationHandler(prepo, orepo, config);
 
         Objects.requireNonNull(getCommand("bal")).setExecutor(new balCommand(moneyHandler));
         Objects.requireNonNull(getCommand("bal")).setTabCompleter(new balCommand(moneyHandler));
@@ -71,6 +76,9 @@ public class HoodPlugin extends JavaPlugin {
         Objects.requireNonNull(getCommand("balop")).setExecutor(new balopCommand(moneyHandler));
         Objects.requireNonNull(getCommand("balop")).setTabCompleter(new balopCommand(moneyHandler));
         Objects.requireNonNull(getCommand("balop")).setPermission("myplugin.admin");
+
+        Objects.requireNonNull(getCommand("org")).setExecutor(new orgCommand(moneyHandler, organisationHandler));
+        Objects.requireNonNull(getCommand("org")).setTabCompleter(new orgCommand(moneyHandler, organisationHandler));
 
         getServer().getPluginManager().registerEvents(new economyListeners(prepo), this);
 

@@ -113,7 +113,7 @@ public class OrganisationHandler {
     }
 
     public Organisation checkOrganisation(String name, Player checker) throws SQLException{
-        if(!orepo.fetchOrganisation(name).getMembers().contains(checker.getName())) {
+        if(!orepo.fetchOrganisationMembers(name).contains(checker.getName())) {
             checker.sendMessage("You aren't a member of that org");
             return null;
         }

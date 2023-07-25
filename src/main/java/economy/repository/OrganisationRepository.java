@@ -28,6 +28,7 @@ public class OrganisationRepository {
             String description = resultSet.getString("description");
             int money = resultSet.getInt("money");
             int id = resultSet.getInt("id");
+
             List<User> members = fetchOrganisationMembersbyId(String.valueOf(id));
 
             organisation = new Organisation(id, name, description, members, money);

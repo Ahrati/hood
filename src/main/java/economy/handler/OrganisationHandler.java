@@ -115,7 +115,12 @@ public class OrganisationHandler {
     }
 
     public Organisation checkOrganisation(String name, Player checker) throws SQLException{
-        for(User member : orepo.fetchOrganisationMembers(name)) {
+        List<User> orgMembers = orepo.fetchOrganisationMembers(name);
+        if(orgMembers == null) {
+            checker.sendMessage("Organisation with that name doesn't exist");
+            return null;
+        }
+        for(User member : orgMembers) {
             if(Objects.equals(member.getUsername(), checker.getName())) {
                 return orepo.fetchOrganisation(name);
             }

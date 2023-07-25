@@ -28,7 +28,7 @@ public class OrganisationRepository {
             String description = resultSet.getString("description");
             int money = resultSet.getInt("money");
             int id = resultSet.getInt("id");
-            List<User> members = fetchOrganisationMembers(name);
+            List<User> members = fetchOrganisationMembersbyId(String.valueOf(id));
 
             organisation = new Organisation(id, name, description, members, money);
             statement.close();
@@ -44,8 +44,28 @@ public class OrganisationRepository {
         PreparedStatement statement = db.getConnection().prepareStatement("SELECT user.* FROM user " +
                 "JOIN memberlist ON user.player_uuid = memberlist.uuid " +
                 "JOIN organisation ON organisation.id = memberlist.organisationid " +
-                "WHERE organisation.name = ?");
-        statement.setString(1, organisationName);
+                "WHERE organisation.id = ?");
+        statement.setString(1, String.valueOf(fetchOrganisation(organisationName).getId()));
+
+        ResultSet resultSet = statement.executeQuery();
+        while (resultSet.next()) {
+            UUID uuid = UUID.fromString(resultSet.getString("player_uuid"));
+            String username = resultSet.getString("username");
+            int money = resultSet.getInt("money");
+            members.add(new User(uuid, username, money));
+        }
+
+        statement.close();
+        return members;
+    }
+
+    public List<User> fetchOrganisationMembersbyId(String organisationId) throws SQLException {
+        List<User> members = new ArrayList<>();
+        PreparedStatement statement = db.getConnection().prepareStatement("SELECT user.* FROM user " +
+                "JOIN memberlist ON user.player_uuid = memberlist.uuid " +
+                "JOIN organisation ON organisation.id = memberlist.organisationid " +
+                "WHERE organisation.id = ?");
+        statement.setString(1, organisationId);
 
         ResultSet resultSet = statement.executeQuery();
         while (resultSet.next()) {

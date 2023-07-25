@@ -34,8 +34,8 @@ public class HoodPlugin extends JavaPlugin {
         config.addDefault("database", "database");
         config.addDefault("user", "root");
         config.addDefault("password", "");
-        config.addDefault("maxOrg", "5");
-        config.addDefault("maxOrgMembers", "30");
+        config.addDefault("maxOrg", 5);
+        config.addDefault("maxOrgMembers", 30);
         config.options().copyDefaults(true);
         saveConfig();
 

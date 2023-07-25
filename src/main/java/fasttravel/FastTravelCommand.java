@@ -1,5 +1,8 @@
 package fasttravel;
 
+import economy.handler.MoneyHandler;
+import economy.repository.OrganisationRepository;
+import economy.repository.PlayerRepository;
 import org.bukkit.*;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
@@ -8,20 +11,29 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.List;
+import java.util.*;
 import java.util.Random;
 
 
 import java.sql.SQLException;
 
 public class FastTravelCommand implements TabExecutor {
-
+    private PlayerRepository playerRepository;
+    private OrganisationRepository organisationRepository = new OrganisationRepository();;
+    private MoneyHandler moneyHandler;
     private final database db;
     private static Plugin plugin = null;
+    private final Map<UUID, Long> lastFastTravelTimestamps = new HashMap<>();
+    private int cooldownMinutes = 5;
+    private int taxPerMinute = 10;
+    private final int cooldownDuration = cooldownMinutes * 60 * 1000; //cooldown in milliseconds
+
 
     public FastTravelCommand(database db, Plugin instance){
         this.db = db;
         plugin = instance;
+        playerRepository = new PlayerRepository(db);
+        moneyHandler = new MoneyHandler(playerRepository, organisationRepository);
     }
     private int getRandomOffset(int radius) {
         Random random = new Random();
@@ -90,6 +102,16 @@ public class FastTravelCommand implements TabExecutor {
             return true;
         }
 
+        if ((int)player.getHealth() < 19) {
+            player.sendMessage("§cHeal before fast travelling!");
+            return true;
+        }
+
+        if (player.getFallDistance() > 0){
+            player.sendMessage("§cCan not fast travel while falling!");
+            return true;
+        }
+
         String name = args[0];
 
         FastTravelRepository fastTravelRepository = new FastTravelRepository(db);
@@ -115,22 +137,44 @@ public class FastTravelCommand implements TabExecutor {
 
         World overworld = Bukkit.getWorld("world");
 
-        int delay = 5;
+        long currentTime = System.currentTimeMillis();
 
-        player.sendMessage("§aFast Traveling in §d" + delay + " §aseconds");
+        Long lastTravelTimestamp = lastFastTravelTimestamps.get(player.getUniqueId());
+        boolean isWithinCooldown = lastTravelTimestamp != null && currentTime - lastTravelTimestamp < cooldownDuration;
+        int elapsedTimeMinutes = cooldownMinutes;
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                playParticleEffects(player.getLocation(), player, player.getWorld());
-                Location teleportLocation = new Location(overworld, x, y, z, player.getLocation().getYaw(), player.getLocation().getPitch());
-                player.teleport(teleportLocation);
-                player.sendMessage("§aFast Traveled to §6" + fastTravelPoint.getName());
-                player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
-                playParticleEffects(teleportLocation, player, player.getWorld());
+        if (isWithinCooldown) {
+            long elapsedMilliseconds = currentTime - lastTravelTimestamp;
+            elapsedTimeMinutes = (int) (elapsedMilliseconds / (60 * 1000)); // Convert elapsed time to minutes
+        }
+
+        int taxAmount = Math.max(0, (cooldownMinutes - elapsedTimeMinutes) * taxPerMinute);
+
+
+        if (taxAmount > 0) {
+            int playerBalance = 0;
+            try {
+                playerBalance = moneyHandler.getBalance(player);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
-        }.runTaskLater(plugin, 20 * delay);
 
+            if (playerBalance >= taxAmount) {
+                // moneyHandler.transferMoney(player, government, "p2o");
+            } else {
+                player.sendMessage("§cYou don't have enough money to fast travel. The tax is $" + taxAmount);
+                return true;
+            }
+        }
+
+        playParticleEffects(player.getLocation(), player, player.getWorld());
+        Location teleportLocation = new Location(overworld, x, y, z, player.getLocation().getYaw(), player.getLocation().getPitch());
+        player.teleport(teleportLocation);
+        player.sendMessage("§aFast Traveled to §6" + fastTravelPoint.getName());
+        player.sendMessage("§aYou can fast travel for free again in " + cooldownMinutes + " minutes");
+        player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
+        playParticleEffects(teleportLocation, player, player.getWorld());
+        lastFastTravelTimestamps.put(player.getUniqueId(), currentTime);
 
         return true;
     }

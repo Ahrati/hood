@@ -9,6 +9,8 @@ import org.bukkit.entity.Player;
 import db.database;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
@@ -19,12 +21,12 @@ import java.sql.SQLException;
 
 public class FastTravelCommand implements TabExecutor {
     private PlayerRepository playerRepository;
-    private OrganisationRepository organisationRepository = new OrganisationRepository();;
     private MoneyHandler moneyHandler;
     private final database db;
+    private OrganisationRepository organisationRepository;
     private static Plugin plugin = null;
     private final Map<UUID, Long> lastFastTravelTimestamps = new HashMap<>();
-    private int cooldownMinutes = 5;
+    private int cooldownMinutes = 1;
     private int taxPerMinute = 10;
     private final int cooldownDuration = cooldownMinutes * 60 * 1000; //cooldown in milliseconds
 
@@ -34,6 +36,7 @@ public class FastTravelCommand implements TabExecutor {
         plugin = instance;
         playerRepository = new PlayerRepository(db);
         moneyHandler = new MoneyHandler(playerRepository, organisationRepository);
+        organisationRepository = new OrganisationRepository(db);
     }
     private int getRandomOffset(int radius) {
         Random random = new Random();
@@ -76,6 +79,28 @@ public class FastTravelCommand implements TabExecutor {
         }
     }
 
+    private Boolean checkPlayerSober(Player player) {
+        Set<PotionEffectType> soberEffects = new HashSet<>();
+        soberEffects.add(PotionEffectType.POISON);
+        soberEffects.add(PotionEffectType.CONFUSION);
+        soberEffects.add(PotionEffectType.WITHER);
+        soberEffects.add(PotionEffectType.SLOW);
+        soberEffects.add(PotionEffectType.BAD_OMEN);
+        soberEffects.add(PotionEffectType.BLINDNESS);
+        soberEffects.add(PotionEffectType.HUNGER);
+        soberEffects.add(PotionEffectType.WEAKNESS);
+
+        boolean sober = true;
+        for (PotionEffect effect : player.getActivePotionEffects()) {
+            if (soberEffects.contains(effect.getType())) {
+                sober = false;
+                break; // No need to continue checking if we already found a sobering effect
+            }
+        }
+
+        return sober;
+    }
+
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
         System.out.println("running ft command");
@@ -111,6 +136,12 @@ public class FastTravelCommand implements TabExecutor {
             player.sendMessage("§cCan not fast travel while falling!");
             return true;
         }
+
+        if (!checkPlayerSober(player)){
+            player.sendMessage("§cYou need to be sober to fast travel!");
+            return true;
+        }
+
 
         String name = args[0];
 
@@ -168,12 +199,15 @@ public class FastTravelCommand implements TabExecutor {
         }
 
         playParticleEffects(player.getLocation(), player, player.getWorld());
+
         Location teleportLocation = new Location(overworld, x, y, z, player.getLocation().getYaw(), player.getLocation().getPitch());
         player.teleport(teleportLocation);
+
         player.sendMessage("§aFast Traveled to §6" + fastTravelPoint.getName());
         player.sendMessage("§aYou can fast travel for free again in " + cooldownMinutes + " minutes");
         player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
         playParticleEffects(teleportLocation, player, player.getWorld());
+
         lastFastTravelTimestamps.put(player.getUniqueId(), currentTime);
 
         return true;

@@ -29,7 +29,10 @@ public class orgCommand implements TabExecutor {
         switch(args[0]) {
             case "create" -> {
                 String desc;
-                if(args.length == 2) {
+                if(args.length < 2) {
+                    return false;
+                }
+                if(args.length == 3) {
                     desc = args [2];
                 } else {
                     desc = "";

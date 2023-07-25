@@ -41,6 +41,9 @@ public class OrganisationRepository {
     }
 
     public List<User> fetchOrganisationMembers(String organisationName) throws SQLException {
+        if(fetchOrganisation(organisationName) == null) {
+            return null;
+        }
         List<User> members = new ArrayList<>();
         PreparedStatement statement = db.getConnection().prepareStatement("SELECT user.* FROM user " +
                 "JOIN memberlist ON user.player_uuid = memberlist.uuid " +

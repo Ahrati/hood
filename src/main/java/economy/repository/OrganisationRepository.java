@@ -54,6 +54,7 @@ public class OrganisationRepository {
             String username = resultSet.getString("username");
             int money = resultSet.getInt("money");
             members.add(new User(uuid, username, money));
+            System.out.println(username);
         }
 
         statement.close();

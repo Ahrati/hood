@@ -17,6 +17,21 @@ public class FastTravelRepository {
     }
 
     /**
+     * Populates the fasttraveldiscovery table.
+     */
+    public void PopulateFastTravelDiscovery() throws SQLException {
+
+        PreparedStatement statement = db.getConnection().prepareStatement("INSERT IGNORE INTO fasttraveldiscovery (ftpname, playername)\n" +
+                "SELECT ftp.name, u.username\n" +
+                "FROM fasttravelpoints AS ftp\n" +
+                "CROSS JOIN user AS u;");
+
+        statement.executeUpdate();
+
+        statement.close();
+    }
+
+    /**
      * Creates a fast travel point.
      */
     public void CreateFastTravelPoint(FastTravelPoint fastTravelPoint) throws SQLException {
@@ -31,7 +46,6 @@ public class FastTravelRepository {
         statement.executeUpdate();
 
         statement.close();
-
     }
 
     /**

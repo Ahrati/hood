@@ -8,10 +8,8 @@ import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import db.database;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 import java.util.Random;
@@ -160,6 +158,23 @@ public class FastTravelCommand implements TabExecutor {
             return true;
         }
 
+        UUID playerUUID = player.getUniqueId();
+        boolean isUndiscovered = false;
+
+        List<FastTravelPoint> undiscoveredPoints = FastTravelRepository.UndiscoveredFTP.get(playerUUID);
+
+        for (FastTravelPoint undiscoveredPoint : undiscoveredPoints) {
+            if (undiscoveredPoint.getName().equalsIgnoreCase(name)) {
+                isUndiscovered = true;
+                break;
+            }
+        }
+
+        if (isUndiscovered) {
+            commandSender.sendMessage("§cYou haven't discovered this location yet!");
+            return true;
+        }
+
         int x, y, z;
 
         x = fastTravelPoint.getX() + getRandomOffset(fastTravelPoint.getRadius());
@@ -183,14 +198,14 @@ public class FastTravelCommand implements TabExecutor {
 
 
         if (taxAmount > 0) {
-            int playerBalance = 0;
+            int playerBalance;
             try {
                 playerBalance = moneyHandler.getBalance(player);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
 
-            if (playerBalance >= taxAmount) {
+            if(playerBalance >= taxAmount) {
                 // moneyHandler.transferMoney(player, government, "p2o");
             } else {
                 player.sendMessage("§cYou don't have enough money to fast travel. The tax is $" + taxAmount);
@@ -214,16 +229,22 @@ public class FastTravelCommand implements TabExecutor {
     }
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        if(args.length == 1) {
-            FastTravelRepository fastTravelRepository = new FastTravelRepository(db);
-            try {
-                return fastTravelRepository.GetFastTravelPointNames();
-            } catch (SQLException e) {
-                e.printStackTrace();
-                System.out.println("Could not fetch ftp names");
+        if (args.length == 1) {
+            if (sender instanceof Player) {
+                Player player = (Player) sender;
+                UUID playerUUID = player.getUniqueId();
+                List<FastTravelPoint> discoveredPoints = FastTravelRepository.DiscoveredFTP.getOrDefault(playerUUID, Collections.emptyList());
+
+                List<String> completions = new ArrayList<>();
+                for (FastTravelPoint point : discoveredPoints) {
+                    String name = point.getName();
+                    if (name.toLowerCase().startsWith(args[0].toLowerCase())) {
+                        completions.add(name);
+                    }
+                }
+                return completions;
             }
-            return null;
         }
-        return null;
+        return Collections.emptyList();
     }
 }

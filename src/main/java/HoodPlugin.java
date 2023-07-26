@@ -1,7 +1,9 @@
+import casinochips.CasinoChipsItemManager;
 import economy.handler.MoneyHandler;
 import economy.handler.OrganisationHandler;
 import economy.repository.OrganisationRepository;
 import fasttravel.*;
+import fasttravel.discovery.handlers.FastTravelDiscoveryHandler;
 import jail.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -86,9 +88,23 @@ public class HoodPlugin extends JavaPlugin {
             System.out.println("Could not initialize fast travel table.");
         }
 
+        try {
+            // Create the fasttraveldiscovery table if it doesn't exist
+            this.db.initializeTable("CREATE TABLE IF NOT EXISTS fasttraveldiscovery (ftpname VARCHAR(255) NOT NULL, playerid CHAR(36) NOT NULL, discovered BOOLEAN NOT NULL DEFAULT FALSE, PRIMARY KEY (ftpname, playerid), FOREIGN KEY (ftpname) REFERENCES fasttravelpoints(name) ON DELETE CASCADE, FOREIGN KEY (playerid) REFERENCES user (player_uuid) ON DELETE CASCADE);");
+
+            // Insert rows into fasttraveldiscovery based on fasttravelpoints and user tables
+            this.db.initializeTable("INSERT IGNORE INTO fasttraveldiscovery (ftpname, playerid)\n" +
+                    "SELECT ftp.name, u.player_uuid\n" +
+                    "FROM fasttravelpoints AS ftp\n" +
+                    "CROSS JOIN user AS u;");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Could not initialize fasttraveldiscovery table or insert rows.");
+        }
+
+
         getCommand("fasttravelpointset").setExecutor(new FastTravelPointSetCommand(db));
         getCommand("fasttravelpointset").setPermission("myplugin.admin");
-
 
         getCommand("fasttravellist").setExecutor(new FastTravelListCommand(db));
 
@@ -98,6 +114,14 @@ public class HoodPlugin extends JavaPlugin {
         Objects.requireNonNull(getCommand("fasttravelpointdelete")).setExecutor(new FastTravelPointDeleteCommand(db));
         Objects.requireNonNull(getCommand("fasttravelpointdelete")).setTabCompleter(new FastTravelPointDeleteCommand(db));
         getCommand("fasttravelpointdelete").setPermission("myplugin.admin");
+
+        getCommand("fasttravelban").setExecutor(new FastTravelBanCommand(this));
+        getCommand("fasttravelban").setPermission("myplugin.admin");
+
+        getCommand("fasttravelunban").setExecutor(new FastTravelUnbanCommand(this));
+        getCommand("fasttravelunban").setPermission("myplugin.admin");
+
+        new FastTravelDiscoveryHandler(this,db);
 
         //JAIL
         try {
@@ -123,6 +147,9 @@ public class HoodPlugin extends JavaPlugin {
         getCommand("jaildelete").setExecutor(new JailDeleteCommand(db));
         getCommand("jaildelete").setPermission("myplugin.admin");
         getCommand("jaildelete").setTabCompleter(new JailDeleteCommand(db));
+
+        //CASINO CHIPS
+        //CasinoChipsItemManager.init();
 
         // LOADED
         super.onEnable();

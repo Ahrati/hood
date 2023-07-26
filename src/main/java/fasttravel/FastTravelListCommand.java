@@ -19,27 +19,37 @@ public class FastTravelListCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
-
-        List<FastTravelPoint> fastTravelPoints;
+        Player player = (Player) commandSender;
+        List<FastTravelPoint> discovered, undiscovered;
 
         try {
-            fastTravelPoints = fastTravelRepository.GetFastTravelPoints();
+            discovered = fastTravelRepository.GetDiscoveredFastTravelPoints(player.getUniqueId());
         } catch (SQLException e) {
-            commandSender.sendMessage("An error occurred while fetching fast travel locations.");
-            e.printStackTrace();
-            return true;
+            throw new RuntimeException(e);
         }
 
-        if (fastTravelPoints.isEmpty()) {
+        try {
+            undiscovered = fastTravelRepository.GetUndiscoveredFastTravelPoints(player.getUniqueId());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        if (discovered.isEmpty() && undiscovered.isEmpty()) {
             commandSender.sendMessage("§cThere are no fast travel locations available.");
         } else {
             commandSender.sendMessage("§aFAST TRAVEL LOCATIONS");
             commandSender.sendMessage("---------------------");
-            for (FastTravelPoint point : fastTravelPoints) {
+            for (FastTravelPoint point : discovered) {
                 commandSender.sendMessage("- §6" + point.getName() + " §r" +
                         " (§b" + point.getX() +
                         ", " + point.getY() +
                         ", " + point.getZ() + "§r)");
+            }
+            for (FastTravelPoint point : undiscovered) {
+                commandSender.sendMessage("- §7" + point.getName() + " " +
+                        " (" + point.getX() +
+                        ", " + point.getY() +
+                        ", " + point.getZ() + ")");
             }
         }
         return true;

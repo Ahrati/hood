@@ -46,6 +46,15 @@ public class FastTravelPointSetCommand implements CommandExecutor {
         FastTravelRepository fastTravelRepository = new FastTravelRepository(db);
 
         try {
+            if (fastTravelRepository.GetFastTravelPoint(name) != null){
+                commandSender.sendMessage("§cFast travel point with that name already exists!");
+                return true;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
             System.out.println("creating ftp");
             fastTravelRepository.CreateFastTravelPoint(fastTravelPoint);
         } catch (SQLException e) {

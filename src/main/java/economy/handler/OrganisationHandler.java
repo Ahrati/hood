@@ -11,6 +11,8 @@ import java.sql.Array;
 import java.sql.SQLException;
 import java.util.*;
 
+import static org.bukkit.Bukkit.getServer;
+
 public class OrganisationHandler {
     private final PlayerRepository prepo;
     private final OrganisationRepository orepo;
@@ -24,7 +26,17 @@ public class OrganisationHandler {
         this.config = config;
         invited = new HashMap<>();
     }
-
+    public List<Organisation> getOrganisationsByMember(Player player) throws SQLException {
+        User user = prepo.getPlayer(player);
+        List<Organisation> orgs = orepo.getAllOrganisations();
+        List<Organisation> result = new ArrayList<>();
+        for(Organisation org : orgs) {
+            if(org.getMembers().contains(user)) {
+                result.add(org);
+            }
+        }
+        return result;
+    }
     public void createOrganisation(String org, String desc, Player creator) throws SQLException {
         List<Organisation> orgs = orepo.getAllOrganisations();
         int counter = 0;
@@ -48,7 +60,7 @@ public class OrganisationHandler {
 
         Organisation organisation = new Organisation(0, org, desc, null, 0);
         orepo.createOrganisation(organisation);
-        orepo.insertMemberList(org, prepo.getPlayer(creator));
+        orepo.insertMemberList(org, prepo.getPlayer(creator), "owner");
     }
 
     public void inviteMember(Player inviter, String username, String org) throws SQLException {
@@ -65,9 +77,13 @@ public class OrganisationHandler {
             invited.put(username, organisation);
         }
         inviter.sendMessage("User has been invited");
+        Player invited = getServer().getPlayer(username);
+        if(invited != null) {
+            invited.sendMessage("You have been invited to " + org + "\nType '/org join " + org + "' to join the organisation");
+        }
     }
 
-    public boolean joinOrganisation(String org, Player joiner) throws SQLException {
+    public boolean joinOrganisation(String org, Player joiner, String role) throws SQLException {
         List<Organisation> orgs = orepo.getAllOrganisations();
         int counter = 0;
         for(Organisation organ : orgs) {
@@ -89,7 +105,7 @@ public class OrganisationHandler {
         }
 
         if(invited.get(joiner.getName()).contains(org)) {
-            orepo.insertMemberList(org, prepo.getPlayer(joiner));
+            orepo.insertMemberList(org, prepo.getPlayer(joiner), role);
             invited.get(joiner.getName()).remove(org);
             joiner.sendMessage("You successfully joined the org");
             return true;
@@ -100,13 +116,27 @@ public class OrganisationHandler {
         return false;
     }
 
-    public boolean leaveOrganisation(String org) {
+    public boolean leaveOrganisation(String org, String leaver) throws SQLException {
         //attempt leave org
+        User player = prepo.fetchPlayer(leaver);
+        if(player == null) {
+            return false;
+        }
+        if(orepo.exitMemberList(org, prepo.fetchPlayer(leaver))) {
+            updateOrganisation(org);
+            return true;
+        }
         return false;
+
     }
 
-    public boolean updateOrganisation() {
+    public boolean updateOrganisation(String org) throws SQLException {
         //if 0 members, delete org
+        Organisation organisation = orepo.fetchOrganisation(org);
+        if(organisation.getMembers().size() == 0) {
+            orepo.deleteOrganisation(organisation);
+            return true;
+        }
         return false;
     }
 
@@ -126,5 +156,38 @@ public class OrganisationHandler {
             }
         }
         return null;
+    }
+
+    public List<Player> getOnlineMembers(String org) throws SQLException {
+        List<User> members = getAllMembers(org);
+        List<Player> onlineMembers = new ArrayList<>();
+        for(User member : members) {
+            if(getServer().getPlayer(member.getUsername()) != null) {
+                onlineMembers.add(getServer().getPlayer(member.getUsername()));
+            }
+        }
+
+        return onlineMembers;
+    }
+
+    public List<User> getAllMembers(String org) throws SQLException {
+        return orepo.fetchOrganisation(org).getMembers();
+    }
+
+    public User getOwner(String org) throws SQLException{
+        for(User user : orepo.fetchOrganisationMembers(org)) {
+            if(Objects.equals(orepo.fetchRole(org, user), "owner")) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    public boolean isOwner(Player player, String org) throws SQLException{
+        if(player.getName().equals(getOwner(org).getUsername())) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

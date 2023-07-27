@@ -83,6 +83,22 @@ public class OrganisationRepository {
         return members;
     }
 
+    public String fetchRole(String organisationName, User user) throws SQLException{
+        PreparedStatement checkStatement = db.getConnection().prepareStatement("SELECT * FROM memberlist WHERE uuid = ? AND organisationid = ?");
+        checkStatement.setString(1, user.getUuid().toString());
+        checkStatement.setString(2, String.valueOf(fetchOrganisation(organisationName).getId()));
+        ResultSet resultSet = checkStatement.executeQuery();
+        String result;
+        if (!resultSet.next()) {
+            result = resultSet.getString("role");
+        } else {
+            result = null;
+        }
+
+        checkStatement.close();
+        return result;
+    }
+
     public void createOrganisation(Organisation organisation) throws SQLException {
         PreparedStatement statement = db.getConnection().prepareStatement("INSERT INTO organisation (name, description, money) VALUES (?, ?, ?)");
         statement.setString(1, organisation.getName());
@@ -92,16 +108,17 @@ public class OrganisationRepository {
         statement.close();
     }
     public void updateOrganisation(Organisation organisation) throws SQLException {
-        PreparedStatement statement = db.getConnection().prepareStatement("UPDATE organisation SET description = ?, money = ? WHERE name = ?");
-        statement.setString(1, organisation.getDescription());
-        statement.setInt(2, organisation.getMoney());
-        statement.setString(3, organisation.getName());
+        PreparedStatement statement = db.getConnection().prepareStatement("UPDATE organisation SET name = ? description = ?, money = ? WHERE id = ?");
+        statement.setString(1, organisation.getName());
+        statement.setString(2, organisation.getDescription());
+        statement.setInt(3, organisation.getMoney());
+        statement.setString(4, String.valueOf(organisation.getId()));
         statement.executeUpdate();
         statement.close();
     }
     public void deleteOrganisation(Organisation organisation) throws SQLException {
-        PreparedStatement statement = db.getConnection().prepareStatement("DELETE FROM organisation WHERE name = ?");
-        statement.setString(1, organisation.getName());
+        PreparedStatement statement = db.getConnection().prepareStatement("DELETE FROM organisation WHERE id = ?");
+        statement.setString(1, String.valueOf(organisation.getId()));
         statement.executeUpdate();
         statement.close();
     }
@@ -125,7 +142,7 @@ public class OrganisationRepository {
         return organisations;
     }
 
-    public void insertMemberList(String organisationName, User member) throws SQLException {
+    public void insertMemberList(String organisationName, User member, String role) throws SQLException {
         // Check if the user is already associated with the organisation
         PreparedStatement checkStatement = db.getConnection().prepareStatement("SELECT * FROM memberlist WHERE uuid = ? AND organisationid = ?");
         checkStatement.setString(1, member.getUuid().toString());
@@ -134,9 +151,10 @@ public class OrganisationRepository {
 
         if (!resultSet.next()) {
             // If not, create a new association
-            PreparedStatement insertStatement = db.getConnection().prepareStatement("INSERT INTO memberlist (uuid, organisationid) VALUES (?, ?)");
+            PreparedStatement insertStatement = db.getConnection().prepareStatement("INSERT INTO memberlist (uuid, organisationid, role) VALUES (?, ?, ?)");
             insertStatement.setString(1, member.getUuid().toString());
             insertStatement.setString(2, String.valueOf(fetchOrganisation(organisationName).getId()));
+            insertStatement.setString(3, role);
             insertStatement.executeUpdate();
             insertStatement.close();
         }
@@ -144,22 +162,24 @@ public class OrganisationRepository {
         checkStatement.close();
     }
 
-    public void exitMemberList(String organisationName, User member) throws SQLException {
+    public boolean exitMemberList(String organisationName, User member) throws SQLException {
         // Check if the user is already associated with the organisation
         PreparedStatement checkStatement = db.getConnection().prepareStatement("SELECT * FROM memberlist WHERE uuid = ? AND organisationid = ?");
         checkStatement.setString(1, member.getUuid().toString());
         checkStatement.setString(2, String.valueOf(fetchOrganisation(organisationName).getId()));
         ResultSet resultSet = checkStatement.executeQuery();
-
+        boolean exited = false;
         if (resultSet.next()) {
             // If yes, delete association
-            PreparedStatement insertStatement = db.getConnection().prepareStatement("INSERT INTO memberlist (uuid, organisationid) VALUES (?, ?)");
+            PreparedStatement insertStatement = db.getConnection().prepareStatement("DELETE FROM memberlist WHERE uuid = ? AND organisationid = ?");
             insertStatement.setString(1, member.getUuid().toString());
-            insertStatement.setString(2, String.valueOf(fetchOrganisation(organisationName).getId()));
+            checkStatement.setString(2, String.valueOf(fetchOrganisation(organisationName).getId()));
             insertStatement.executeUpdate();
             insertStatement.close();
+            exited = true;
         }
 
         checkStatement.close();
+        return exited;
     }
 }

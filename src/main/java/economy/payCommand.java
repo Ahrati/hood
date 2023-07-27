@@ -43,7 +43,7 @@ public class payCommand implements TabExecutor {
 
         String receiver = args[0];
         try {
-            if(moneyHandler.transferMoney((Player) sender, receiver, amount, "p2p")) {
+            if(moneyHandler.transferMoney(sender.getName(), receiver, amount, "p2p") == 0) {
                 sender.sendMessage("Transferred $" + amount + " to " + receiver);
                 Player target = getServer().getPlayer(receiver);
                 if(target != null) {

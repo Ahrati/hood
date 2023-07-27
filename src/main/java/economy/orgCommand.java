@@ -212,6 +212,13 @@ public class orgCommand implements TabExecutor {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        return null;
+        if(args.length == 1) {
+            String[] SUBCOMMANDS = {"create", "invite", "join", "leave", "kick"};
+            final List<String> arguments = new ArrayList<>();
+            for (String string : SUBCOMMANDS) if (string.toLowerCase().startsWith(args[0].toLowerCase())) arguments.add(string);
+            return arguments;
+        } else {
+            return null;
+        }
     }
 }

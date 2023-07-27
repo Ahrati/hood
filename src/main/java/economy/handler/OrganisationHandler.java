@@ -90,6 +90,10 @@ public class OrganisationHandler {
         if(!isOrganisation(org)) {
             return false;
         }
+        if(orepo.fetchOrganisation(org).getMembers().contains(prepo.getPlayer(joiner))) {
+            joiner.sendMessage("You are already in that organisation.");
+            return false;
+        }
         List<Organisation> orgs = orepo.getAllOrganisations();
         int counter = 0;
         for(Organisation organ : orgs) {
@@ -188,6 +192,7 @@ public class OrganisationHandler {
 
     public User getOwner(String org) throws SQLException{
         for(User user : orepo.fetchOrganisationMembers(org)) {
+            System.out.println(orepo.fetchRole(org, user) + user.getUsername());
             if(Objects.equals(orepo.fetchRole(org, user), "owner")) {
                 return user;
             }

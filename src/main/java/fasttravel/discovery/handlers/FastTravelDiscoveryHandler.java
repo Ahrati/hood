@@ -55,7 +55,6 @@ public class FastTravelDiscoveryHandler implements Listener {
                     fastTravelRepository.SetDiscovered(player.getUniqueId(), fastTravelPoint.getName());
                 } catch (Exception e) {
                     e.printStackTrace();
-                    // Handle any exceptions that might occur while setting the fast travel point as discovered
                     return;
                 }
 

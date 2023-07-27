@@ -6,13 +6,9 @@ import economy.repository.OrganisationRepository;
 import fasttravel.*;
 import fasttravel.discovery.handlers.FastTravelDiscoveryHandler;
 import jail.*;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import economy.listeners.economyListeners;
 import economy.repository.PlayerRepository;
 import fasttravel.FastTravelPointSetCommand;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -150,7 +146,7 @@ public class HoodPlugin extends JavaPlugin {
         getCommand("jaildelete").setTabCompleter(new JailDeleteCommand(db));
 
         //CASINO CHIPS
-        CasinoChipsItemManager.init();
+        CasinoChipsItemManager casinoChipsItemManager = new CasinoChipsItemManager(this);
         CasinoChipCraftListener casinoChipCraftListener = new CasinoChipCraftListener(this);
 
         // LOADED

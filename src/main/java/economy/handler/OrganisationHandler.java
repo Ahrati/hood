@@ -168,6 +168,9 @@ public class OrganisationHandler {
     }
 
     public List<Player> getOnlineMembers(String org) throws SQLException {
+        if(!isOrganisation(org)) {
+            return null;
+        }
         List<User> members = getAllMembers(org);
         List<Player> onlineMembers = new ArrayList<>();
         for(User member : members) {

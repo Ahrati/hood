@@ -59,17 +59,18 @@ public class orgCommand implements TabExecutor {
             }
             case "create" -> {
                 // /org create <name> [description]
-                String desc;
+                StringBuilder desc = new StringBuilder();
                 if(args.length < 2) {
                     return false;
                 }
-                if(args.length == 3) {
-                    desc = args [2];
-                } else {
-                    desc = "";
+                if(args.length >= 3) {
+                    for(int i = 2; i < args.length; i++) {
+                        desc.append(args[i]);
+                    }
                 }
                 try {
-                    organisationHandler.createOrganisation(args[1], desc, (Player) sender);
+                    organisationHandler.createOrganisation(args[1], desc.toString(), (Player) sender);
+                    sender.sendMessage("Organisation created!");
                 } catch (SQLException e) {
                     e.printStackTrace();
                     sender.sendMessage("Error creating organisation");

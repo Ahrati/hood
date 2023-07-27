@@ -184,10 +184,9 @@ public class OrganisationHandler {
     }
 
     public boolean isOwner(Player player, String org) throws SQLException{
-        if(player.getName().equals(getOwner(org).getUsername())) {
-            return true;
-        } else {
+        if(getOwner(org) == null) {
             return false;
         }
+        return player.getName().equals(getOwner(org).getUsername());
     }
 }

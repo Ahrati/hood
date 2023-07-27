@@ -64,6 +64,9 @@ public class OrganisationHandler {
     }
 
     public void inviteMember(Player inviter, String username, String org) throws SQLException {
+        if(!isOrganisation(org)) {
+            return;
+        }
         if(invited.containsKey(username)) {
             if(invited.get(username).contains(org)) {
                 inviter.sendMessage("This user has alreay been invited");
@@ -84,6 +87,9 @@ public class OrganisationHandler {
     }
 
     public boolean joinOrganisation(String org, Player joiner, String role) throws SQLException {
+        if(!isOrganisation(org)) {
+            return false;
+        }
         List<Organisation> orgs = orepo.getAllOrganisations();
         int counter = 0;
         for(Organisation organ : orgs) {
@@ -118,6 +124,9 @@ public class OrganisationHandler {
 
     public boolean leaveOrganisation(String org, String leaver) throws SQLException {
         //attempt leave org
+        if(!isOrganisation(org)) {
+            return false;
+        }
         User player = prepo.fetchPlayer(leaver);
         if(player == null) {
             return false;
@@ -184,9 +193,15 @@ public class OrganisationHandler {
     }
 
     public boolean isOwner(Player player, String org) throws SQLException{
-        if(getOwner(org) == null) {
+        User owner = getOwner(org);
+        if(owner == null) {
             return false;
+        } else {
+            return player.getName().equals(owner.getUsername());
         }
-        return player.getName().equals(getOwner(org).getUsername());
+    }
+
+    public boolean isOrganisation(String org) throws SQLException{
+        return orepo.fetchOrganisation(org) != null;
     }
 }

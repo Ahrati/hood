@@ -60,9 +60,6 @@ commands:
     myplugin.admin:
       description: Allows access to admin commands in MyPlugin
       default: op
-    fasttravel.use:
-      description: Allows players to use the fast travel command.
-      default: true
 
   org:
     description: Organisation based commands

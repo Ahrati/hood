@@ -19,6 +19,7 @@ import java.sql.SQLException;
 
 public class FastTravelCommand implements TabExecutor {
     private PlayerRepository playerRepository;
+    private FastTravelBanMaster fastTravelBanMaster;
     private MoneyHandler moneyHandler;
     private final database db;
     private OrganisationRepository organisationRepository;
@@ -35,6 +36,7 @@ public class FastTravelCommand implements TabExecutor {
         playerRepository = new PlayerRepository(db);
         moneyHandler = new MoneyHandler(playerRepository, organisationRepository);
         organisationRepository = new OrganisationRepository(db);
+        fastTravelBanMaster = new FastTravelBanMaster(plugin);
     }
     private int getRandomOffset(int radius) {
         Random random = new Random();
@@ -120,7 +122,7 @@ public class FastTravelCommand implements TabExecutor {
             return true;
         }
 
-        if (!player.hasPermission("fasttravel.use")){
+        if (fastTravelBanMaster.IsFastTravelBanned(player)){
             commandSender.sendMessage("§cYou are banned from fast traveling.");
             return true;
         }

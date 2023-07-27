@@ -1,3 +1,4 @@
+import casinochips.CasinoChipCraftListener;
 import casinochips.CasinoChipsItemManager;
 import economy.handler.MoneyHandler;
 import economy.handler.OrganisationHandler;
@@ -149,7 +150,8 @@ public class HoodPlugin extends JavaPlugin {
         getCommand("jaildelete").setTabCompleter(new JailDeleteCommand(db));
 
         //CASINO CHIPS
-        //CasinoChipsItemManager.init();
+        CasinoChipsItemManager.init();
+        CasinoChipCraftListener casinoChipCraftListener = new CasinoChipCraftListener(this);
 
         // LOADED
         super.onEnable();

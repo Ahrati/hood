@@ -201,6 +201,9 @@ public class OrganisationHandler {
     }
 
     public boolean isOwner(Player player, String org) throws SQLException{
+        if(!isOrganisation(org)) {
+            return false;
+        }
         User owner = getOwner(org);
         if(owner == null) {
             return false;

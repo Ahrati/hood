@@ -95,6 +95,7 @@ public class OrganisationRepository {
             result = null;
         }
 
+        System.out.println(result);
         checkStatement.close();
         return result;
     }

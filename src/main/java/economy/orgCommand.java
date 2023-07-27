@@ -183,14 +183,12 @@ public class orgCommand implements TabExecutor {
                         StringBuilder sb = new StringBuilder();
                         for(User member : org.getMembers()) {
                             for(Player player : onlineMembers) {
-                                if(player.getName() == member.getUsername()) {
+                                if(player.getName().equals(member.getUsername())) {
                                     sb.append("§6");
                                     break;
-                                } else {
-                                    sb.append("§7");
                                 }
                             }
-                            sb.append(member.getUsername()).append("\n");
+                            sb.append(member.getUsername()).append("\n§7");
                         }
                         sender.sendMessage(sb.toString());
                     }

@@ -167,7 +167,7 @@ public class orgCommand implements TabExecutor {
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    sender.sendMessage("Couldn't invite player to organisation.");
+                    sender.sendMessage("Couldn't kick player from organisation.");
                 }
                 return true;
             }
@@ -189,9 +189,9 @@ public class orgCommand implements TabExecutor {
                                     break;
                                 }
                             }
-                            sb.append(member.getUsername()).append("\n§7");
+                            sb.append(member.getUsername()).append("\n§8");
                         }
-                        sender.sendMessage(sb.toString());
+                        sender.sendMessage(sb.deleteCharAt(sb.length() - 1).toString());
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -206,60 +206,6 @@ public class orgCommand implements TabExecutor {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        if(args.length == 1) {
-            String[] SUBCOMMANDS = {"create", "invite", "join", "leave", "kick"};
-            List<Organisation> ORGANISATIONS;
-            try {
-                ORGANISATIONS = organisationHandler.getOrganisationsByMember((Player) sender);
-            } catch (SQLException e) {
-                e.printStackTrace();
-                ORGANISATIONS = null;
-            }
-
-            final List<String> arguments = new ArrayList<>();
-            for (String string : SUBCOMMANDS) if (string.toLowerCase().startsWith(args[0].toLowerCase())) arguments.add(string);
-            if(ORGANISATIONS != null) {
-                for(Organisation org : ORGANISATIONS) if(org.getName().toLowerCase().startsWith(args[0].toLowerCase())) arguments.add(org.getName());
-            }
-            return arguments;
-        } else if(args.length == 3) {
-            final List<String> arguments = new ArrayList<>();
-            if(Objects.equals(args[0], "invite") || Objects.equals(args[0], "kick")) {
-                List<Organisation> ORGANISATIONS;
-                try {
-                    ORGANISATIONS = organisationHandler.getOrganisationsByMember((Player) sender);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    ORGANISATIONS = null;
-                }
-                if(ORGANISATIONS != null) {
-                    for(Organisation org : ORGANISATIONS) {
-                        try {
-                            if(org.getName().toLowerCase().startsWith(args[0].toLowerCase()) && organisationHandler.isOwner((Player) sender, org.getName())) arguments.add(org.getName());
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-            return arguments;
-        } else if(args.length == 2) {
-            final List<String> arguments = new ArrayList<>();
-            if(Objects.equals(args[0], "leave")) {
-                List<Organisation> ORGANISATIONS;
-                try {
-                    ORGANISATIONS = organisationHandler.getOrganisationsByMember((Player) sender);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    ORGANISATIONS = null;
-                }
-                if(ORGANISATIONS != null) {
-                    for(Organisation org : ORGANISATIONS) if(org.getName().toLowerCase().startsWith(args[0].toLowerCase())) arguments.add(org.getName());
-                }
-            }
-            return arguments;
-        } else {
-            return null;
-        }
+        return null;
     }
 }

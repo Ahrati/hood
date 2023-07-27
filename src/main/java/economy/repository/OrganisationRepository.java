@@ -173,7 +173,7 @@ public class OrganisationRepository {
             // If yes, delete association
             PreparedStatement insertStatement = db.getConnection().prepareStatement("DELETE FROM memberlist WHERE uuid = ? AND organisationid = ?");
             insertStatement.setString(1, member.getUuid().toString());
-            checkStatement.setString(2, String.valueOf(fetchOrganisation(organisationName).getId()));
+            insertStatement.setString(2, String.valueOf(fetchOrganisation(organisationName).getId()));
             insertStatement.executeUpdate();
             insertStatement.close();
             exited = true;

@@ -135,7 +135,7 @@ public class OrganisationHandler {
         if(player == null) {
             return false;
         }
-        if(orepo.exitMemberList(org, prepo.fetchPlayer(leaver))) {
+        if(orepo.exitMemberList(org, player)) {
             updateOrganisation(org);
             return true;
         }

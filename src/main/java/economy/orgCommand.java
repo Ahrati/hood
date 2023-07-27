@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static org.bukkit.Bukkit.getServer;
+
 public class orgCommand implements TabExecutor {
     private final MoneyHandler moneyHandler;
     private final OrganisationHandler organisationHandler;
@@ -163,6 +165,10 @@ public class orgCommand implements TabExecutor {
                         List<Player> members = organisationHandler.getOnlineMembers(args[2]);
                         for(Player member : members) {
                             member.sendMessage(args[1] + " has been kicked from " + args[2] + ".");
+                        }
+                        Player leaver = getServer().getPlayer(args[1]);
+                        if(leaver != null) {
+                            leaver.sendMessage("You've been kicked from " + args[2]);
                         }
                     }
                 } catch (SQLException e) {

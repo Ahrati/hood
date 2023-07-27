@@ -125,7 +125,7 @@ public class orgCommand implements TabExecutor {
                     return false;
                 }
                 try {
-                    if(organisationHandler.isOwner((Player) sender, args[2])) {
+                    if(!organisationHandler.isOwner((Player) sender, args[2])) {
                         sender.sendMessage("You are not the owner of this organisation");
                         return true;
                     }
@@ -148,7 +148,7 @@ public class orgCommand implements TabExecutor {
                     return false;
                 }
                 try {
-                    if(organisationHandler.isOwner((Player) sender, args[2])) {
+                    if(!organisationHandler.isOwner((Player) sender, args[2])) {
                         sender.sendMessage("You are not the owner of this organisation");
                         return true;
                     }

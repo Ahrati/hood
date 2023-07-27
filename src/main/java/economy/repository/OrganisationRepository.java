@@ -89,7 +89,7 @@ public class OrganisationRepository {
         checkStatement.setString(2, String.valueOf(fetchOrganisation(organisationName).getId()));
         ResultSet resultSet = checkStatement.executeQuery();
         String result;
-        if (!resultSet.next()) {
+        if (resultSet.next()) {
             result = resultSet.getString("role");
         } else {
             result = null;

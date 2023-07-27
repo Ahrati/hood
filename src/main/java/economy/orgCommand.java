@@ -160,7 +160,7 @@ public class orgCommand implements TabExecutor {
                         sender.sendMessage("User doesn't exist or isn't part of that organisation.");
                     } else {
                         //send to all online members of that org that player got kicked
-                        List<Player> members = organisationHandler.getOnlineMembers(args[1]);
+                        List<Player> members = organisationHandler.getOnlineMembers(args[2]);
                         for(Player member : members) {
                             member.sendMessage(args[1] + " has been kicked from " + args[2] + ".");
                         }

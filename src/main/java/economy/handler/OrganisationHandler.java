@@ -36,11 +36,11 @@ public class OrganisationHandler {
         List<Organisation> result = new ArrayList<>();
         for(Organisation org : orgs) {
             for(User member : org.getMembers()) {
-                System.out.println(member.getUsername());
+                if(member.getUuid() == user.getUuid()) {
+                    result.add(org);
+                }
             }
-            if(org.getMembers().contains(user)) {
-                result.add(org);
-            }
+
         }
         return result;
     }

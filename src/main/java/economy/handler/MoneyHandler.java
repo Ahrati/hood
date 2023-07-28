@@ -16,12 +16,12 @@ import static org.bukkit.Bukkit.getServer;
 public class MoneyHandler {
     private final PlayerRepository prepo;
     private final OrganisationRepository orepo;
-    private final TransactionLogRepository trepo;
+    private final TransactionLogRepository logger;
 
     public MoneyHandler(PlayerRepository prepo, OrganisationRepository orepo, TransactionLogRepository trepo) {
         this.prepo = prepo;
         this.orepo = orepo;
-        this.trepo = trepo;
+        this.logger = trepo;
     }
 
     public int getBalance(Player sender) throws SQLException {
@@ -32,7 +32,7 @@ public class MoneyHandler {
         if(Objects.equals(mode, "p")) {
             return prepo.fetchPlayer(from).getMoney();
         } else if(Objects.equals(mode, "o")) {
-            return 0;
+            return orepo.fetchOrganisation(from).getMoney();
         } else {
             return -1;
         }
@@ -44,6 +44,9 @@ public class MoneyHandler {
             user.setMoney(amount);
             prepo.updatePlayer(user);
         } else if(Objects.equals(mode, "o")) {
+            Organisation org = orepo.fetchOrganisation(to);
+            org.setMoney(amount);
+            orepo.updateOrganisation(org);
         }
     }
 
@@ -63,7 +66,7 @@ public class MoneyHandler {
         o2p - organisation to player
         o2o - organisation to organisation
      */
-    public int transferMoney(String from, String to, int amount, String mode) throws SQLException {
+    public int transferMoney(String from, String to, int amount, String description, String mode) throws SQLException {
         if(Objects.equals(mode, "p2p")) {
             User userFrom = prepo.fetchPlayer(from);
 
@@ -99,6 +102,7 @@ public class MoneyHandler {
             prepo.updatePlayer(userFrom);
             prepo.updatePlayer(userTo);
 
+            logger.createTransaction(from, to, amount, description, mode);
             return 0;
         } else if(Objects.equals(mode, "p2o")) {
             User userFrom = prepo.fetchPlayer(from);
@@ -129,6 +133,7 @@ public class MoneyHandler {
             prepo.updatePlayer(userFrom);
             orepo.updateOrganisation(receiver);
 
+            logger.createTransaction(from, to, amount, description, mode);
             return 0;
         } else if(Objects.equals(mode, "o2p")) {
             Organisation sender = orepo.fetchOrganisation(from);
@@ -156,6 +161,7 @@ public class MoneyHandler {
             orepo.updateOrganisation(sender);
             prepo.updatePlayer(userTo);
 
+            logger.createTransaction(from, to, amount, description, mode);
             return 0;
         } else if(Objects.equals(mode, "o2o")) {
             Organisation sender = orepo.fetchOrganisation(from);
@@ -186,6 +192,7 @@ public class MoneyHandler {
             orepo.updateOrganisation(sender);
             orepo.updateOrganisation(receiver);
 
+            logger.createTransaction(from, to, amount, description, mode);
             return 0;
         }
         return -1;

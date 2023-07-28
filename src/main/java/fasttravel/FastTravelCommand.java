@@ -213,7 +213,7 @@ public class FastTravelCommand implements TabExecutor {
 
             if(playerBalance >= taxAmount) {
                 try {
-                    if(moneyHandler.transferMoney(player.getName(), "government", taxAmount,"p2o") != 0) {
+                    if(moneyHandler.transferMoney(player.getName(), "government", taxAmount, "Fast travel tax","p2o") != 0) {
                         return true;
                     }
                 } catch (SQLException e) {

@@ -166,7 +166,7 @@ public class OrganisationRepository {
             String description = resultSet.getString("description");
             int money = resultSet.getInt("money");
             int id = resultSet.getInt("id");
-            List<User> members = fetchOrganisationMembers(name);
+            List<User> members = fetchOrganisationMembersbyId(id);
 
             organisations.add(new Organisation(id, name, description, members, money));
         }

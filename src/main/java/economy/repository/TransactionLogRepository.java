@@ -23,18 +23,18 @@ public class TransactionLogRepository {
             PreparedStatement statement = db.getConnection().prepareStatement("SELECT * FROM transactionlog WHERE mode = ? OR mode = ? OR mode = ?");
             statement.setString(1, "p2o");
             statement.setString(2, "o2p");
-            statement.setString(2, "p2p");
+            statement.setString(3, "p2p");
 
             ResultSet resultSet = statement.executeQuery();
             List<TransactionLog> transactions = new ArrayList<>();
             while(resultSet.next()) {
                 TransactionLog transaction = new TransactionLog(
-                        resultSet.getInt("transaction-id"),
+                        resultSet.getInt("transaction_id"),
                         resultSet.getString("mode"),
-                        resultSet.getString("from"),
-                        resultSet.getString("to"),
+                        resultSet.getString("sender"),
+                        resultSet.getString("receiver"),
                         resultSet.getInt("amount"),
-                        resultSet.getString("transaction-description"),
+                        resultSet.getString("transaction_description"),
                         resultSet.getTimestamp("date")
                 );
 
@@ -59,18 +59,18 @@ public class TransactionLogRepository {
             PreparedStatement statement = db.getConnection().prepareStatement("SELECT * FROM transactionlog WHERE mode = ? OR mode = ? OR mode = ?");
             statement.setString(1, "p2o");
             statement.setString(2, "o2p");
-            statement.setString(2, "o2o");
+            statement.setString(3, "o2o");
 
             ResultSet resultSet = statement.executeQuery();
             List<TransactionLog> transactions = new ArrayList<>();
             if(resultSet.next()) {
                 TransactionLog transaction = new TransactionLog(
-                        resultSet.getInt("transaction-id"),
+                        resultSet.getInt("transaction_id"),
                         resultSet.getString("mode"),
-                        resultSet.getString("from"),
-                        resultSet.getString("to"),
+                        resultSet.getString("sender"),
+                        resultSet.getString("receiver"),
                         resultSet.getInt("amount"),
-                        resultSet.getString("transaction-description"),
+                        resultSet.getString("transaction_description"),
                         resultSet.getTimestamp("date")
                 );
 
@@ -94,7 +94,7 @@ public class TransactionLogRepository {
     }
 
     public void createTransaction(String from, String to, int amount, String description, String mode) throws SQLException {
-        PreparedStatement statement = db.getConnection().prepareStatement("INSERT INTO transactionlog (mode, from, to, amount, transaction-description, date) VALUES (?, ?, ?, ?, ?, ?)");
+        PreparedStatement statement = db.getConnection().prepareStatement("INSERT INTO transactionlog (mode, sender, receiver, amount, transaction_description, date) VALUES (?, ?, ?, ?, ?, ?)");
         statement.setString(1, mode);
         statement.setString(2, from);
         statement.setString(3, to);
@@ -109,7 +109,7 @@ public class TransactionLogRepository {
         statement.close();
     }
     public void deleteTransaction(int id) throws SQLException{
-        PreparedStatement statement = db.getConnection().prepareStatement("DELETE FROM transactionlog WHERE transaction-id = ?");
+        PreparedStatement statement = db.getConnection().prepareStatement("DELETE FROM transactionlog WHERE transaction_id = ?");
         statement.setString(1, String.valueOf(id));
         statement.executeUpdate();
         statement.close();

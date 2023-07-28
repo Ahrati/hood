@@ -8,17 +8,37 @@ import org.bukkit.entity.Player;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import static org.bukkit.Bukkit.getServer;
 
 public class PlayerRepository {
+    private List<User> cache;
     private final database db;
     public PlayerRepository(database db) {
         this.db = db;
+        this.cache = new ArrayList<>();
+    }
+
+    public User cached(String username) {
+        for(User user : cache) {
+            if(Objects.equals(user.getUsername(), username)) {
+                return user;
+            }
+        }
+        return null;
     }
 
     public User fetchPlayer(String username) throws SQLException {
+
+        User cached = cached(username);
+        if(cached != null) {
+            return cached;
+        }
+
         PreparedStatement statement = db.getConnection().prepareStatement("SELECT * FROM user WHERE username = ?");
         statement.setString(1, username);
 
@@ -29,22 +49,32 @@ public class PlayerRepository {
                                 resultSet.getString("username"),
                                 resultSet.getInt("money"));
             statement.close();
+
+            cache.add(player);
             return player;
         }
 
         statement.close();
         return null;
     }
+
     public User getPlayer(Player player) throws SQLException {
         User user = fetchPlayer(player.getName());
         if(user == null) {
             user = new User(player.getUniqueId(), player.getName(), 0);
             createPlayer(user);
+            cache.add(user);
         }
         return user;
     }
 
     public void updatePlayer(User player) throws SQLException {
+
+        User cached = cached(player.getUsername());
+        if(cached != null) {
+            cache.set(cache.indexOf(cached), player);
+        }
+
         PreparedStatement statement = db.getConnection().prepareStatement("UPDATE user SET player_uuid = ?, username = ?, money = ? WHERE player_uuid = ?");
         statement.setString(1, player.getUuid().toString());
         statement.setString(2, player.getUsername());

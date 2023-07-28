@@ -9,19 +9,41 @@ import org.bukkit.entity.Player;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static org.bukkit.Bukkit.getServer;
+import static title.Title.sendActionBar;
 
 public class MoneyHandler {
     private final PlayerRepository prepo;
     private final OrganisationRepository orepo;
     private final TransactionLogRepository logger;
+    private Map<Player, Boolean> actionbar;
 
     public MoneyHandler(PlayerRepository prepo, OrganisationRepository orepo, TransactionLogRepository trepo) {
         this.prepo = prepo;
         this.orepo = orepo;
         this.logger = trepo;
+
+        actionbar = new HashMap<>();
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        scheduler.scheduleAtFixedRate(this::updateActionBar, 1, 1, TimeUnit.SECONDS);
+
+
+    }
+
+    public void flipActionBar(Player player) {
+
+    }
+    public void updateActionBar() {
+        for(Player player : actionbar.keySet()) {
+            return;
+        }
     }
 
     public int getBalance(Player sender) throws SQLException {

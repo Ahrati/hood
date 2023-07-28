@@ -16,14 +16,15 @@ import static org.bukkit.Bukkit.getServer;
 public class OrganisationHandler {
     private final PlayerRepository prepo;
     private final OrganisationRepository orepo;
-
+    private final MoneyHandler moneyHandler;
     private Map<String, ArrayList<String>> invited;
     FileConfiguration config;
 
-    public OrganisationHandler(PlayerRepository prepo, OrganisationRepository orepo, FileConfiguration config) {
+    public OrganisationHandler(PlayerRepository prepo, OrganisationRepository orepo, FileConfiguration config, MoneyHandler moneyHandler) {
         this.prepo = prepo;
         this.orepo = orepo;
         this.config = config;
+        this.moneyHandler = moneyHandler;
         invited = new HashMap<>();
     }
     public int getMaxOrg() {
@@ -151,6 +152,10 @@ public class OrganisationHandler {
         Organisation organisation = orepo.fetchOrganisation(org);
         if(organisation.getMembers().size() == 0) {
             orepo.deleteOrganisation(organisation);
+
+            //MONEY HANDLER
+            moneyHandler.transferMoney(org, "government", organisation.getMoney(), "disbanded", "o2o");
+
             return true;
         }
         return false;

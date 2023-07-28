@@ -65,8 +65,8 @@ public class HoodPlugin extends JavaPlugin {
         TransactionLogRepository trepo = new TransactionLogRepository(db);
 
         MoneyHandler moneyHandler = new MoneyHandler(prepo, orepo, trepo);
-        TransactionHistoryHandler transactionHandler = new TransactionHistoryHandler(trepo);
-        OrganisationHandler organisationHandler = new OrganisationHandler(prepo, orepo, config);
+         TransactionHistoryHandler transactionHandler = new TransactionHistoryHandler(trepo);
+        OrganisationHandler organisationHandler = new OrganisationHandler(prepo, orepo, config, moneyHandler);
 
         Objects.requireNonNull(getCommand("bal")).setExecutor(new balCommand(moneyHandler));
         Objects.requireNonNull(getCommand("bal")).setTabCompleter(new balCommand(moneyHandler));

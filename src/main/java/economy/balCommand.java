@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 
 public class balCommand implements TabExecutor {
     private final MoneyHandler moneyHandler;
@@ -18,24 +19,34 @@ public class balCommand implements TabExecutor {
     }
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if(args.length != 0){
+        if(args.length > 2){
             return false;
         }
 
-        if (!(sender instanceof Player)) {
-            sender.sendMessage("§cThis command can only be used by players!");
+        if(args.length == 0) {
+            if (!(sender instanceof Player)) {
+                sender.sendMessage("§cThis command can only be used by players!");
+                return true;
+            }
+
+            try {
+                sender.sendMessage("[§dEconomy§r] §aBalance: §6$" + moneyHandler.getBalance((Player) sender));
+            } catch (SQLException e) {
+                e.printStackTrace();
+                sender.sendMessage("§c<§rerror§c>§r [§dEconomy§r] §cCouldn't fetch balance");
+                System.out.println("§cCould not get Player from database.");
+            }
             return true;
+        } else if(args.length == 1){
+            if(Objects.equals(args[0], "history")) {
+                return true;
+            } else if(Objects.equals(args[0], "view")) {
+
+                return true;
+            }
         }
 
-        try {
-            sender.sendMessage("[§dEconomy§r] §aBalance: §6$" + moneyHandler.getBalance((Player) sender));
-        } catch (SQLException e) {
-            e.printStackTrace();
-            sender.sendMessage("§c<§rerror§c>§r [§dEconomy§r] §cCouldn't fetch balance");
-            System.out.println("§cCould not get Player from database.");
-        }
-
-        return true;
+        return false;
     }
 
     @Override

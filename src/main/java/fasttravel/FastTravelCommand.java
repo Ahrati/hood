@@ -103,10 +103,9 @@ public class FastTravelCommand implements TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
-        System.out.println("running ft command");
 
         if (!(commandSender instanceof Player)){
-            commandSender.sendMessage("This command is for players only!");
+            commandSender.sendMessage("[Fast Travel]This command is for players only!");
             return true;
         }
 
@@ -118,27 +117,27 @@ public class FastTravelCommand implements TabExecutor {
         Player player = (Player) commandSender;
 
         if (!player.getWorld().getEnvironment().equals(World.Environment.NORMAL)) {
-            commandSender.sendMessage("§cYou can only fast travel in the overworld.");
+            commandSender.sendMessage("[§dFast Travel§r] §cYou can only fast travel in the overworld.");
             return true;
         }
 
         if (fastTravelBanMaster.IsFastTravelBanned(player)){
-            commandSender.sendMessage("§cYou are banned from fast traveling.");
+            commandSender.sendMessage("[§dFast Travel§r] §cYou are banned from fast traveling.");
             return true;
         }
 
         if ((int)player.getHealth() < 19) {
-            player.sendMessage("§cHeal before fast travelling!");
+            player.sendMessage("[§dFast Travel§r] §cHeal before fast travelling!");
             return true;
         }
 
         if (player.getFallDistance() > 0){
-            player.sendMessage("§cCan not fast travel while falling!");
+            player.sendMessage("[§dFast Travel§r] §cCan not fast travel while falling!");
             return true;
         }
 
         if (!checkPlayerSober(player)){
-            player.sendMessage("§cYou need to be sober to fast travel!");
+            player.sendMessage("[§dFast Travel§r] §cYou need to be sober to fast travel!");
             return true;
         }
 
@@ -148,7 +147,7 @@ public class FastTravelCommand implements TabExecutor {
         FastTravelRepository fastTravelRepository = new FastTravelRepository(db);
 
         if (!fastTravelRepository.ExistsLocal(player.getUniqueId(), name)){
-            commandSender.sendMessage("§cThat Fast Travel Point does not exist.");
+            commandSender.sendMessage("[§dFast Travel§r] §cThat Fast Travel Point does not exist.");
             return true;
         }
 
@@ -165,7 +164,7 @@ public class FastTravelCommand implements TabExecutor {
         }
 
         if (isUndiscovered) {
-            commandSender.sendMessage("§cYou haven't discovered this location yet!");
+            commandSender.sendMessage("[§dFast Travel§r] §cYou haven't discovered this location yet!");
             return true;
         }
 
@@ -212,7 +211,7 @@ public class FastTravelCommand implements TabExecutor {
             if(playerBalance >= taxAmount) {
                 // moneyHandler.transferMoney(player, government, "p2o");
             } else {
-                player.sendMessage("§cYou don't have enough money to fast travel. The tax is $" + taxAmount);
+                player.sendMessage("[§dFast Travel§r] §cYou don't have enough money to fast travel. The tax is $" + taxAmount);
                 return true;
             }
         }
@@ -222,8 +221,8 @@ public class FastTravelCommand implements TabExecutor {
         Location teleportLocation = new Location(overworld, x, y, z, player.getLocation().getYaw(), player.getLocation().getPitch());
         player.teleport(teleportLocation);
 
-        player.sendMessage("§aFast Traveled to §6" + fastTravelPoint.getName());
-        player.sendMessage("§aYou can fast travel for free again in " + cooldownMinutes + " minutes");
+        player.sendMessage("[§dFast Travel§r] §aFast Traveled to §6" + fastTravelPoint.getName());
+        player.sendMessage("[§dFast Travel§r] §aYou can fast travel for free again in " + cooldownMinutes + " minutes");
         player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
         playParticleEffects(teleportLocation, player, player.getWorld());
 

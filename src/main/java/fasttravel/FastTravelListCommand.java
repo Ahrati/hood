@@ -30,8 +30,9 @@ public class FastTravelListCommand implements CommandExecutor {
         if (discovered.isEmpty() && undiscovered.isEmpty()) {
             commandSender.sendMessage("§cThere are no fast travel locations available.");
         } else {
-            commandSender.sendMessage("§aFAST TRAVEL LOCATIONS");
-            commandSender.sendMessage("---------------------");
+            commandSender.sendMessage("----------------------");
+            commandSender.sendMessage("§a FAST TRAVEL LOCATIONS");
+            commandSender.sendMessage("----------------------");
             for (FastTravelPoint point : discovered) {
                 commandSender.sendMessage("- §6" + point.getName() + " §r" +
                         " (§b" + point.getX() +

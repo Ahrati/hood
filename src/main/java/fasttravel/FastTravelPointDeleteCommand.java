@@ -28,7 +28,7 @@ public class FastTravelPointDeleteCommand implements TabExecutor{
 
         try {
             fastTravelRepository.DeleteFastTravelPoint(name);
-            commandSender.sendMessage("§aFast Travel Point§r by the name of §6" + name + "§r was §adeleted");
+            commandSender.sendMessage("[§dFast Travel§r] §aFast Travel Point by the name of §6" + name + "§a was deleted");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

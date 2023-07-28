@@ -17,7 +17,7 @@ public class FastTravelBanCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
         if (!(commandSender instanceof Player)) {
-            commandSender.sendMessage("This command is for players only!");
+            commandSender.sendMessage("[Fast Travel]This command is for players only!");
             return true;
         }
 
@@ -30,12 +30,13 @@ public class FastTravelBanCommand implements CommandExecutor {
         Player targetPlayer = commandSender.getServer().getPlayer(playerName);
 
         if (targetPlayer == null || !targetPlayer.isOnline()) {
-            commandSender.sendMessage("§cPlayer " + playerName + " not found or not online.");
+            commandSender.sendMessage("[§dFast Travel§r] §cPlayer §b" + playerName + "§c not found or not online.");
             return true;
         }
 
         banMaster.FastTravelBan(targetPlayer);
-        commandSender.sendMessage("§aPlayer §b" + playerName + " §ahas been banned from fast travelling.");
+        commandSender.sendMessage("[§dFast Travel§r] §aPlayer §b" + playerName + " §ahas been banned from fast travelling.");
+        targetPlayer.sendMessage("[§dFast Travel§r] §aYou have been banned from fast travelling.");
 
         return true;
     }

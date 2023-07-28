@@ -16,16 +16,13 @@ public class FastTravelPointSetCommand implements CommandExecutor {
     }
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
-        System.out.println("inside ftps command");
 
         if (args.length != 5) {
-            System.out.println("wrong args no");
             commandSender.sendMessage("Usage: /fasttravelpointset <Name> <X> <Y> <Z> <Radius>");
             return true;
         }
 
         String name = args[0];
-        System.out.println("name set");
         int x, y, z, radius;
 
         try {
@@ -33,11 +30,9 @@ public class FastTravelPointSetCommand implements CommandExecutor {
             y = Integer.parseInt(args[2]);
             z = Integer.parseInt(args[3]);
             radius = Integer.parseInt(args[4]);
-            System.out.println("coords set");
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            commandSender.sendMessage("§cInvalid coordinates or radius.");
-            System.out.println("wrong coords");
+            commandSender.sendMessage("[§dFast Travel§r] §cInvalid coordinates or radius.");
             return true;
         }
 
@@ -47,7 +42,7 @@ public class FastTravelPointSetCommand implements CommandExecutor {
 
         try {
             if (fastTravelRepository.GetFastTravelPoint(name) != null){
-                commandSender.sendMessage("§cFast travel point with that name already exists!");
+                commandSender.sendMessage("[§dFast Travel§r] §cFast travel point with that name already exists!");
                 return true;
             }
         } catch (SQLException e) {
@@ -55,14 +50,12 @@ public class FastTravelPointSetCommand implements CommandExecutor {
         }
 
         try {
-            System.out.println("creating ftp");
             fastTravelRepository.CreateFastTravelPoint(fastTravelPoint);
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("cant write ftp into db");
             throw new RuntimeException(e);
         }
-        commandSender.sendMessage("§aFast Travel Point §rset for §6" + name + " §rat coordinates (§b" + x + ", " + y + ", " + z + "§r) with a radius of §a" + radius);
+        commandSender.sendMessage("[§dFast Travel§r] §aFast Travel Point set for §6" + name + " §aat coordinates §r(§b" + x + ", " + y + ", " + z + "§r)§a with a radius of §b" + radius);
         return true;
     }
 }

@@ -150,7 +150,7 @@ public class OrganisationRepository {
             cache.set(cache.indexOf(cached), organisation);
         }
 */
-        PreparedStatement statement = db.getConnection().prepareStatement("UPDATE organisation SET name = ? description = ?, money = ? WHERE id = ?");
+        PreparedStatement statement = db.getConnection().prepareStatement("UPDATE organisation SET name = ?, description = ?, money = ? WHERE id = ?");
         statement.setString(1, organisation.getName());
         statement.setString(2, organisation.getDescription());
         statement.setInt(3, organisation.getMoney());

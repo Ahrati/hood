@@ -1,6 +1,7 @@
 package economy.handler;
 
 import economy.model.Organisation;
+import economy.model.TransactionLog;
 import economy.model.User;
 import economy.repository.OrganisationRepository;
 import economy.repository.PlayerRepository;
@@ -10,6 +11,7 @@ import org.bukkit.entity.Player;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Executors;
@@ -32,17 +34,24 @@ public class MoneyHandler {
 
         actionbar = new HashMap<>();
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-        scheduler.scheduleAtFixedRate(this::updateActionBar, 1, 1, TimeUnit.SECONDS);
-
+        scheduler.scheduleAtFixedRate(this::showActionBar, 1, 1, TimeUnit.SECONDS);
 
     }
-
+    public List<TransactionLog> getHistory(String name, String mode) throws SQLException {
+        return logger.getTransactions(name, mode);
+    }
     public void flipActionBar(Player player) {
-
+        actionbar.put(player, !actionbar.get(player));
     }
-    public void updateActionBar() {
+    public void showActionBar() {
         for(Player player : actionbar.keySet()) {
-            return;
+            if(actionbar.get(player)) {
+                try {
+                    sendActionBar(player, "§a$ " + getBalance(player));
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 

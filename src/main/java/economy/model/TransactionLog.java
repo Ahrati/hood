@@ -1,5 +1,7 @@
 package economy.model;
 
+import java.sql.Timestamp;
+
 public class TransactionLog {
     public int tId;
     public String mode;
@@ -7,14 +9,24 @@ public class TransactionLog {
     public String to;
     public int amount;
     public String description;
+    public Timestamp datetime;
 
-    public TransactionLog(int tId, String mode, String from, String to, int amount, String description) {
+    public TransactionLog(int tId, String mode, String from, String to, int amount, String description, Timestamp datetime) {
         this.tId = tId;
         this.mode = mode;
         this.from = from;
         this.to = to;
         this.amount = amount;
         this.description = description;
+        this.datetime = datetime;
+    }
+
+    public Timestamp getDatetime() {
+        return datetime;
+    }
+
+    public void setDatetime(Timestamp datetime) {
+        this.datetime = datetime;
     }
 
     public int gettId() {

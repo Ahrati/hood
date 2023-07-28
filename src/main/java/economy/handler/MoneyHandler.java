@@ -10,10 +10,7 @@ import org.bukkit.entity.Player;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -38,7 +35,9 @@ public class MoneyHandler {
 
     }
     public List<TransactionLog> getHistory(String name, String mode) throws SQLException {
-        return logger.getTransactions(name, mode);
+        List<TransactionLog> sorted = logger.getTransactions(name, mode);
+        sorted.sort(Comparator.comparingLong(t -> t.getDatetime().getTime()));
+        return sorted;
     }
     public void flipActionBar(Player player) {
         actionbar.put(player, !actionbar.get(player));

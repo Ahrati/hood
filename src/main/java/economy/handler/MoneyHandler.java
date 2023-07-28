@@ -40,15 +40,20 @@ public class MoneyHandler {
         return sorted;
     }
     public void flipActionBar(Player player) {
+        if(actionbar.containsKey(player)) {
+            actionbar.put(player, false);
+        }
         actionbar.put(player, !actionbar.get(player));
     }
     public void showActionBar() {
         for(Player player : actionbar.keySet()) {
-            if(actionbar.get(player)) {
-                try {
-                    sendActionBar(player, "§a$ " + getBalance(player));
-                } catch (SQLException e) {
-                    e.printStackTrace();
+            if(player.isOnline()) {
+                if(actionbar.get(player)) {
+                    try {
+                        sendActionBar(player, "§a$ " + getBalance(player));
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }

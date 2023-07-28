@@ -11,7 +11,7 @@ import java.util.List;
 
 public class FastTravelListCommand implements CommandExecutor {
     private final database db;
-    FastTravelRepository fastTravelRepository;
+    private FastTravelRepository fastTravelRepository;
     public FastTravelListCommand(database db){
         this.db = db;
         fastTravelRepository = new FastTravelRepository(db);
@@ -19,27 +19,31 @@ public class FastTravelListCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
+        Player player = (Player) commandSender;
+        List<FastTravelPoint> discovered, undiscovered;
 
-        List<FastTravelPoint> fastTravelPoints;
+        discovered = fastTravelRepository.GetDiscoveredFastTravelPointsLocal(player.getUniqueId());
 
-        try {
-            fastTravelPoints = fastTravelRepository.GetFastTravelPoints();
-        } catch (SQLException e) {
-            commandSender.sendMessage("An error occurred while fetching fast travel locations.");
-            e.printStackTrace();
-            return true;
-        }
+        undiscovered = fastTravelRepository.GetUndiscoveredFastTravelPointsLocal(player.getUniqueId());
 
-        if (fastTravelPoints.isEmpty()) {
+
+        if (discovered.isEmpty() && undiscovered.isEmpty()) {
             commandSender.sendMessage("§cThere are no fast travel locations available.");
         } else {
-            commandSender.sendMessage("§aFAST TRAVEL LOCATIONS");
-            commandSender.sendMessage("---------------------");
-            for (FastTravelPoint point : fastTravelPoints) {
+            commandSender.sendMessage("----------------------");
+            commandSender.sendMessage("§a FAST TRAVEL LOCATIONS");
+            commandSender.sendMessage("----------------------");
+            for (FastTravelPoint point : discovered) {
                 commandSender.sendMessage("- §6" + point.getName() + " §r" +
                         " (§b" + point.getX() +
                         ", " + point.getY() +
                         ", " + point.getZ() + "§r)");
+            }
+            for (FastTravelPoint point : undiscovered) {
+                commandSender.sendMessage("- §7" + point.getName() + " " +
+                        " (" + point.getX() +
+                        ", " + point.getY() +
+                        ", " + point.getZ() + ")");
             }
         }
         return true;

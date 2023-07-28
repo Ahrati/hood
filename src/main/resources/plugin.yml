@@ -1,6 +1,7 @@
 name: HoodPlugin
 version: 0.1
 main: HoodPlugin
+api-version: 1.20
 
 commands:
   fasttravelpointset:
@@ -23,6 +24,12 @@ commands:
     aliases:
       - ftl
     usage: /fasttravellist
+  fasttravelban:
+    description: Bans a player from fast travelling
+    usage: /fasttravelban <name>
+  fasttravelunban:
+    description: Unbans a player from fast travelling
+    usage: /fasttravelunban <name>
 
   jailset:
     description: Sets a jail

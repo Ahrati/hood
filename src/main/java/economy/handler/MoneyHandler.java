@@ -27,14 +27,14 @@ public class MoneyHandler {
     private final OrganisationRepository orepo;
     private final TransactionLogRepository logger;
     private Plugin plugin;
-    private final NamespacedKey bannedKey;
+    private final NamespacedKey balviewKey;
 
     public MoneyHandler(PlayerRepository prepo, OrganisationRepository orepo, TransactionLogRepository trepo, Plugin plugin) {
         this.prepo = prepo;
         this.orepo = orepo;
         this.logger = trepo;
         this.plugin = plugin;
-        this.bannedKey = new NamespacedKey(plugin, "balance_view");
+        this.balviewKey = new NamespacedKey(plugin, "balance_view");
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
         scheduler.scheduleAtFixedRate(this::showActionBar, 1, 1, TimeUnit.SECONDS);
 
@@ -46,21 +46,17 @@ public class MoneyHandler {
     }
     public void flipActionBar(Player player) {
         PersistentDataContainer dataContainer = player.getPersistentDataContainer();
-        if(dataContainer.has(bannedKey, PersistentDataType.BYTE)) {
-            dataContainer.remove(bannedKey);
+        if(dataContainer.has(balviewKey, PersistentDataType.BYTE)) {
+            dataContainer.remove(balviewKey);
         }else {
-            dataContainer.set(bannedKey, PersistentDataType.BYTE, (byte) 1);
+            dataContainer.set(balviewKey, PersistentDataType.BYTE, (byte) 1);
         }
     }
     public void showActionBar() {
         for(Player player : getServer().getOnlinePlayers()) {
             PersistentDataContainer dataContainer = player.getPersistentDataContainer();
-            if(dataContainer.has(bannedKey, PersistentDataType.BYTE)) {
-                try {
-                    sendActionBar(player, "§a$ " + getBalance(player));
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+            if(dataContainer.has(balviewKey, PersistentDataType.BYTE)) {
+                sendActionBar(player, "BALVIEW");
             }
         }
     }

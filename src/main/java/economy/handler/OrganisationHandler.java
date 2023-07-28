@@ -35,9 +35,10 @@ public class OrganisationHandler {
         List<Organisation> orgs = orepo.getAllOrganisations();
         List<Organisation> result = new ArrayList<>();
         for(Organisation org : orgs) {
+            System.out.println(org);
             if(org.getMembers().contains(user)) {
                 result.add(org);
-                System.out.println(user);
+
             }
         }
         return result;

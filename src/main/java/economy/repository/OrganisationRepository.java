@@ -62,7 +62,8 @@ public class OrganisationRepository {
     }
 
     public List<User> fetchOrganisationMembers(String organisationName) throws SQLException {
-        if(fetchOrganisation(organisationName) == null) {
+        Organisation org = fetchOrganisation(organisationName);
+        if(org == null) {
             return null;
         }
 /*
@@ -71,23 +72,7 @@ public class OrganisationRepository {
             return cached.getMembers();
         }
 */
-        List<User> members = new ArrayList<>();
-        PreparedStatement statement = db.getConnection().prepareStatement("SELECT user.* FROM user " +
-                "JOIN memberlist ON user.player_uuid = memberlist.uuid " +
-                "JOIN organisation ON organisation.id = memberlist.organisationid " +
-                "WHERE organisation.id = ?");
-        statement.setString(1, String.valueOf(fetchOrganisation(organisationName).getId()));
-
-        ResultSet resultSet = statement.executeQuery();
-        while (resultSet.next()) {
-            UUID uuid = UUID.fromString(resultSet.getString("player_uuid"));
-            String username = resultSet.getString("username");
-            int money = resultSet.getInt("money");
-            members.add(new User(uuid, username, money));
-        }
-
-        statement.close();
-        return members;
+        return fetchOrganisationMembersbyId(String.valueOf(org.getId()));
     }
 
     public List<User> fetchOrganisationMembersbyId(String organisationId) throws SQLException {

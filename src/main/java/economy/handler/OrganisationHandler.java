@@ -37,6 +37,7 @@ public class OrganisationHandler {
         for(Organisation org : orgs) {
             if(org.getMembers().contains(user)) {
                 result.add(org);
+                System.out.println(user);
             }
         }
         return result;

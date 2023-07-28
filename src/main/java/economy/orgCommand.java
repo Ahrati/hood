@@ -50,7 +50,7 @@ public class orgCommand implements TabExecutor {
                 sb.append("> You are a in ").append(orgs.size()).append("/").append(organisationHandler.getMaxOrg()).append(" organisations\n");
 
                 try {
-                    for(Organisation org : organisationHandler.getOrganisationsByMember((Player) sender)) {
+                    for(Organisation org : orgs) {
                         sb.append("> §6").append(org.getName()).append("§r  - §8").append(organisationHandler.getOnlineMembers(org.getName()).size()).append("§r/§8").append(organisationHandler.getAllMembers(org.getName()).size()).append("§r members online\n");
                     }
                 } catch (SQLException e) {

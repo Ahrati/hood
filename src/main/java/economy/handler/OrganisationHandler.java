@@ -36,7 +36,7 @@ public class OrganisationHandler {
         List<Organisation> result = new ArrayList<>();
         for(Organisation org : orgs) {
             for(User member : org.getMembers()) {
-                if(member.getUuid() == user.getUuid()) {
+                if(Objects.equals(member.getUuid().toString(), user.getUuid().toString())) {
                     result.add(org);
                 }
             }

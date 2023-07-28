@@ -6,7 +6,11 @@ import economy.model.User;
 import economy.repository.OrganisationRepository;
 import economy.repository.PlayerRepository;
 import economy.repository.TransactionLogRepository;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.Plugin;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -22,14 +26,15 @@ public class MoneyHandler {
     private final PlayerRepository prepo;
     private final OrganisationRepository orepo;
     private final TransactionLogRepository logger;
-    private Map<Player, Boolean> actionbar;
+    private Plugin plugin;
+    private final NamespacedKey bannedKey;
 
-    public MoneyHandler(PlayerRepository prepo, OrganisationRepository orepo, TransactionLogRepository trepo) {
+    public MoneyHandler(PlayerRepository prepo, OrganisationRepository orepo, TransactionLogRepository trepo, Plugin plugin) {
         this.prepo = prepo;
         this.orepo = orepo;
         this.logger = trepo;
-
-        actionbar = new HashMap<>();
+        this.plugin = plugin;
+        this.bannedKey = new NamespacedKey(plugin, "balance_view");
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
         scheduler.scheduleAtFixedRate(this::showActionBar, 1, 1, TimeUnit.SECONDS);
 
@@ -40,20 +45,21 @@ public class MoneyHandler {
         return sorted;
     }
     public void flipActionBar(Player player) {
-        if(actionbar.containsKey(player)) {
-            actionbar.put(player, false);
+        PersistentDataContainer dataContainer = player.getPersistentDataContainer();
+        if(dataContainer.has(bannedKey, PersistentDataType.BYTE)) {
+            dataContainer.remove(bannedKey);
+        }else {
+            dataContainer.set(bannedKey, PersistentDataType.BYTE, (byte) 1);
         }
-        actionbar.put(player, !actionbar.get(player));
     }
     public void showActionBar() {
-        for(Player player : actionbar.keySet()) {
-            if(player.isOnline()) {
-                if(actionbar.get(player)) {
-                    try {
-                        sendActionBar(player, "§a$ " + getBalance(player));
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
+        for(Player player : getServer().getOnlinePlayers()) {
+            PersistentDataContainer dataContainer = player.getPersistentDataContainer();
+            if(dataContainer.has(bannedKey, PersistentDataType.BYTE)) {
+                try {
+                    sendActionBar(player, "§a$ " + getBalance(player));
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
             }
         }

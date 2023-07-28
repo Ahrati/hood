@@ -38,7 +38,7 @@ public class FastTravelCommand implements TabExecutor {
         playerRepository = new PlayerRepository(db);
         transactionRepository = new TransactionLogRepository(db);
         organisationRepository = new OrganisationRepository(db);
-        moneyHandler = new MoneyHandler(playerRepository, organisationRepository, transactionRepository);
+        moneyHandler = new MoneyHandler(playerRepository, organisationRepository, transactionRepository, instance);
         fastTravelBanMaster = new FastTravelBanMaster(plugin);
     }
     private int getRandomOffset(int radius) {

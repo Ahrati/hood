@@ -63,7 +63,7 @@ public class HoodPlugin extends JavaPlugin {
         OrganisationRepository orepo = new OrganisationRepository(db);
         TransactionLogRepository trepo = new TransactionLogRepository(db);
 
-        MoneyHandler moneyHandler = new MoneyHandler(prepo, orepo, trepo);
+        MoneyHandler moneyHandler = new MoneyHandler(prepo, orepo, trepo, this);
         OrganisationHandler organisationHandler = new OrganisationHandler(prepo, orepo, config, moneyHandler);
 
         Objects.requireNonNull(getCommand("bal")).setExecutor(new balCommand(moneyHandler));

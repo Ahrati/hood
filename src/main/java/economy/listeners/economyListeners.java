@@ -22,7 +22,7 @@ public class economyListeners implements Listener {
             User user = playerRepository.getPlayer(player);
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("Could not get joined player.");
+            System.out.println("§cCould not get joined player.");
         }
 
     }

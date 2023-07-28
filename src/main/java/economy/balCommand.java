@@ -23,16 +23,16 @@ public class balCommand implements TabExecutor {
         }
 
         if (!(sender instanceof Player)) {
-            sender.sendMessage("This command can only be used by players.");
+            sender.sendMessage("§cThis command can only be used by players!");
             return true;
         }
 
         try {
-            sender.sendMessage("Balance: " + moneyHandler.getBalance((Player) sender) + "$");
+            sender.sendMessage("[§dEconomy§r] §aBalance: §6$" + moneyHandler.getBalance((Player) sender));
         } catch (SQLException e) {
             e.printStackTrace();
-            sender.sendMessage("Couldn't fetch balance");
-            System.out.println("Could not get Player from database.");
+            sender.sendMessage("§c<§rerror§c>§r [§dEconomy§r] §cCouldn't fetch balance");
+            System.out.println("§cCould not get Player from database.");
         }
 
         return true;

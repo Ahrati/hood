@@ -28,12 +28,12 @@ public class balopCommand implements TabExecutor {
         }
 
         if (!(sender instanceof Player)) {
-            sender.sendMessage("This command can only be used by players.");
+            sender.sendMessage("§cThis command can only be used by players!");
             return true;
         }
 
         if(!(sender.isOp())) {
-            sender.sendMessage("This command can only be used by operators!");
+            sender.sendMessage("§cThis command can only be used by operators!");
             return true;
         }
 
@@ -41,13 +41,11 @@ public class balopCommand implements TabExecutor {
         try {
             amount = Integer.parseInt(args[2]);
         } catch (NumberFormatException e) {
-            e.printStackTrace();
-            sender.sendMessage("Not a valid number");
-            return true;
+            return false;
         }
 
         if(amount < 0) {
-            sender.sendMessage("Amount cant be negative");
+            sender.sendMessage("§cAmount can't be a negative number!");
             return true;
         }
 
@@ -57,8 +55,10 @@ public class balopCommand implements TabExecutor {
                     moneyHandler.setBalance(args[1], amount, "p");
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    sender.sendMessage("Could not fetch player from database");
+                    sender.sendMessage("§c<§rerror§c>§r [§dEconomy§r] §cCouldn't fetch player from database!");
+                    System.out.println("§cCould not set money for §b" + args[1] + "!");
                 }
+                sender.sendMessage("[§dEconomy§r] §aSuccess!");
                 return true;
             }
             case "add" -> {
@@ -66,21 +66,25 @@ public class balopCommand implements TabExecutor {
                     moneyHandler.setBalance(args[1], moneyHandler.getBalance(args[1], "p") + amount, "p");
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    sender.sendMessage("Could not fetch player from database");
+                    sender.sendMessage("§c<§rerror§c>§r [§dEconomy§r] §cCouldn't fetch player from database!");
+                    System.out.println("§cCould not add money for §b" + args[1] + "!");
                 }
+                sender.sendMessage("[§dEconomy§r] §aSuccess!");
                 return true;
             }
             case "sub" -> {
                 try {
                     if(amount > moneyHandler.getBalance(args[1], "p")) {
-                        sender.sendMessage("Cannot put user into negative balance");
+                        sender.sendMessage("§cCan't put user into negative balance!");
                         return true;
                     }
                     moneyHandler.setBalance(args[1], moneyHandler.getBalance(args[1], "p") - amount, "p");
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    sender.sendMessage("Could not fetch player from database");
+                    sender.sendMessage("§c<§rerror§c>§r [§dEconomy§r] §cCouldn't fetch player from database!");
+                    System.out.println("§cCould not subtract money for §b" + args[1] + "!");
                 }
+                sender.sendMessage("[§dEconomy§r] §aSuccess!");
                 return true;
             }
             default -> {

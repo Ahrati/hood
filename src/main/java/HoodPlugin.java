@@ -2,7 +2,9 @@ import casinochips.CasinoChipCraftListener;
 import casinochips.CasinoChipsItemManager;
 import economy.handler.MoneyHandler;
 import economy.handler.OrganisationHandler;
+import economy.handler.TransactionHistoryHandler;
 import economy.repository.OrganisationRepository;
+import economy.repository.TransactionLogRepository;
 import fasttravel.*;
 import fasttravel.discovery.handlers.FastTravelDiscoveryHandler;
 import jail.*;
@@ -59,7 +61,10 @@ public class HoodPlugin extends JavaPlugin {
 
         PlayerRepository prepo = new PlayerRepository(db);
         OrganisationRepository orepo = new OrganisationRepository(db);
-        MoneyHandler moneyHandler = new MoneyHandler(prepo, orepo);
+        TransactionLogRepository trepo = new TransactionLogRepository(db);
+
+        MoneyHandler moneyHandler = new MoneyHandler(prepo, orepo, trepo);
+        TransactionHistoryHandler transactionHandler = new TransactionHistoryHandler(trepo);
         OrganisationHandler organisationHandler = new OrganisationHandler(prepo, orepo, config);
 
         Objects.requireNonNull(getCommand("bal")).setExecutor(new balCommand(moneyHandler));

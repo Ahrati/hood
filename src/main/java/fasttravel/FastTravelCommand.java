@@ -3,6 +3,7 @@ package fasttravel;
 import economy.handler.MoneyHandler;
 import economy.repository.OrganisationRepository;
 import economy.repository.PlayerRepository;
+import economy.repository.TransactionLogRepository;
 import org.bukkit.*;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
@@ -19,6 +20,7 @@ import java.sql.SQLException;
 
 public class FastTravelCommand implements TabExecutor {
     private PlayerRepository playerRepository;
+    private TransactionLogRepository transactionRepository;
     private FastTravelBanMaster fastTravelBanMaster;
     private MoneyHandler moneyHandler;
     private final database db;
@@ -34,8 +36,9 @@ public class FastTravelCommand implements TabExecutor {
         this.db = db;
         plugin = instance;
         playerRepository = new PlayerRepository(db);
-        moneyHandler = new MoneyHandler(playerRepository, organisationRepository);
+        transactionRepository = new TransactionLogRepository(db);
         organisationRepository = new OrganisationRepository(db);
+        moneyHandler = new MoneyHandler(playerRepository, organisationRepository, transactionRepository);
         fastTravelBanMaster = new FastTravelBanMaster(plugin);
     }
     private int getRandomOffset(int radius) {
@@ -209,7 +212,13 @@ public class FastTravelCommand implements TabExecutor {
             }
 
             if(playerBalance >= taxAmount) {
-                // moneyHandler.transferMoney(player, government, "p2o");
+                try {
+                    if(moneyHandler.transferMoney(player.getName(), "government", taxAmount,"p2o") != 0) {
+                        return true;
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             } else {
                 player.sendMessage("[§dFast Travel§r] §cYou don't have enough money to fast travel. The tax is $" + taxAmount);
                 return true;

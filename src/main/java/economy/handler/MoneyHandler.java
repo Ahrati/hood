@@ -4,6 +4,7 @@ import economy.model.Organisation;
 import economy.model.User;
 import economy.repository.OrganisationRepository;
 import economy.repository.PlayerRepository;
+import economy.repository.TransactionLogRepository;
 import org.bukkit.entity.Player;
 
 import java.sql.PreparedStatement;
@@ -15,10 +16,12 @@ import static org.bukkit.Bukkit.getServer;
 public class MoneyHandler {
     private final PlayerRepository prepo;
     private final OrganisationRepository orepo;
+    private final TransactionLogRepository trepo;
 
-    public MoneyHandler(PlayerRepository prepo, OrganisationRepository orepo) {
+    public MoneyHandler(PlayerRepository prepo, OrganisationRepository orepo, TransactionLogRepository trepo) {
         this.prepo = prepo;
         this.orepo = orepo;
+        this.trepo = trepo;
     }
 
     public int getBalance(Player sender) throws SQLException {
@@ -46,7 +49,7 @@ public class MoneyHandler {
 
     /*
         Transfer money between players and organisations.
-        Returns and integer for error code:
+        Returns an integer for error code:
         -1 - invalid mode
         0  - OK
         1  - Attempted transfer to self
@@ -54,6 +57,11 @@ public class MoneyHandler {
         3  - Sender not found
         4  - Not enough funds for transaction
         --- will add more if needed
+        Requires string for mode to transfer in:
+        p2p - player to player
+        p2o - player to organisation
+        o2p - organisation to player
+        o2o - organisation to organisation
      */
     public int transferMoney(String from, String to, int amount, String mode) throws SQLException {
         if(Objects.equals(mode, "p2p")) {
@@ -68,12 +76,12 @@ public class MoneyHandler {
             }
 
             if(from.equalsIgnoreCase(to)) {
-                sender.sendMessage("Cannot transfer funds to yourself!");
+                sender.sendMessage("[§dEconomy§r] §cCannot transfer funds to yourself!");
                 return 1;
             }
 
             if (receiver == null) {
-                sender.sendMessage("Player not online!");
+                sender.sendMessage("[§dEconomy§r] §rPlayer not online!");
                 return 2;
             }
             User userTo = prepo.fetchPlayer(to);
@@ -81,7 +89,7 @@ public class MoneyHandler {
             int maxAmount;
             maxAmount = userFrom.getMoney();
             if(amount > maxAmount) {
-                sender.sendMessage("You dont have enough funds");
+                sender.sendMessage("[§dEconomy§r] §cYou dont have enough funds");
                 return 4;
             }
 
@@ -103,20 +111,15 @@ public class MoneyHandler {
                 return 3;
             }
 
-            if(from.equalsIgnoreCase(to)) {
-                sender.sendMessage("Cannot transfer funds to yourself!");
-                return 1;
-            }
-
             if (receiver == null) {
-                sender.sendMessage("Player not online!");
+                sender.sendMessage("[§dEconomy§r] §rOrganisation not found!");
                 return 2;
             }
 
             int maxAmount;
             maxAmount = userFrom.getMoney();
             if(amount > maxAmount) {
-                sender.sendMessage("You dont have enough funds");
+                sender.sendMessage("[§dEconomy§r] §cYou dont have enough funds");
                 return 4;
             }
 
@@ -134,10 +137,6 @@ public class MoneyHandler {
             if (sender == null) {
                 System.out.println("MASSIVE TRANSFER FUNDS ERROR");
                 return 3;
-            }
-
-            if(from.equalsIgnoreCase(to)) {
-                return 1;
             }
 
             if (receiver == null) {

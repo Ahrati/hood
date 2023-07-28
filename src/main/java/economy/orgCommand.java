@@ -27,69 +27,90 @@ public class orgCommand implements TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+
+        if (!(sender instanceof Player)) {
+            sender.sendMessage("§cThis command can only be used by players!");
+            return true;
+        }
+
         if(args.length == 0) {
-            // /org
+
             StringBuilder sb = new StringBuilder();
-            sb.append("[Organisations]\n");
-            sb.append("You are a in " + "0" + "/" + "5" + " organisations\n");
+            List<Organisation> orgs = new ArrayList<>();
+
             try {
-                for(Organisation org : organisationHandler.getOrganisationsByMember((Player) sender)) {
-                    sb.append(org.getName()).append("  - §8").append(organisationHandler.getOnlineMembers(org.getName()).size()).append("/").append(organisationHandler.getAllMembers(org.getName()).size()).append(" members online\n§f");
-                }
+                orgs = organisationHandler.getOrganisationsByMember((Player) sender);
             } catch (SQLException e) {
                 e.printStackTrace();
-                sender.sendMessage("Couldn't get organisation info");
-                return true;
             }
+
+            sb.append("[§dOrganisations§r] Info\n");
+
+            if(orgs != null) {
+                sb.append("> You are a in ").append(orgs.size()).append("/").append(organisationHandler.getMaxOrg()).append(" organisations\n");
+
+                try {
+                    for(Organisation org : organisationHandler.getOrganisationsByMember((Player) sender)) {
+                        sb.append("> §6").append(org.getName()).append("§r  - §8").append(organisationHandler.getOnlineMembers(org.getName()).size()).append("§r/§8").append(organisationHandler.getAllMembers(org.getName()).size()).append("§r members online\n");
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    sender.sendMessage("§c<§rerror§c>§r [§Organisations§r] §cCouldn't get organisation info!");
+                    System.out.println("§cCould not fetch organisations general info!");
+                    return true;
+                }
+            } else {
+                sb.append("> You are not in any organisation currently\n");
+            }
+
             sender.sendMessage(sb.toString());
             return true;
         }
+
         switch(args[0]) {
             case "help" -> {
-                // /org help
                 String str = """
-                        [Organisations]
-                        /org - general info
-                        /org <org-name> - info about particular org
-                        /org create <org-name> <description> - create org
-                        /org invite <name> <org-name> - invite people to org
-                        /org join <org-name> - join an org
-                        /org leave <org-name> - leave org
-                        /org kick <name> <org-name> - kick person from org""";
+                        [§dOrganisations§r] Help
+                        /org §7- general info
+                        /org <§7org-name§r> §7- info about particular org
+                        /org create <§7org-name§r> <§7description§r> §7- create org
+                        /org invite <§7name§r> <§7org-name§r> §7- invite people to org
+                        /org join <§7org-name§r> §7- join an org
+                        /org leave <§7org-name§r> §7- leave org
+                        /org kick <§7name§r> <§7org-name§r> §7- kick person from org""";
                 sender.sendMessage(str);
                 return true;
             }
+
             case "create" -> {
-                // /org create <name> [description]
                 StringBuilder desc = new StringBuilder();
                 if(args.length < 2) {
                     return false;
                 }
                 if(args.length >= 3) {
                     for(int i = 2; i < args.length; i++) {
-                        desc.append(args[i]);
+                        desc.append(args[i]).append(" ");
                     }
                 }
                 try {
                     organisationHandler.createOrganisation(args[1], desc.toString(), (Player) sender);
-                    sender.sendMessage("Organisation created!");
+                    sender.sendMessage("[§dOrganisations§r] §aOrganisation created!");
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    sender.sendMessage("Error creating organisation");
+                    sender.sendMessage("§c<§rerror§c>§r [§Organisations§r] §cError creating organisation");
                 }
                 return true;
             }
+
             case "join" -> {
-                // /org join <name>
                 if(args.length > 2) {
                     return false;
                 }
                 try {
                     if(organisationHandler.joinOrganisation(args[1], (Player) sender, "member")) {
-                        //send to all online members of org that player has joined
                         List<Player> members = organisationHandler.getOnlineMembers(args[1]);
                         for(Player member : members) {
-                            member.sendMessage(sender.getName() + " has joined " + args[1] + ".");
+                            member.sendMessage("[§dOrganisations§r] §b" + sender.getName() + " §rhas joined §6" + args[1] + ".");
                         }
                     }
                 } catch (SQLException e) {
@@ -98,37 +119,43 @@ public class orgCommand implements TabExecutor {
 
                 return true;
             }
+
             case "leave" -> {
-                // /org leave <org>
                 if(args.length > 2) {
                     return false;
                 }
                 try {
+                    if(organisationHandler.isOwner((Player) sender, args[1]) && organisationHandler.getAllMembers(args[1]).size() > 1) {
+                        sender.sendMessage("[§dOrganisations§r] §cYou can't leave organisation while other members are still in it.");
+                        return true;
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                try {
                     if(!organisationHandler.leaveOrganisation(args[1], sender.getName())) {
-                        sender.sendMessage("You are not part of that organisation.");
+                        sender.sendMessage("[§dOrganisations§r] §cYou are not part of that organisation.");
                     } else {
-                        //send to all online members of that org that player left
                         List<Player> members = organisationHandler.getOnlineMembers(args[1]);
                         for(Player member : members) {
-                            member.sendMessage(sender.getName() + " has left " + args[1] + ".");
+                            member.sendMessage("[§dOrganisations§r] §b" + sender.getName() + "§r has left §6" + args[1] + ".");
                         }
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    sender.sendMessage("Couldn't leave organisation.");
+                    sender.sendMessage("§c<§rerror§c>§r [§Organisations§r] §cCouldn't leave organisation.");
                 }
 
                 return true;
             }
-            case "invite" -> {
 
-                // /org invite <name> <org>
+            case "invite" -> {
                 if(args.length != 3) {
                     return false;
                 }
                 try {
                     if(!organisationHandler.isOwner((Player) sender, args[2])) {
-                        sender.sendMessage("You are not the owner of this organisation");
+                        sender.sendMessage("[§dOrganisations§r] §cYou are not the owner of this organisation!");
                         return true;
                     }
                 } catch (SQLException e) {
@@ -139,65 +166,88 @@ public class orgCommand implements TabExecutor {
 
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    sender.sendMessage("Couldn't invite player to organisation.");
+                    sender.sendMessage("§c<§rerror§c>§r [§Organisations§r] §cCouldn't invite player to organisation.");
                 }
                 return true;
             }
-            case "kick" -> {
 
-                // /org kick <name> <org>
+            case "kick" -> {
                 if(args.length != 3) {
                     return false;
                 }
                 try {
                     if(!organisationHandler.isOwner((Player) sender, args[2])) {
-                        sender.sendMessage("You are not the owner of this organisation");
+                        sender.sendMessage("[§dOrganisations§r] §cYou are not the owner of this organisation!");
                         return true;
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
+                if(args[1].equalsIgnoreCase(sender.getName())) {
+                    sender.sendMessage("[§dOrganisations§r] §cCan't kick self!");
+                }
                 try {
                     if(!organisationHandler.leaveOrganisation(args[2], args[1])) {
-                        sender.sendMessage("User doesn't exist or isn't part of that organisation.");
+                        sender.sendMessage("[§dOrganisations§r] §cUser doesn't exist or isn't part of that organisation.");
                     } else {
-                        //send to all online members of that org that player got kicked
                         List<Player> members = organisationHandler.getOnlineMembers(args[2]);
                         for(Player member : members) {
-                            member.sendMessage(args[1] + " has been kicked from " + args[2] + ".");
+                            member.sendMessage("[§dOrganisations§r] §b" + args[1] + " §rhas been kicked from §6" + args[2] + ".");
                         }
                         Player leaver = getServer().getPlayer(args[1]);
                         if(leaver != null) {
-                            leaver.sendMessage("You've been kicked from " + args[2]);
+                            leaver.sendMessage("[§dOrganisations§r] §rYou've been kicked from " + args[2]);
                         }
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    sender.sendMessage("Couldn't kick player from organisation.");
+                    sender.sendMessage("§c<§rerror§c>§r [§Organisations§r] §cCouldn't kick player from organisation.");
                 }
                 return true;
             }
+
             default -> {
-                // /org <name> [-u [name <new-name>] [desc <new-description>]]
                 if(args.length > 1) {
                     return false;
                 }
                 try {
+
                     Organisation org = organisationHandler.checkOrganisation(args[0], (Player) sender);
+
                     if(org != null) {
-                        sender.sendMessage(org.getName() + "\n" + org.getDescription() + "\nmembers:");
-                        List<Player> onlineMembers = organisationHandler.getOnlineMembers(org.getName());
+
                         StringBuilder sb = new StringBuilder();
+
+                        sb.append("[§Organisations§r] Organisation info\n");
+                        sb.append("Name: §6").append(org.getName()).append("\n");
+                        sb.append("Description: §7").append(org.getDescription()).append("\n");
+                        sb.append("Members: ").append("\n");
+
+                        List<Player> onlineMembers = organisationHandler.getOnlineMembers(org.getName());
+                        sb.append("§aONLINE §r- ");
+                        for(Player player : onlineMembers) {
+                            sb.append(player.getName()).append(", ");
+                        }
+                        sb.deleteCharAt(sb.length() - 1);
+                        sb.deleteCharAt(sb.length() - 1);
+                        sb.append("\n");
+                        sb.append("§8OFFLINE §r- §8");
                         for(User member : org.getMembers()) {
+                            boolean online = false;
                             for(Player player : onlineMembers) {
                                 if(player.getName().equals(member.getUsername())) {
-                                    sb.append("§6");
+                                    online = true;
                                     break;
                                 }
                             }
-                            sb.append(member.getUsername()).append("\n§8");
+                            if(!online) {
+                                sb.append(member.getUsername()).append("§r,§8 ");
+                            }
                         }
-                        sender.sendMessage(sb.deleteCharAt(sb.length() - 1).toString());
+                        sb.deleteCharAt(sb.length() - 1);
+                        sb.deleteCharAt(sb.length() - 1);
+
+                        sender.sendMessage(sb.toString());
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();

@@ -26,6 +26,9 @@ public class OrganisationHandler {
         this.config = config;
         invited = new HashMap<>();
     }
+    public int getMaxOrg() {
+        return config.getInt("maxOrg");
+    }
     public List<Organisation> getOrganisationsByMember(Player player) throws SQLException {
         User user = prepo.getPlayer(player);
         List<Organisation> orgs = orepo.getAllOrganisations();
@@ -42,7 +45,7 @@ public class OrganisationHandler {
         int counter = 0;
         for(Organisation organ : orgs) {
             if(Objects.equals(organ.getName(), org)) {
-                creator.sendMessage("Organisation with that name already exists!");
+                creator.sendMessage("[§dOrganisations§r] §cOrganisation with that name already exists!");
                 return;
             }
             List<User> mem = organ.getMembers();
@@ -54,7 +57,7 @@ public class OrganisationHandler {
             }
         }
         if(counter >= config.getInt("maxOrg")) {
-            creator.sendMessage("You can only be a part of " + config.getInt("maxOrg") + " organisations.");
+            creator.sendMessage("[§dOrganisations§r] §cYou can only be a part of " + config.getInt("maxOrg") + " organisations.");
             return;
         }
 
@@ -69,7 +72,7 @@ public class OrganisationHandler {
         }
         if(invited.containsKey(username)) {
             if(invited.get(username).contains(org)) {
-                inviter.sendMessage("This user has alreay been invited");
+                inviter.sendMessage("[§dOrganisations§r] §rThis user has alreay been invited");
                 return;
             } else {
                 invited.get(username).add(org);
@@ -79,10 +82,10 @@ public class OrganisationHandler {
             organisation.add(org);
             invited.put(username, organisation);
         }
-        inviter.sendMessage("User has been invited");
+        inviter.sendMessage("[§dOrganisations§r] §aUser has been invited");
         Player invited = getServer().getPlayer(username);
         if(invited != null) {
-            invited.sendMessage("You have been invited to " + org + "\nType '/org join " + org + "' to join the organisation");
+            invited.sendMessage("[§dOrganisations§r] §aYou have been invited to §6" + org + "\n§rType '/org join " + org + "' to join the organisation");
         }
     }
 
@@ -91,7 +94,7 @@ public class OrganisationHandler {
             return false;
         }
         if(orepo.fetchOrganisation(org).getMembers().contains(prepo.getPlayer(joiner))) {
-            joiner.sendMessage("You are already in that organisation.");
+            joiner.sendMessage("[§dOrganisations§r] §rYou are already in that organisation.");
             return false;
         }
         List<Organisation> orgs = orepo.getAllOrganisations();
@@ -106,21 +109,21 @@ public class OrganisationHandler {
             }
         }
         if(counter >= config.getInt("maxOrg")) {
-            joiner.sendMessage("You can only be a part of " + config.getInt("maxOrg") + " organisations.");
+            joiner.sendMessage("[§dOrganisations§r] §cYou can only be a part of " + config.getInt("maxOrg") + " organisations.");
             return false;
         }
         if(orepo.fetchOrganisation(org).getMembers().size() == config.getInt("maxOrgMembers")) {
-            joiner.sendMessage("This organisation is full.");
+            joiner.sendMessage("[§dOrganisations§r] §rThis organisation is full.");
             return false;
         }
 
         if(invited.get(joiner.getName()).contains(org)) {
             orepo.insertMemberList(org, prepo.getPlayer(joiner), role);
             invited.get(joiner.getName()).remove(org);
-            joiner.sendMessage("You successfully joined the org");
+            joiner.sendMessage("[§dOrganisations§r] §aYou successfully joined the org");
             return true;
         } else {
-            joiner.sendMessage("You haven't been invited to this organisation yet");
+            joiner.sendMessage("[§dOrganisations§r] §rYou haven't been invited to this organisation yet");
         }
 
         return false;
@@ -160,7 +163,7 @@ public class OrganisationHandler {
     public Organisation checkOrganisation(String name, Player checker) throws SQLException{
         List<User> orgMembers = orepo.fetchOrganisationMembers(name);
         if(orgMembers == null) {
-            checker.sendMessage("Organisation with that name doesn't exist");
+            checker.sendMessage("[§dOrganisations§r] §cOrganisation with that name doesn't exist");
             return null;
         }
         for(User member : orgMembers) {

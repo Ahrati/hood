@@ -25,7 +25,7 @@ public class payCommand implements TabExecutor {
         }
 
         if (!(sender instanceof Player)) {
-            sender.sendMessage("This command can only be used by players.");
+            sender.sendMessage("§cThis command can only be used by players!");
             return true;
         }
 
@@ -37,23 +37,23 @@ public class payCommand implements TabExecutor {
         }
 
         if(amount < 1) {
-            sender.sendMessage("The amount must be a positive number");
+            sender.sendMessage("§cAmount to pay can't be a negative number!");
             return true;
         }
 
         String receiver = args[0];
         try {
             if(moneyHandler.transferMoney(sender.getName(), receiver, amount, "p2p") == 0) {
-                sender.sendMessage("Transferred $" + amount + " to " + receiver);
+                sender.sendMessage("[§dEconomy§r] §aTransferred §6$" + amount + "§a to §b" + receiver);
                 Player target = getServer().getPlayer(receiver);
                 if(target != null) {
-                    target.sendMessage("Received $" + amount + " from " + sender.getName());
+                    target.sendMessage("[§dEconomy§r] §aReceived §6$" + amount + "§a from §b" + sender.getName());
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            sender.sendMessage("Couldn't transfer money");
-            System.out.println("Could not transfer money from " + sender.getName() + " to " + receiver + "!");
+            sender.sendMessage("§c<§rerror§c>§r [§dEconomy§r] §cCouldn't transfer money!");
+            System.out.println("§cCould not transfer money from §b" + sender.getName() + " to §b" + receiver + "!");
             return false;
         }
         return true;

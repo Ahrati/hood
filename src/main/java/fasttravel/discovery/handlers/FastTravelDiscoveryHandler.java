@@ -25,6 +25,7 @@ public class FastTravelDiscoveryHandler implements Listener {
         this.plugin = plugin;
         this.fastTravelRepository = new FastTravelRepository(db);
         Bukkit.getPluginManager().registerEvents(this, plugin);
+        fastTravelRepository.UpdateAllFastTravelMaps();
     }
 
     @EventHandler
@@ -75,5 +76,7 @@ public class FastTravelDiscoveryHandler implements Listener {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
+        fastTravelRepository.UpdateAllFastTravelMaps();
     }
 }

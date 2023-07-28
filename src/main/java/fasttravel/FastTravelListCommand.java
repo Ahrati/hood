@@ -22,17 +22,10 @@ public class FastTravelListCommand implements CommandExecutor {
         Player player = (Player) commandSender;
         List<FastTravelPoint> discovered, undiscovered;
 
-        try {
-            discovered = fastTravelRepository.GetDiscoveredFastTravelPoints(player.getUniqueId());
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        discovered = fastTravelRepository.GetDiscoveredFastTravelPointsLocal(player.getUniqueId());
 
-        try {
-            undiscovered = fastTravelRepository.GetUndiscoveredFastTravelPoints(player.getUniqueId());
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        undiscovered = fastTravelRepository.GetUndiscoveredFastTravelPointsLocal(player.getUniqueId());
+
 
         if (discovered.isEmpty() && undiscovered.isEmpty()) {
             commandSender.sendMessage("§cThere are no fast travel locations available.");

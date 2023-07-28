@@ -1,6 +1,7 @@
 name: HoodPlugin
 version: 0.1
 main: HoodPlugin
+api-version: 1.20
 
 commands:
   fasttravelpointset:

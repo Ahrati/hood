@@ -21,14 +21,13 @@ public class FastTravelRepository {
 
     public FastTravelRepository(database db){
         this.db = db;
-        updateAllFastTravelMaps();
     }
 
     /**
      * Populates the fasttraveldiscovery table.
      */
     public void PopulateFastTravelDiscovery() throws SQLException {
-        System.out.println("populating fasttraveldiscovery");
+        System.out.println("DATABASE PopulateFastTravelDiscovery");
         PreparedStatement statement = db.getConnection().prepareStatement("INSERT IGNORE INTO fasttraveldiscovery (ftpname, playerid)\n" +
                 "SELECT ftp.name, u.player_uuid\n" +
                 "FROM fasttravelpoints AS ftp\n" +
@@ -43,7 +42,7 @@ public class FastTravelRepository {
      * Returns a list of fast travel points that the player has discovered.
      */
     public List<FastTravelPoint> GetDiscoveredFastTravelPoints(UUID uuid) throws SQLException {
-        System.out.println("getting player discovered fast travel points");
+        System.out.println("DATABASE GetDiscoveredFastTravelPoints");
         List<FastTravelPoint> fastTravelPoints = new ArrayList<>();
 
         PreparedStatement statement = db.getConnection().prepareStatement("SELECT ftpname FROM fasttraveldiscovery WHERE playerid = ? AND discovered = TRUE;");
@@ -63,7 +62,7 @@ public class FastTravelRepository {
      * Returns a list of fast travel points that the player has not discovered.
      */
     public List<FastTravelPoint> GetUndiscoveredFastTravelPoints(UUID uuid) throws SQLException {
-        System.out.println("getting player undiscovered fast travel points");
+        System.out.println("DATABASE GetUndiscoveredFastTravelPoints");
         List<FastTravelPoint> fastTravelPoints = new ArrayList<>();
 
         PreparedStatement statement = db.getConnection().prepareStatement("SELECT ftpname FROM fasttraveldiscovery WHERE playerid = ? AND discovered = FALSE;");
@@ -80,10 +79,53 @@ public class FastTravelRepository {
     }
 
     /**
+     * Returns a list of fast travel points that the player has discovered from the local hash map.
+     */
+    public List<FastTravelPoint> GetDiscoveredFastTravelPointsLocal(UUID uuid) {
+        System.out.println("LOCAL GetDiscoveredFastTravelPoints");
+        return DiscoveredFTP.getOrDefault(uuid, new ArrayList<>());
+    }
+
+    /**
+     * Returns a list of fast travel points that the player has not discovered from the local hash map.
+     */
+    public List<FastTravelPoint> GetUndiscoveredFastTravelPointsLocal(UUID uuid) {
+        System.out.println("LOCAL GetUndiscoveredFastTravelPoints");
+        return UndiscoveredFTP.getOrDefault(uuid, new ArrayList<>());
+    }
+
+    /**
+     * Checks if a FastTravelPoint with the given name exists in either the discovered or undiscovered hash map
+     * for a given player UUID.
+     *
+     * @param uuid       The UUID of the player.
+     * @param ftpName    The name of the FastTravelPoint to check.
+     * @return true if the FastTravelPoint exists in either the discovered or undiscovered hash map, false otherwise.
+     */
+    public boolean ExistsLocal(UUID uuid, String ftpName) {
+        List<FastTravelPoint> discoveredPoints = DiscoveredFTP.getOrDefault(uuid, new ArrayList<>());
+        List<FastTravelPoint> undiscoveredPoints = UndiscoveredFTP.getOrDefault(uuid, new ArrayList<>());
+
+        for (FastTravelPoint point : discoveredPoints) {
+            if (point.getName().equalsIgnoreCase(ftpName)) {
+                return true;
+            }
+        }
+
+        for (FastTravelPoint point : undiscoveredPoints) {
+            if (point.getName().equalsIgnoreCase(ftpName)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Private method to update the DiscoveredFTP and UndiscoveredFTP HashMaps for a player based on the database data.
      */
-    private void updateFastTravelMaps(Player player) {
-        System.out.println("updateing fast travel maps");
+    private void UpdateFastTravelMaps(Player player) {
+        System.out.println("updateFastTravelMaps");
         UUID playerUUID = player.getUniqueId();
         try {
             List<FastTravelPoint> discoveredPoints = GetDiscoveredFastTravelPoints(playerUUID);
@@ -99,16 +141,16 @@ public class FastTravelRepository {
     /**
      * Updates the DiscoveredFTP and UndiscoveredFTP HashMaps for all players.
      */
-    public void updateAllFastTravelMaps() {
-        System.out.println("updateing fast travel maps for players");
-        Bukkit.getOnlinePlayers().forEach(this::updateFastTravelMaps);
+    public void UpdateAllFastTravelMaps() {
+        System.out.println("updateAllFastTravelMaps");
+        Bukkit.getOnlinePlayers().forEach(this::UpdateFastTravelMaps);
     }
 
     /**
      * Sets a fast travel point as discovered for a player
      */
     public void SetDiscovered(UUID playerUUID, String ftpname) throws SQLException {
-        System.out.println("setting as discovered");
+        System.out.println("DATABASE SetDiscovered");
         PreparedStatement statement = db.getConnection().prepareStatement("UPDATE fasttraveldiscovery SET discovered = TRUE WHERE playerid = ? AND ftpname = ?");
 
         statement.setString(1, playerUUID.toString());
@@ -118,14 +160,14 @@ public class FastTravelRepository {
 
         statement.close();
 
-        updateAllFastTravelMaps();
+        UpdateAllFastTravelMaps();
     }
 
     /**
      * Creates a fast travel point.
      */
     public void CreateFastTravelPoint(FastTravelPoint fastTravelPoint) throws SQLException {
-
+        System.out.println("DATABASE CreateFastTravelPoint");
         PreparedStatement statement = db.getConnection().prepareStatement("INSERT INTO fasttravelpoints(name,x,y,z,radius) VALUES (?, ?, ?, ?, ?)");
         statement.setString(1, fastTravelPoint.getName());
         statement.setInt(2, fastTravelPoint.getX());
@@ -138,14 +180,14 @@ public class FastTravelRepository {
         statement.close();
 
         PopulateFastTravelDiscovery();
-        updateAllFastTravelMaps();
+        UpdateAllFastTravelMaps();
     }
 
     /**
      * Returns a fast travel point with a given name.
      */
     public FastTravelPoint GetFastTravelPoint(String name)throws SQLException {
-
+        System.out.println("DATABASE GetFastTravelPoint");
         PreparedStatement statement = db.getConnection().prepareStatement("SELECT * FROM fasttravelpoints WHERE name = ?");
         statement.setString(1, name);
 
@@ -168,19 +210,21 @@ public class FastTravelRepository {
      * Deletes a fast travel point with a given name.
      */
     public void DeleteFastTravelPoint(String name) throws SQLException {
+        System.out.println("DATABASE DeleteFastTravelPoint");
         PreparedStatement statement = db.getConnection().prepareStatement("DELETE FROM fasttravelpoints WHERE name = ?");
         statement.setString(1, name);
 
         statement.executeUpdate();
 
         statement.close();
-        updateAllFastTravelMaps();
+        UpdateAllFastTravelMaps();
     }
 
     /**
      * Returns a list of all fast travel point names.
      */
     public List<String> GetFastTravelPointNames() throws SQLException {
+        System.out.println("DATABASE GetFastTravelPointNames");
         List<String> names = new ArrayList<>();
 
         PreparedStatement statement = db.getConnection().prepareStatement("SELECT name FROM fasttravelpoints");
@@ -199,6 +243,7 @@ public class FastTravelRepository {
      * Returns a list of all fast travel points.
      */
     public List<FastTravelPoint> GetFastTravelPoints() throws SQLException {
+        System.out.println("DATABASE GetFastTravelPoints");
         List<FastTravelPoint> fastTravelPoints = new ArrayList<>();
 
         PreparedStatement statement = db.getConnection().prepareStatement("SELECT * FROM fasttravelpoints");

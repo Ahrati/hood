@@ -147,15 +147,7 @@ public class FastTravelCommand implements TabExecutor {
 
         FastTravelRepository fastTravelRepository = new FastTravelRepository(db);
 
-        FastTravelPoint fastTravelPoint;
-
-        try {
-            fastTravelPoint = fastTravelRepository.GetFastTravelPoint(name);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        if (fastTravelPoint == null){
+        if (!fastTravelRepository.ExistsLocal(player.getUniqueId(), name)){
             commandSender.sendMessage("§cThat Fast Travel Point does not exist.");
             return true;
         }
@@ -163,7 +155,7 @@ public class FastTravelCommand implements TabExecutor {
         UUID playerUUID = player.getUniqueId();
         boolean isUndiscovered = false;
 
-        List<FastTravelPoint> undiscoveredPoints = FastTravelRepository.UndiscoveredFTP.get(playerUUID);
+        List<FastTravelPoint> undiscoveredPoints = fastTravelRepository.GetUndiscoveredFastTravelPointsLocal(playerUUID);
 
         for (FastTravelPoint undiscoveredPoint : undiscoveredPoints) {
             if (undiscoveredPoint.getName().equalsIgnoreCase(name)) {
@@ -175,6 +167,16 @@ public class FastTravelCommand implements TabExecutor {
         if (isUndiscovered) {
             commandSender.sendMessage("§cYou haven't discovered this location yet!");
             return true;
+        }
+
+        List<FastTravelPoint> discovered = fastTravelRepository.GetDiscoveredFastTravelPointsLocal(playerUUID);
+        FastTravelPoint fastTravelPoint = null;
+
+        for (FastTravelPoint point : discovered) {
+            if (point.getName().equalsIgnoreCase(name)) {
+                fastTravelPoint = point;
+                break;
+            }
         }
 
         int x, y, z;

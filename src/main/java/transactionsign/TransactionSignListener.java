@@ -173,13 +173,17 @@ public class TransactionSignListener implements Listener {
 
             if(mode.equals("o")) {
                 try {
-                    moneyHandler.transferMoney(sender, receiver, amount, description, "p2o");
+                    if(moneyHandler.transferMoney(sender, receiver, amount, description, "p2o") == 0) {
+                        player.sendMessage("[§dEconomy§r] §aTransferred §6$" + amount + "§a to §b" + receiver);;
+                    }
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
             } else if (mode.equals("p")){
                 try {
-                    moneyHandler.transferMoney(sender, receiver, amount, description, "p2p");
+                    if(moneyHandler.transferMoney(sender, receiver, amount, description, "p2p") == 0){
+                        player.sendMessage("[§dEconomy§r] §aTransferred §6$" + amount + "§a to §b" + receiver);
+                    }
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }

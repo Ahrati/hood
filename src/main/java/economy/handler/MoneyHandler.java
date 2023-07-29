@@ -36,7 +36,7 @@ public class MoneyHandler {
         this.plugin = plugin;
         this.balviewKey = new NamespacedKey(plugin, "balance_view");
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-        scheduler.scheduleAtFixedRate(this::showActionBar, 1, 1, TimeUnit.SECONDS);
+        scheduler.scheduleAtFixedRate(this::showActionBar, 0, 3, TimeUnit.SECONDS);
 
     }
     public List<TransactionLog> getHistory(String name, String mode) throws SQLException {
@@ -54,9 +54,16 @@ public class MoneyHandler {
     }
     public void showActionBar() {
         for(Player player : getServer().getOnlinePlayers()) {
+            int money = 0;
+            try {
+                 money = getBalance(player);
+            } catch(SQLException e) {
+                System.out.println("scheduler error");
+            }
+
             PersistentDataContainer dataContainer = player.getPersistentDataContainer();
             if(dataContainer.has(balviewKey, PersistentDataType.BYTE)) {
-                sendActionBar(player, "BALVIEW");
+                sendActionBar(player, "§2$" + money);
             }
         }
     }

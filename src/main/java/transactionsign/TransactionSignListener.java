@@ -21,8 +21,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TransactionSignListener implements Listener {
-    Plugin plugin;
-    OrganisationHandler organisationHandler;
+    private Plugin plugin;
+    private OrganisationHandler organisationHandler;
+    private NamespacedKey keyDescription;
+    private NamespacedKey keyAmount;
+    private NamespacedKey keyReceiver;
+    private NamespacedKey keyMode;
     private final NamespacedKey keyIsTransactionSign;
     private final Pattern transactionPattern = Pattern.compile("<([a-zA-Z])>([a-zA-Z0-9_]+)");
 
@@ -30,6 +34,10 @@ public class TransactionSignListener implements Listener {
         this.plugin = plugin;
         this.organisationHandler = organisationHandler;
         keyIsTransactionSign = new NamespacedKey(plugin, "is_transaction_sign");
+        keyDescription = new NamespacedKey(plugin, "transaction_description");
+        keyAmount = new NamespacedKey(plugin, "transaction_amount");
+        keyReceiver = new NamespacedKey(plugin, "transaction_receiver");
+        keyMode = new NamespacedKey(plugin, "transaction_mode");
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
@@ -119,20 +127,16 @@ public class TransactionSignListener implements Listener {
             PersistentDataContainer container = sign.getPersistentDataContainer();
 
             //mode
-            NamespacedKey keyMode = new NamespacedKey(plugin, "transaction_mode");
             container.set(keyMode, PersistentDataType.STRING, mode);
 
             //receiver
-            NamespacedKey keyReceiver = new NamespacedKey(plugin, "transaction_receiver");
             container.set(keyReceiver, PersistentDataType.STRING, receiver);
 
             //amount
-            NamespacedKey keyAmount = new NamespacedKey(plugin, "transaction_amount");
             container.set(keyAmount, PersistentDataType.INTEGER, amount);
 
             //description
             String description = event.getLine(3);
-            NamespacedKey keyDescription = new NamespacedKey(plugin, "transaction_description");
             container.set(keyDescription, PersistentDataType.STRING, description);
 
             //wax
@@ -159,7 +163,13 @@ public class TransactionSignListener implements Listener {
 
             Player player = (Player) event.getPlayer();
 
-            player.sendMessage("TS interact!");
+            String sender = player.getName();
+            String receiver = container.get(keyReceiver,PersistentDataType.STRING);
+            String mode = container.get(keyMode,PersistentDataType.STRING);
+            int amount = container.get(keyAmount,PersistentDataType.INTEGER);
+            String description = container.get(keyDescription,PersistentDataType.STRING);
+
+            player.sendMessage("TS interact!" + sender + receiver + mode + amount + description);
         }
     }
 }

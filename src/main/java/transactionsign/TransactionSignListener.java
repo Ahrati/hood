@@ -5,6 +5,7 @@ import economy.handler.OrganisationHandler;
 import economy.model.User;
 import org.bukkit.*;
 import org.bukkit.block.Sign;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -32,11 +33,12 @@ public class TransactionSignListener implements Listener {
     private NamespacedKey keyMode;
     private final NamespacedKey keyIsTransactionSign;
     private final Pattern transactionPattern = Pattern.compile("<([a-zA-Z])>([a-zA-Z0-9_]+)");
-
-    public TransactionSignListener(Plugin plugin, OrganisationHandler organisationHandler, MoneyHandler moneyHandler) {
+    private FileConfiguration config;
+    public TransactionSignListener(Plugin plugin, OrganisationHandler organisationHandler, MoneyHandler moneyHandler, FileConfiguration config) {
         this.plugin = plugin;
         this.moneyHandler = moneyHandler;
         this.organisationHandler = organisationHandler;
+        this.config = config;
         keyIsTransactionSign = new NamespacedKey(plugin, "is_transaction_sign");
         keyDescription = new NamespacedKey(plugin, "transaction_description");
         keyAmount = new NamespacedKey(plugin, "transaction_amount");
@@ -173,17 +175,28 @@ public class TransactionSignListener implements Listener {
 
             if(mode.equals("o")) {
                 try {
-                    if(moneyHandler.transferMoney(sender, receiver, amount, description, "p2o") == 0) {
+                    int tax = config.getInt("taxRate");
+                    int taxable = Math.round(amount * (float)tax/100);
+                    if(moneyHandler.transferMoney(sender, receiver, amount - taxable, description, "p2o") == 0) {
                         player.sendMessage("[§dEconomy§r] §aTransferred §6$" + amount + "§a to §b" + receiver);;
+                    } else {
+                        return;
                     }
+                    moneyHandler.transferMoney(sender, "government", taxable, "shop tax", "p2o");
+
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
             } else if (mode.equals("p")){
                 try {
-                    if(moneyHandler.transferMoney(sender, receiver, amount, description, "p2p") == 0){
-                        player.sendMessage("[§dEconomy§r] §aTransferred §6$" + amount + "§a to §b" + receiver);
+                    int tax = config.getInt("taxRate");
+                    int taxable = Math.round(amount * (float)tax/100);
+                    if(moneyHandler.transferMoney(sender, receiver, amount - taxable, description, "p2p") == 0){
+                        player.sendMessage("[§dEconomy§r] §aTransferred §6$" + amount + "§a to §6" + receiver);
+                    } else {
+                        return;
                     }
+                    moneyHandler.transferMoney(sender, "government", taxable, "shop tax", "p2o");
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }

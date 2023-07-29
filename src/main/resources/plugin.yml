@@ -68,3 +68,7 @@ commands:
     aliases:
       - o
       - organisation
+
+  tax:
+    description: Sets tax rate
+    usage: /tax <amount>

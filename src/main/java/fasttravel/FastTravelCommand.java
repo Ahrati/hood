@@ -216,6 +216,9 @@ public class FastTravelCommand implements TabExecutor {
                     if(moneyHandler.transferMoney(player.getName(), "government", taxAmount, "Fast travel tax","p2o") != 0) {
                         return true;
                     }
+                    else {
+                        player.sendMessage("[§dFast Travel§r] §aPaid $" + taxAmount + " fast travel tax");
+                    }
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }

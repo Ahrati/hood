@@ -1,9 +1,7 @@
 package economy.listeners;
 
-import db.database;
 import economy.model.User;
 import economy.repository.PlayerRepository;
-import fasttravel.FastTravelRepository;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

@@ -2,14 +2,13 @@ package economy;
 
 import economy.handler.MoneyHandler;
 import economy.model.TransactionLog;
-import economy.model.User;
-import economy.repository.PlayerRepository;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -32,7 +31,7 @@ public class balCommand implements TabExecutor {
             }
 
             try {
-                sender.sendMessage("[§dEconomy§r] §aBalance: §6$" + moneyHandler.getBalance((Player) sender));
+                sender.sendMessage("[§dEconomy§r] §aBalance: §6$" + NumberFormat.getInstance().format(moneyHandler.getBalance((Player) sender)));
             } catch (SQLException e) {
                 e.printStackTrace();
                 sender.sendMessage("§c<§rerror§c>§r [§dEconomy§r] §cCouldn't fetch balance!");
@@ -45,7 +44,7 @@ public class balCommand implements TabExecutor {
                     StringBuilder sb = new StringBuilder();
                     sb.append("[§dEconomy§r] Transaction history\n");
                     for(TransactionLog log : moneyHandler.getHistory(sender.getName(), "p")) {
-                        sb.append("§7> ").append(log.datetime).append("[§b").append(log.getFrom()).append("§7 -> §b").append(log.getTo()).append("§7] : §a$").append(log.getAmount()).append(" '").append(log.getDescription()).append("'\n");
+                        sb.append("§7> ").append("[§b").append(log.getFrom()).append("§7 -> §b").append(log.getTo()).append("§7] : §a$").append(log.getAmount()).append(" '").append(log.getDescription()).append(log.datetime).append("'\n");
                     }
                     sb.append("Transaction logs get deleted after 10 days!");
 

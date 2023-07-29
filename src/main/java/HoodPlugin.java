@@ -156,7 +156,7 @@ public class HoodPlugin extends JavaPlugin {
         CasinoChipCraftListener casinoChipCraftListener = new CasinoChipCraftListener(this);
 
         //TRANSACTION SIGN
-        TransactionSignListener transactionSignListener = new TransactionSignListener(this, organisationHandler);
+        TransactionSignListener transactionSignListener = new TransactionSignListener(this, organisationHandler, moneyHandler);
 
         // LOADED
         super.onEnable();

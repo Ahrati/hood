@@ -1,5 +1,6 @@
 package transactionsign;
 
+import economy.handler.MoneyHandler;
 import economy.handler.OrganisationHandler;
 import economy.model.User;
 import org.bukkit.Bukkit;
@@ -10,7 +11,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
 public class TransactionSignListener implements Listener {
     private Plugin plugin;
     private OrganisationHandler organisationHandler;
+    private MoneyHandler moneyHandler;
     private NamespacedKey keyDescription;
     private NamespacedKey keyAmount;
     private NamespacedKey keyReceiver;
@@ -30,8 +31,9 @@ public class TransactionSignListener implements Listener {
     private final NamespacedKey keyIsTransactionSign;
     private final Pattern transactionPattern = Pattern.compile("<([a-zA-Z])>([a-zA-Z0-9_]+)");
 
-    public TransactionSignListener(Plugin plugin, OrganisationHandler organisationHandler) {
+    public TransactionSignListener(Plugin plugin, OrganisationHandler organisationHandler, MoneyHandler moneyHandler) {
         this.plugin = plugin;
+        this.moneyHandler = moneyHandler;
         this.organisationHandler = organisationHandler;
         keyIsTransactionSign = new NamespacedKey(plugin, "is_transaction_sign");
         keyDescription = new NamespacedKey(plugin, "transaction_description");
@@ -153,7 +155,7 @@ public class TransactionSignListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent event){
+    public void onPlayerInteract(PlayerInteractEvent event) {
         if (event.getClickedBlock() == null) return;
         if (event.getClickedBlock().getState() instanceof Sign){
             Sign sign = (Sign) event.getClickedBlock().getState();
@@ -168,6 +170,21 @@ public class TransactionSignListener implements Listener {
             String mode = container.get(keyMode,PersistentDataType.STRING);
             int amount = container.get(keyAmount,PersistentDataType.INTEGER);
             String description = container.get(keyDescription,PersistentDataType.STRING);
+
+            if(mode.equals("o")) {
+                try {
+                    moneyHandler.transferMoney(sender, receiver, amount, description, "p2o");
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            } else if (mode.equals("p")){
+                try {
+                    moneyHandler.transferMoney(sender, receiver, amount, description, "p2p");
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
 
             player.sendMessage("TS interact!" + sender + receiver + mode + amount + description);
         }

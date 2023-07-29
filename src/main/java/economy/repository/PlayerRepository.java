@@ -1,7 +1,6 @@
 package economy.repository;
 
 import db.database;
-import economy.handler.MoneyHandler;
 import economy.model.User;
 import org.bukkit.entity.Player;
 
@@ -12,8 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-
-import static org.bukkit.Bukkit.getServer;
 
 public class PlayerRepository {
     private static List<User> cache;

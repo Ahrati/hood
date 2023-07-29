@@ -1,8 +1,6 @@
 package economy;
 
 import economy.handler.MoneyHandler;
-import economy.model.User;
-import economy.repository.PlayerRepository;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;

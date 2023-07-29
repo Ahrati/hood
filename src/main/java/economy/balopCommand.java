@@ -4,7 +4,6 @@ import economy.handler.MoneyHandler;
 import economy.handler.OrganisationHandler;
 import economy.model.Organisation;
 import economy.model.User;
-import economy.repository.PlayerRepository;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -13,8 +12,6 @@ import org.bukkit.entity.Player;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.bukkit.Bukkit.getServer;
 
 public class balopCommand implements TabExecutor {
     private final MoneyHandler moneyHandler;

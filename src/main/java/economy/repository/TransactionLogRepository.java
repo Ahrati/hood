@@ -2,7 +2,6 @@ package economy.repository;
 
 import db.database;
 import economy.model.TransactionLog;
-import economy.model.User;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

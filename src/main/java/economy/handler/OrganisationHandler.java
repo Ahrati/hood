@@ -7,7 +7,6 @@ import economy.repository.PlayerRepository;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
-import java.sql.Array;
 import java.sql.SQLException;
 import java.util.*;
 

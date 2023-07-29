@@ -67,15 +67,16 @@ public class MoneyHandler {
     }
     public void showActionBar() {
         for(Player player : getServer().getOnlinePlayers()) {
-            int money = 0;
-            try {
-                 money = getBalance(player);
-            } catch(SQLException e) {
-                System.out.println("scheduler error");
-            }
 
             PersistentDataContainer dataContainer = player.getPersistentDataContainer();
             if(dataContainer.has(balviewKey, PersistentDataType.BYTE)) {
+                int money = 0;
+                try {
+                    money = getBalance(player);
+                } catch(SQLException e) {
+                    System.out.println("scheduler error");
+                }
+
                 sendActionBar(player, "§2$" + money);
             }
         }

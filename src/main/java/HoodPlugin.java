@@ -18,6 +18,8 @@ import java.util.Objects;
 import java.util.logging.Level;
 import db.database;
 import economy.*;
+import transactionsign.TransactionSignListener;
+
 public class HoodPlugin extends JavaPlugin {
     FileConfiguration config = getConfig();
     private database db;
@@ -104,23 +106,23 @@ public class HoodPlugin extends JavaPlugin {
         }
 
 
-        getCommand("fasttravelpointset").setExecutor(new FastTravelPointSetCommand(db));
-        getCommand("fasttravelpointset").setPermission("myplugin.admin");
+        Objects.requireNonNull(getCommand("fasttravelpointset")).setExecutor(new FastTravelPointSetCommand(db));
+        Objects.requireNonNull(getCommand("fasttravelpointset")).setPermission("myplugin.admin");
 
-        getCommand("fasttravellist").setExecutor(new FastTravelListCommand(db));
+        Objects.requireNonNull(getCommand("fasttravellist")).setExecutor(new FastTravelListCommand(db));
 
         Objects.requireNonNull(getCommand("fasttravel")).setExecutor(new FastTravelCommand(db, this));
         Objects.requireNonNull(getCommand("fasttravel")).setTabCompleter(new FastTravelCommand(db, this));
 
         Objects.requireNonNull(getCommand("fasttravelpointdelete")).setExecutor(new FastTravelPointDeleteCommand(db));
         Objects.requireNonNull(getCommand("fasttravelpointdelete")).setTabCompleter(new FastTravelPointDeleteCommand(db));
-        getCommand("fasttravelpointdelete").setPermission("myplugin.admin");
+        Objects.requireNonNull(getCommand("fasttravelpointdelete")).setPermission("myplugin.admin");
 
-        getCommand("fasttravelban").setExecutor(new FastTravelBanCommand(this));
-        getCommand("fasttravelban").setPermission("myplugin.admin");
+        Objects.requireNonNull(getCommand("fasttravelban")).setExecutor(new FastTravelBanCommand(this));
+        Objects.requireNonNull(getCommand("fasttravelban")).setPermission("myplugin.admin");
 
-        getCommand("fasttravelunban").setExecutor(new FastTravelUnbanCommand(this));
-        getCommand("fasttravelunban").setPermission("myplugin.admin");
+        Objects.requireNonNull(getCommand("fasttravelunban")).setExecutor(new FastTravelUnbanCommand(this));
+        Objects.requireNonNull(getCommand("fasttravelunban")).setPermission("myplugin.admin");
 
         new FastTravelDiscoveryHandler(this,db);
 
@@ -132,26 +134,29 @@ public class HoodPlugin extends JavaPlugin {
             System.out.println("Could not initialize jails table.");
         }
 
-        getCommand("jailset").setExecutor(new JailSetCommand(db));
-        getCommand("jailset").setPermission("myplugin.admin");
+        Objects.requireNonNull(getCommand("jailset")).setExecutor(new JailSetCommand(db));
+        Objects.requireNonNull(getCommand("jailset")).setPermission("myplugin.admin");
 
-        getCommand("jail").setExecutor(new JailCommand(db,this));
-        getCommand("jail").setPermission("myplugin.admin");
-        getCommand("jail").setTabCompleter(new JailCommand(db,this));
+        Objects.requireNonNull(getCommand("jail")).setExecutor(new JailCommand(db,this));
+        Objects.requireNonNull(getCommand("jail")).setPermission("myplugin.admin");
+        Objects.requireNonNull(getCommand("jail")).setTabCompleter(new JailCommand(db,this));
 
-        getCommand("jailfree").setExecutor(new JailFreeCommand(this));
-        getCommand("jailfree").setPermission("myplugin.admin");
+        Objects.requireNonNull(getCommand("jailfree")).setExecutor(new JailFreeCommand(this));
+        Objects.requireNonNull(getCommand("jailfree")).setPermission("myplugin.admin");
 
-        getCommand("jaillist").setExecutor(new JailListCommand(db));
-        getCommand("jaillist").setPermission("myplugin.admin");
+        Objects.requireNonNull(getCommand("jaillist")).setExecutor(new JailListCommand(db));
+        Objects.requireNonNull(getCommand("jaillist")).setPermission("myplugin.admin");
 
-        getCommand("jaildelete").setExecutor(new JailDeleteCommand(db));
-        getCommand("jaildelete").setPermission("myplugin.admin");
-        getCommand("jaildelete").setTabCompleter(new JailDeleteCommand(db));
+        Objects.requireNonNull(getCommand("jaildelete")).setExecutor(new JailDeleteCommand(db));
+        Objects.requireNonNull(getCommand("jaildelete")).setPermission("myplugin.admin");
+        Objects.requireNonNull(getCommand("jaildelete")).setTabCompleter(new JailDeleteCommand(db));
 
         //CASINO CHIPS
         CasinoChipsItemManager casinoChipsItemManager = new CasinoChipsItemManager(this);
         CasinoChipCraftListener casinoChipCraftListener = new CasinoChipCraftListener(this);
+
+        //TRANSACTION SIGN
+        TransactionSignListener transactionSignListener = new TransactionSignListener(this, organisationHandler);
 
         // LOADED
         super.onEnable();

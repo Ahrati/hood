@@ -12,14 +12,13 @@ import java.util.*;
 public class OrganisationRepository {
 
     private final database db;
-    private List<Organisation> cache;
-    // private Map<User, String> roleCache;
+    private static List<Organisation> cache;
+    private static Map<User, String> roleCache;
     public OrganisationRepository(database db) {
         this.db = db;
-        this.cache = new ArrayList<>();
-        // this.roleCache = new HashMap<>();
+        cache = new ArrayList<>();
+        roleCache = new HashMap<>();
     }
-    /*
     public Organisation cached(String name) {
         for(Organisation organisation : cache) {
             if(Objects.equals(organisation.getName(), name)) {
@@ -32,14 +31,13 @@ public class OrganisationRepository {
     public String cachedRole(User user) {
         return roleCache.getOrDefault(user, null);
     }
-    */
     public Organisation fetchOrganisation(String name) throws SQLException {
-/*
+
         Organisation cached = cached(name);
         if(cached != null) {
             return cached;
         }
-*/
+
         PreparedStatement statement = db.getConnection().prepareStatement("SELECT * FROM organisation WHERE name = ?");
         statement.setString(1, name);
 
@@ -54,6 +52,8 @@ public class OrganisationRepository {
 
             organisation = new Organisation(id, name, description, members, money);
             statement.close();
+
+            cache.add(organisation);
             return organisation;
         }
 
@@ -66,12 +66,12 @@ public class OrganisationRepository {
         if(org == null) {
             return null;
         }
-/*
+
         Organisation cached = cached(organisationName);
         if(cached != null) {
             return cached.getMembers();
         }
-*/
+
         return fetchOrganisationMembersbyId(String.valueOf(org.getId()));
     }
 
@@ -96,12 +96,12 @@ public class OrganisationRepository {
     }
 
     public String fetchRole(String organisationName, User user) throws SQLException{
-/*
+
         String cached = cachedRole(user);
         if(cached != null) {
             return cached;
         }
-*/
+
         PreparedStatement checkStatement = db.getConnection().prepareStatement("SELECT * FROM memberlist WHERE uuid = ? AND organisationid = ?");
         checkStatement.setString(1, user.getUuid().toString());
         checkStatement.setString(2, String.valueOf(fetchOrganisation(organisationName).getId()));
@@ -109,6 +109,7 @@ public class OrganisationRepository {
         String result;
         if (resultSet.next()) {
             result = resultSet.getString("role");
+            roleCache.put(user, result);
         } else {
             result = null;
         }
@@ -119,7 +120,7 @@ public class OrganisationRepository {
 
     public void createOrganisation(Organisation organisation) throws SQLException {
 
-        //cache.add(organisation);
+        cache.add(organisation);
 
         PreparedStatement statement = db.getConnection().prepareStatement("INSERT INTO organisation (name, description, money) VALUES (?, ?, ?)");
         statement.setString(1, organisation.getName());
@@ -129,12 +130,12 @@ public class OrganisationRepository {
         statement.close();
     }
     public void updateOrganisation(Organisation organisation) throws SQLException {
-/*
+
         Organisation cached = cached(organisation.getName());
         if(cached != null) {
             cache.set(cache.indexOf(cached), organisation);
         }
-*/
+
         PreparedStatement statement = db.getConnection().prepareStatement("UPDATE organisation SET name = ?, description = ?, money = ? WHERE id = ?");
         statement.setString(1, organisation.getName());
         statement.setString(2, organisation.getDescription());
@@ -144,12 +145,12 @@ public class OrganisationRepository {
         statement.close();
     }
     public void deleteOrganisation(Organisation organisation) throws SQLException {
-/*
+
         Organisation cached = cached(organisation.getName());
         if(cached != null) {
             cache.remove(organisation);
         }
-*/
+
         PreparedStatement statement = db.getConnection().prepareStatement("DELETE FROM organisation WHERE id = ?");
         statement.setString(1, String.valueOf(organisation.getId()));
         statement.executeUpdate();

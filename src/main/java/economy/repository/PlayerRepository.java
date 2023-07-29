@@ -17,7 +17,7 @@ public class PlayerRepository {
     private final database db;
     public PlayerRepository(database db) {
         this.db = db;
-        this.cache = new ArrayList<>();
+        cache = new ArrayList<>();
     }
     public User cached(String username) {
         for(User user : cache) {
@@ -31,10 +31,8 @@ public class PlayerRepository {
 
         User cached = cached(username);
         if(cached != null) {
-            System.out.println("CASH fetch player" + username);
             return cached;
         }
-        System.out.println("SQL");
 
         PreparedStatement statement = db.getConnection().prepareStatement("SELECT * FROM user WHERE username = ?");
         statement.setString(1, username);
@@ -95,10 +93,8 @@ public class PlayerRepository {
         User cached = cached(player.getUsername());
         if(cached != null) {
             cache.set(cache.indexOf(cached), player);
-            System.out.println("CASH update player");
         }
 
-        System.out.println("SQL");
         PreparedStatement statement = db.getConnection().prepareStatement("UPDATE user SET player_uuid = ?, username = ?, money = ? WHERE player_uuid = ?");
         statement.setString(1, player.getUuid().toString());
         statement.setString(2, player.getUsername());

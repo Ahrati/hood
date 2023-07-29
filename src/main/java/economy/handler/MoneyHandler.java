@@ -37,9 +37,6 @@ public class MoneyHandler {
         this.plugin = plugin;
         this.balviewKey = new NamespacedKey(plugin, "balance_view");
         timer();
-        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-        scheduler.scheduleAtFixedRate(this::showActionBar, 0, 3, TimeUnit.SECONDS);
-
     }
 
     public void timer() {

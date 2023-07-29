@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -28,16 +29,31 @@ public class MoneyHandler {
     private final TransactionLogRepository logger;
     private Plugin plugin;
     private final NamespacedKey balviewKey;
-
+    private int taskId;
     public MoneyHandler(PlayerRepository prepo, OrganisationRepository orepo, TransactionLogRepository trepo, Plugin plugin) {
         this.prepo = prepo;
         this.orepo = orepo;
         this.logger = trepo;
         this.plugin = plugin;
         this.balviewKey = new NamespacedKey(plugin, "balance_view");
+        timer();
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
         scheduler.scheduleAtFixedRate(this::showActionBar, 0, 3, TimeUnit.SECONDS);
 
+    }
+
+    public void timer() {
+        taskId = new BukkitRunnable() {
+            @Override
+            public void run() {
+                // Call your method here that needs to be executed at equal intervals
+                showActionBar();
+            }
+        }.runTaskTimer(plugin, 0, 20).getTaskId();
+    }
+
+    public void stopTimer() {
+        getServer().getScheduler().cancelTask(taskId);
     }
     public List<TransactionLog> getHistory(String name, String mode) throws SQLException {
         List<TransactionLog> sorted = logger.getTransactions(name, mode);

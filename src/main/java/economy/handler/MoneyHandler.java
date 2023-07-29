@@ -56,7 +56,7 @@ public class MoneyHandler {
         for(Player player : getServer().getOnlinePlayers()) {
             PersistentDataContainer dataContainer = player.getPersistentDataContainer();
             if(dataContainer.has(balviewKey, PersistentDataType.BYTE)) {
-                sendActionBar(player, "BALVIEW");
+                sendActionBar(player, "§2BALVIEW");
             }
         }
     }

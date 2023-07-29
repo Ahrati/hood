@@ -7,6 +7,7 @@ import economy.repository.OrganisationRepository;
 import economy.repository.PlayerRepository;
 import economy.repository.TransactionLogRepository;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -33,6 +34,16 @@ public class MoneyHandler {
         this.plugin = plugin;
         this.balviewKey = new NamespacedKey(plugin, "balance_view");
         timer();
+    }
+
+    public void ConfirmationSound(Player player) {
+        // Play the "doo" sound
+        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_XYLOPHONE, 1.0f, 1.0f);
+
+        // Wait for a short delay before playing the "DIP" sound
+        getServer().getScheduler().runTaskLater(plugin, () -> {
+            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1.0f, 1.5f);
+        }, 5); //
     }
 
     public void timer() {
@@ -192,6 +203,7 @@ public class MoneyHandler {
             orepo.updateOrganisation(receiver);
 
             logger.createTransaction(from, to, amount, description, mode);
+            ConfirmationSound(sender);
             return 0;
         } else if(Objects.equals(mode, "o2p")) {
             Organisation sender = orepo.fetchOrganisation(from);

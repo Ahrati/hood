@@ -3,8 +3,7 @@ package transactionsign;
 import economy.handler.MoneyHandler;
 import economy.handler.OrganisationHandler;
 import economy.model.User;
-import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
+import org.bukkit.*;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,11 +13,14 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.SQLException;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.bukkit.Bukkit.getServer;
 
 public class TransactionSignListener implements Listener {
     private Plugin plugin;
@@ -46,7 +48,6 @@ public class TransactionSignListener implements Listener {
     @EventHandler
     public void onSignChange(SignChangeEvent event){
         Player player = event.getPlayer();
-        player.sendMessage("sign edited, checking if TS");
 
         if (event.getLine(0).equals("[$]")){
             player.sendMessage("making TS");
@@ -150,9 +151,8 @@ public class TransactionSignListener implements Listener {
 
             sign.update();
         }
-
-
     }
+
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
@@ -184,9 +184,6 @@ public class TransactionSignListener implements Listener {
                     e.printStackTrace();
                 }
             }
-
-
-            player.sendMessage("TS interact!" + sender + receiver + mode + amount + description);
         }
     }
 }

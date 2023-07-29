@@ -58,6 +58,31 @@ public class PlayerRepository {
         return null;
     }
 
+    public List<User> fetchPlayers() throws SQLException {
+/*
+        User cached = cached(username);
+        if(cached != null) {
+            return cached;
+        }
+*/
+        PreparedStatement statement = db.getConnection().prepareStatement("SELECT * FROM user");
+
+        ResultSet resultSet = statement.executeQuery();
+        List<User> players = new ArrayList<>();
+        while(resultSet.next()) {
+            User player = new User(UUID.fromString(resultSet.getString("player_uuid")),
+                    resultSet.getString("username"),
+                    resultSet.getInt("money"));
+            players.add(player);
+            //  cache.add(player);
+
+        }
+        
+        statement.close();
+        statement.close();
+        return players;
+    }
+
     public User getPlayer(Player player) throws SQLException {
         User user = fetchPlayer(player.getName());
         if(user == null) {

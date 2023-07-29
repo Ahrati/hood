@@ -65,6 +65,10 @@ public class MoneyHandler {
         return prepo.getPlayer((Player) sender).getMoney();
     }
 
+    public List<User> getBalances() throws SQLException {
+        return prepo.fetchPlayers();
+    }
+
     public int getBalance(String from, String mode) throws SQLException {
         if(Objects.equals(mode, "p")) {
             return prepo.fetchPlayer(from).getMoney();

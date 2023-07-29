@@ -72,8 +72,8 @@ public class HoodPlugin extends JavaPlugin {
         Objects.requireNonNull(getCommand("pay")).setExecutor(new payCommand(moneyHandler));
         Objects.requireNonNull(getCommand("pay")).setTabCompleter(new payCommand(moneyHandler));
 
-        Objects.requireNonNull(getCommand("balop")).setExecutor(new balopCommand(moneyHandler));
-        Objects.requireNonNull(getCommand("balop")).setTabCompleter(new balopCommand(moneyHandler));
+        Objects.requireNonNull(getCommand("balop")).setExecutor(new balopCommand(moneyHandler, organisationHandler));
+        Objects.requireNonNull(getCommand("balop")).setTabCompleter(new balopCommand(moneyHandler, organisationHandler));
         Objects.requireNonNull(getCommand("balop")).setPermission("myplugin.admin");
 
         Objects.requireNonNull(getCommand("org")).setExecutor(new orgCommand(moneyHandler, organisationHandler));

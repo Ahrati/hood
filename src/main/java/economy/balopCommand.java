@@ -1,6 +1,8 @@
 package economy;
 
 import economy.handler.MoneyHandler;
+import economy.handler.OrganisationHandler;
+import economy.model.Organisation;
 import economy.model.User;
 import economy.repository.PlayerRepository;
 import org.bukkit.command.Command;
@@ -16,8 +18,10 @@ import static org.bukkit.Bukkit.getServer;
 
 public class balopCommand implements TabExecutor {
     private final MoneyHandler moneyHandler;
-    public balopCommand(MoneyHandler moneyHandler) {
+    private final OrganisationHandler organisationHandler;
+    public balopCommand(MoneyHandler moneyHandler, OrganisationHandler organisationHandler) {
         this.moneyHandler = moneyHandler;
+        this.organisationHandler = organisationHandler;
     }
 
     @Override
@@ -87,6 +91,32 @@ public class balopCommand implements TabExecutor {
                 sender.sendMessage("[§dEconomy§r] §aSuccess!");
                 return true;
             }
+            case "list" -> {
+                StringBuilder sb = new StringBuilder();
+                sb.append("[§dEconomy§r] LIST\n");
+                try {
+                    sb.append("PLAYERS:\n");
+                    List<User> players = moneyHandler.getBalances();
+                    for(User user : players) {
+                        sb.append(user.getUsername()).append(" - $").append(user.getMoney()).append("\n");
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    sb.append("ORGS:\n");
+                    List<Organisation> orgs = organisationHandler.getOrganisations();
+                    for(Organisation org : orgs) {
+                        sb.append(org.getName()).append(" - $").append(org.getMoney()).append("\n");
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                sender.sendMessage(sb.toString());
+
+                return true;
+            }
             default -> {
                 return false;
             }
@@ -96,7 +126,7 @@ public class balopCommand implements TabExecutor {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         if(args.length == 1) {
-            String[] SUBCOMMANDS = {"set", "sub", "add"};
+            String[] SUBCOMMANDS = {"set", "sub", "add", "list"};
             final List<String> arguments = new ArrayList<>();
             for (String string : SUBCOMMANDS) if (string.toLowerCase().startsWith(args[0].toLowerCase())) arguments.add(string);
             return arguments;

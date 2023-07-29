@@ -52,7 +52,7 @@ commands:
     usage: /<command>
   pay:
     description: Pay someone an amount
-    usage: /<command> <player> <amount>
+    usage: /<command> <player-name>/[org <org-name>] <amount>
   balop:
     description: Operator command for editing balances
     usage: /balop <set/add/sub> <player> <amount>

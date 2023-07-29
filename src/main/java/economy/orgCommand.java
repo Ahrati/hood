@@ -71,13 +71,14 @@ public class orgCommand implements TabExecutor {
             case "help" -> {
                 String str = """
                         [§dOrganisations§r] Help
-                        /org §7- general info
-                        /org <§7org-name§r> §7- info about particular org
-                        /org create <§7org-name§r> <§7description§r> §7- create org
-                        /org invite <§7name§r> <§7org-name§r> §7- invite people to org
-                        /org join <§7org-name§r> §7- join an org
-                        /org leave <§7org-name§r> §7- leave org
-                        /org kick <§7name§r> <§7org-name§r> §7- kick person from org""";
+                        §r/org §7- general info
+                        §r/org <§7org-name§r> §7- info about particular org
+                        §r/org create <§7org-name§r> <§7description§r> §7- create org
+                        §r/org invite <§7name§r> <§7org-name§r> §7- invite people to org
+                        §r/org join <§7org-name§r> §7- join an org
+                        §r/org leave <§7org-name§r> §7- leave org
+                        §r/org kick <§7name§r> <§7org-name§r> §7- kick person from org
+                        §r/org pay [§7user/org§r] <§7amount§r> <§7name§r> <§7org-name§r> §7- transfer money from org""";
                 sender.sendMessage(str);
                 return true;
             }
@@ -206,6 +207,68 @@ public class orgCommand implements TabExecutor {
                 return true;
             }
 
+            case "pay" -> {
+
+                if(args.length != 5) {
+                    return false;
+                }
+
+                try {
+                    if(!organisationHandler.isOwner((Player) sender, args[4])) {
+                        sender.sendMessage("[§dOrganisations§r] §cYou are not the owner of this organisation!");
+                        return true;
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                int amount;
+                try {
+                    amount = Integer.parseInt(args[2]);
+                } catch(NumberFormatException e) {
+                    return false;
+                }
+
+                if(amount < 1) {
+                    sender.sendMessage("§cAmount to pay can't be a negative number!");
+                    return true;
+                }
+
+                if(Objects.equals(args[1], "user")) {
+                    String receiver = args[3];
+                    try {
+                        if(moneyHandler.transferMoney(args[4], receiver, amount, "payment","o2p") == 0) {
+                            sender.sendMessage("[§dEconomy§r] §aTransferred §6$" + amount + "§a to §b" + receiver);
+                            Player target = getServer().getPlayer(receiver);
+                            if(target != null) {
+                                target.sendMessage("[§dEconomy§r] §aReceived §6$" + amount + "§a from §6" + args[4]);
+                            }
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        sender.sendMessage("§c<§rerror§c>§r [§dEconomy§r] §cCouldn't transfer money!");
+                        System.out.println("§cCould not transfer money from §6" + args[4] + " to §b" + receiver + "!");
+                        return false;
+                    }
+                    return true;
+                } else if (Objects.equals(args[1], "org")) {
+                    String receiver = args[3];
+                    try {
+                        if(moneyHandler.transferMoney(args[4], receiver, amount, "payment","o2o") == 0) {
+                            sender.sendMessage("[§dEconomy§r] §aTransferred §6$" + amount + "§a to §6" + receiver);
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        sender.sendMessage("§c<§rerror§c>§r [§dEconomy§r] §cCouldn't transfer money!");
+                        System.out.println("§cCould not transfer money from §6" + args[4] + " to §b" + receiver + "!");
+                        return false;
+                    }
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
             default -> {
                 if(args.length > 1) {
                     return false;
@@ -263,7 +326,7 @@ public class orgCommand implements TabExecutor {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         if(args.length == 1) {
-            String[] SUBCOMMANDS = {"create", "invite", "join", "leave", "kick"};
+            String[] SUBCOMMANDS = {"create", "invite", "join", "leave", "kick", "pay"};
             final List<String> arguments = new ArrayList<>();
             for (String string : SUBCOMMANDS) if (string.toLowerCase().startsWith(args[0].toLowerCase())) arguments.add(string);
             return arguments;

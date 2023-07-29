@@ -44,6 +44,9 @@ public class OrganisationHandler {
         }
         return result;
     }
+    public List<Organisation> getOrganisations() throws SQLException {
+        return orepo.getAllOrganisations();
+    }
     public void createOrganisation(String org, String desc, Player creator) throws SQLException {
         List<Organisation> orgs = orepo.getAllOrganisations();
         int counter = 0;
@@ -198,6 +201,9 @@ public class OrganisationHandler {
     }
 
     public List<User> getAllMembers(String org) throws SQLException {
+        if(!isOrganisation(org)) {
+            return null;
+        }
         return orepo.fetchOrganisation(org).getMembers();
     }
 

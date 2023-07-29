@@ -72,7 +72,7 @@ public class PlayerRepository {
                     resultSet.getString("username"),
                     resultSet.getInt("money"));
             players.add(player);
-            //  cache.add(player);
+            cache.add(player);
 
         }
         

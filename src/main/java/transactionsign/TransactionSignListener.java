@@ -149,6 +149,10 @@ public class TransactionSignListener implements Listener {
             player.sendMessage("[§dTransaction Sign§r] §aTransaction sign created!");
             container.set(keyIsTransactionSign, PersistentDataType.BYTE, (byte) 1);
 
+            event.setLine(1, ChatColor.translateAlternateColorCodes('&', secondLine.substring(3)));
+            event.setLine(2, "$" + event.getLine(2));
+            event.setLine(3, ChatColor.ITALIC + event.getLine(3));
+
             sign.update();
         }
     }

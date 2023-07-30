@@ -45,29 +45,36 @@ public class TransactionSignListener implements Listener {
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
+    private void InfoMessage(Player player){
+        player.sendMessage("[§dTransaction Sign§r] §7Please use the following format:");
+        player.sendMessage("[§dTransaction Sign§r] §7[$]");
+        player.sendMessage("[§dTransaction Sign§r] §7<p>player or <o>organisation");
+        player.sendMessage("[§dTransaction Sign§r] §7amount");
+        player.sendMessage("[§dTransaction Sign§r] §8description (optional)");
+    }
+
     @EventHandler
     public void onSignChange(SignChangeEvent event){
         Player player = event.getPlayer();
 
         if (event.getLine(0).equals("[$]")){
-            player.sendMessage("making TS");
             Sign sign = (Sign) event.getBlock().getState();
 
             // CHECK MODE AND RECEIVER
             String secondLine = event.getLine(1);
             Matcher matcher = transactionPattern.matcher(secondLine);
             if (!matcher.matches()) {
-                player.sendMessage("[§dTransaction Sign§r] §cInvalid format on line 2. Please use <mode>playerName.");
+                player.sendMessage("[§dTransaction Sign§r] §cInvalid format on line 2.");
+                InfoMessage(player);
                 return;
             }
 
             String mode = matcher.group(1);
             String receiver = matcher.group(2);
-            player.sendMessage(mode);
-            player.sendMessage(receiver);
 
             if (!(mode.equals("o") || mode.equals("p"))){
                 player.sendMessage("[§dTransaction Sign§r] §cMode must be 'o' or 'p'!");
+                InfoMessage(player);
                 return;
             }
 
@@ -109,7 +116,7 @@ public class TransactionSignListener implements Listener {
                 }
 
                 if (!playerIsMember) {
-                    player.sendMessage("[§dTransaction Sign§r] §cYou are not a member of the organization.");
+                    player.sendMessage("[§dTransaction Sign§r] §cYou are not a member of the organisation.");
                     return;
                 }
             }
@@ -124,6 +131,7 @@ public class TransactionSignListener implements Listener {
                 }
             } catch (NumberFormatException e) {
                 player.sendMessage("[§dTransaction Sign§r] §cInvalid value on line 3. Please enter a number greater than 0.");
+                return;
             }
 
             //EVERYTHING ALRIGHT
@@ -144,7 +152,6 @@ public class TransactionSignListener implements Listener {
 
             //wax
             sign.setWaxed(true);
-            player.sendMessage("waxed " + sign.isWaxed());
 
             player.sendMessage("[§dTransaction Sign§r] §aTransaction sign created!");
             container.set(keyIsTransactionSign, PersistentDataType.BYTE, (byte) 1);

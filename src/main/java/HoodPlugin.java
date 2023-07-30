@@ -38,6 +38,7 @@ public class HoodPlugin extends JavaPlugin {
         config.addDefault("password", "");
         config.addDefault("maxOrg", 5);
         config.addDefault("maxOrgMembers", 30);
+        config.addDefault("taxRate", 11);
         config.options().copyDefaults(true);
         saveConfig();
 
@@ -80,6 +81,10 @@ public class HoodPlugin extends JavaPlugin {
 
         Objects.requireNonNull(getCommand("org")).setExecutor(new orgCommand(moneyHandler, organisationHandler));
         Objects.requireNonNull(getCommand("org")).setTabCompleter(new orgCommand(moneyHandler, organisationHandler));
+
+        Objects.requireNonNull(getCommand("tax")).setExecutor(new taxCommand(this));
+        Objects.requireNonNull(getCommand("tax")).setTabCompleter(new taxCommand(this));
+        Objects.requireNonNull(getCommand("tax")).setPermission("myplugin.admin");
 
         getServer().getPluginManager().registerEvents(new economyListeners(prepo), this);
 
@@ -156,7 +161,7 @@ public class HoodPlugin extends JavaPlugin {
         CasinoChipCraftListener casinoChipCraftListener = new CasinoChipCraftListener(this);
 
         //TRANSACTION SIGN
-        TransactionSignListener transactionSignListener = new TransactionSignListener(this, organisationHandler, moneyHandler);
+        TransactionSignListener transactionSignListener = new TransactionSignListener(this, organisationHandler, moneyHandler, config);
 
         // LOADED
         super.onEnable();

@@ -57,6 +57,10 @@ public class OrganisationHandler {
             List<User> mem = organ.getMembers();
             for(User user : mem) {
                 if(Objects.equals(user.getUsername(), creator.getName())) {
+                    if(isOwner(creator, organ.getName())) {
+                        creator.sendMessage("[§dOrganisations§r] §cYou can only be the owner of one organisation at a time!");
+                        return;
+                    }
                     counter++;
                     break;
                 }

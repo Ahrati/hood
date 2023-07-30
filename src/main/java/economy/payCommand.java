@@ -7,6 +7,7 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
+import java.text.NumberFormat;
 import java.util.List;
 import java.util.Objects;
 
@@ -46,7 +47,7 @@ public class payCommand implements TabExecutor {
 
             try {
                 if(moneyHandler.transferMoney(sender.getName(), receiver, amount, "payment","p2o") == 0) {
-                    sender.sendMessage("[§dEconomy§r] §aTransferred §6$" + amount + "§a to §6" + receiver);
+                    sender.sendMessage("[§dEconomy§r] §aTransferred §6$" + NumberFormat.getInstance().format(amount) + "§a to §6" + receiver);
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -75,10 +76,10 @@ public class payCommand implements TabExecutor {
         String receiver = args[0];
         try {
             if(moneyHandler.transferMoney(sender.getName(), receiver, amount, "payment","p2p") == 0) {
-                sender.sendMessage("[§dEconomy§r] §aTransferred §6$" + amount + "§a to §b" + receiver);
+                sender.sendMessage("[§dEconomy§r] §aTransferred §6$" + NumberFormat.getInstance().format(amount) + "§a to §b" + receiver);
                 Player target = getServer().getPlayer(receiver);
                 if(target != null) {
-                    target.sendMessage("[§dEconomy§r] §aReceived §6$" + amount + "§a from §b" + sender.getName());
+                    target.sendMessage("[§dEconomy§r] §aReceived §6$" + NumberFormat.getInstance().format(amount) + "§a from §b" + sender.getName());
                 }
             }
         } catch (SQLException e) {

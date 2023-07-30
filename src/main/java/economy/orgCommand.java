@@ -10,6 +10,7 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -98,7 +99,7 @@ public class orgCommand implements TabExecutor {
                     sender.sendMessage("[§dOrganisations§r] §aOrganisation created!");
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    sender.sendMessage("§c<§rerror§c>§r [§Organisations§r] §cError creating organisation");
+                    sender.sendMessage("§c<§rerror§c>§r [§dOrganisations§r] §cError creating organisation");
                 }
                 return true;
             }
@@ -144,7 +145,7 @@ public class orgCommand implements TabExecutor {
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    sender.sendMessage("§c<§rerror§c>§r [§Organisations§r] §cCouldn't leave organisation.");
+                    sender.sendMessage("§c<§rerror§c>§r [§dOrganisations§r] §cCouldn't leave organisation.");
                 }
 
                 return true;
@@ -167,7 +168,7 @@ public class orgCommand implements TabExecutor {
 
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    sender.sendMessage("§c<§rerror§c>§r [§Organisations§r] §cCouldn't invite player to organisation.");
+                    sender.sendMessage("§c<§rerror§c>§r [§dOrganisations§r] §cCouldn't invite player to organisation.");
                 }
                 return true;
             }
@@ -202,7 +203,7 @@ public class orgCommand implements TabExecutor {
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    sender.sendMessage("§c<§rerror§c>§r [§Organisations§r] §cCouldn't kick player from organisation.");
+                    sender.sendMessage("§c<§rerror§c>§r [§dOrganisations§r] §cCouldn't kick player from organisation.");
                 }
                 return true;
             }
@@ -281,10 +282,11 @@ public class orgCommand implements TabExecutor {
 
                         StringBuilder sb = new StringBuilder();
 
-                        sb.append("[§Organisations§r] Organisation info\n");
-                        sb.append("Name: §6").append(org.getName()).append("\n");
-                        sb.append("Description: §7").append(org.getDescription()).append("\n");
-                        sb.append("Members: ").append("\n");
+                        sb.append("[§dOrganisations§r] Organisation info\n");
+                        sb.append("§rName: §6").append(org.getName()).append("\n");
+                        sb.append("§rDescription: §7").append(org.getDescription()).append("\n");
+                        sb.append("§rFunds: ").append("§a$ ").append(NumberFormat.getInstance().format(org.getMoney())).append("\n");
+                        sb.append("§rMembers: ").append("\n");
 
                         List<Player> onlineMembers = organisationHandler.getOnlineMembers(org.getName());
                         sb.append("§aONLINE §r- ");

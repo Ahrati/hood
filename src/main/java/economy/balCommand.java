@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -43,8 +44,9 @@ public class balCommand implements TabExecutor {
                 try {
                     StringBuilder sb = new StringBuilder();
                     sb.append("[§dEconomy§r] Transaction history\n");
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
                     for(TransactionLog log : moneyHandler.getHistory(sender.getName(), "p")) {
-                        sb.append("§7> ").append("[§b").append(log.getFrom()).append("§7 -> §b").append(log.getTo()).append("§7] : §a$").append(log.getAmount()).append(" '").append(log.getDescription()).append(log.datetime).append("'\n");
+                        sb.append("§7> ").append("[§b").append(log.getFrom()).append("§7 -> §b").append(log.getTo()).append("§7] : §a$").append(NumberFormat.getInstance().format(log.getAmount())).append(" '").append(log.getDescription()).append("' @ ").append(formatter.format(log.getDatetime())).append("\n");
                     }
                     sb.append("Transaction logs get deleted after 10 days!");
 

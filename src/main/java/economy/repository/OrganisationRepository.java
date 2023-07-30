@@ -13,7 +13,7 @@ public class OrganisationRepository {
 
     private final database db;
     private static List<Organisation> cache;
-    private static Map<User, String> roleCache;
+    private static Map<User, Organisation> roleCache;
     public OrganisationRepository(database db) {
         this.db = db;
         cache = new ArrayList<>();
@@ -28,9 +28,9 @@ public class OrganisationRepository {
         return null;
     }
 
-    public String cachedRole(User user) {
+  /*  public String cachedRole(User user) {
         return roleCache.getOrDefault(user, null);
-    }
+    }*/
     public Organisation fetchOrganisation(String name) throws SQLException {
 /*
         Organisation cached = cached(name);

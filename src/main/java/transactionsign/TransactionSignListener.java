@@ -17,6 +17,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.SQLException;
+import java.text.NumberFormat;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -178,7 +179,7 @@ public class TransactionSignListener implements Listener {
                     int tax = config.getInt("taxRate");
                     int taxable = Math.round(amount * (float)tax/100);
                     if(moneyHandler.transferMoney(sender, receiver, amount - taxable, description, "p2o") == 0) {
-                        player.sendMessage("[§dEconomy§r] §aTransferred §6$" + amount + "§a to §b" + receiver);;
+                        player.sendMessage("[§dEconomy§r] §aTransferred §6$" + NumberFormat.getInstance().format(amount) + "§a to §b" + receiver);;
                     } else {
                         return;
                     }
@@ -192,7 +193,7 @@ public class TransactionSignListener implements Listener {
                     int tax = config.getInt("taxRate");
                     int taxable = Math.round(amount * (float)tax/100);
                     if(moneyHandler.transferMoney(sender, receiver, amount - taxable, description, "p2p") == 0){
-                        player.sendMessage("[§dEconomy§r] §aTransferred §6$" + amount + "§a to §6" + receiver);
+                        player.sendMessage("[§dEconomy§r] §aTransferred §6$" + NumberFormat.getInstance().format(amount) + "§a to §6" + receiver);
                     } else {
                         return;
                     }

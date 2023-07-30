@@ -97,10 +97,9 @@ public class FastTravelCommand implements TabExecutor {
         for (PotionEffect effect : player.getActivePotionEffects()) {
             if (soberEffects.contains(effect.getType())) {
                 sober = false;
-                break; // No need to continue checking if we already found a sobering effect
+                break;
             }
         }
-
         return sober;
     }
 
@@ -143,7 +142,6 @@ public class FastTravelCommand implements TabExecutor {
             player.sendMessage("[§dFast Travel§r] §cYou need to be sober to fast travel!");
             return true;
         }
-
 
         String name = args[0];
 
@@ -202,7 +200,6 @@ public class FastTravelCommand implements TabExecutor {
 
         int taxAmount = Math.max(0, (cooldownMinutes - elapsedTimeMinutes) * taxPerMinute);
 
-
         if (taxAmount > 0) {
             int playerBalance;
             try {
@@ -234,7 +231,7 @@ public class FastTravelCommand implements TabExecutor {
         player.teleport(teleportLocation);
 
         player.sendMessage("[§dFast Travel§r] §aFast Traveled to §6" + fastTravelPoint.getName());
-        player.sendMessage("[§dFast Travel§r] §aYou can fast travel for free again in " + cooldownMinutes + " minutes");
+        if (cooldownMinutes != 0)player.sendMessage("[§dFast Travel§r] §aYou can fast travel for free again in " + cooldownMinutes + " minutes");
         player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
         playParticleEffects(teleportLocation, player, player.getWorld());
 

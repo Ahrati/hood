@@ -15,7 +15,6 @@ public class FastTravelPointDeleteCommand implements TabExecutor{
         fastTravelRepository = new FastTravelRepository(db);
     }
 
-
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
 

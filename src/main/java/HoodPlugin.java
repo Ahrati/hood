@@ -1,3 +1,4 @@
+import bascanskaploca.BascanskaPlocaItemManager;
 import casinochips.CasinoChipCraftListener;
 import casinochips.CasinoChipsItemManager;
 import economy.handler.MoneyHandler;
@@ -159,6 +160,9 @@ public class HoodPlugin extends JavaPlugin {
         //CASINO CHIPS
         CasinoChipsItemManager casinoChipsItemManager = new CasinoChipsItemManager(this);
         CasinoChipCraftListener casinoChipCraftListener = new CasinoChipCraftListener(this);
+
+        //BASCANSKA PLOCA
+        BascanskaPlocaItemManager bascanskaPlocaItemManager = new BascanskaPlocaItemManager(this);
 
         //TRANSACTION SIGN
         TransactionSignListener transactionSignListener = new TransactionSignListener(this, organisationHandler, moneyHandler, config);

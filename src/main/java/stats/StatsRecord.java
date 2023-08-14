@@ -1,20 +1,20 @@
 package stats;
 
+import java.util.Date;
+
 public class StatsRecord {
     private String name;
     private int time;
     private int mobsKilled;
-    private int  blocksPlaced;
     private int  blocksDestroyed;
-    private int date;
+    private Date date;
 
-    public StatsRecord(String name, int time, int mobsKilled, int blocksPlaced, int blocksDestroyed, int date) {
+    public StatsRecord(String name, int time, int mobsKilled, int blocksDestroyed, int travel) {
         this.name = name;
         this.time = time;
         this.mobsKilled = mobsKilled;
-        this.blocksPlaced = blocksPlaced;
         this.blocksDestroyed = blocksDestroyed;
-        this.date = date;
+        this.date = new Date();
     }
 
     public String getName() {
@@ -41,14 +41,6 @@ public class StatsRecord {
         this.mobsKilled = mobsKilled;
     }
 
-    public int getBlocksPlaced() {
-        return blocksPlaced;
-    }
-
-    public void setBlocksPlaced(int blocksPlaced) {
-        this.blocksPlaced = blocksPlaced;
-    }
-
     public int getBlocksDestroyed() {
         return blocksDestroyed;
     }
@@ -57,11 +49,11 @@ public class StatsRecord {
         this.blocksDestroyed = blocksDestroyed;
     }
 
-    public int getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(int date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 }

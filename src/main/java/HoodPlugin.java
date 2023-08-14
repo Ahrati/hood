@@ -19,6 +19,7 @@ import java.util.Objects;
 import java.util.logging.Level;
 import db.database;
 import economy.*;
+import stats.StatsLogger;
 import transactionsign.TransactionSignListener;
 
 public class HoodPlugin extends JavaPlugin {
@@ -166,6 +167,10 @@ public class HoodPlugin extends JavaPlugin {
 
         //TRANSACTION SIGN
         TransactionSignListener transactionSignListener = new TransactionSignListener(this, organisationHandler, moneyHandler, config);
+
+        //STATS
+        StatsLogger statsLogger = new StatsLogger(this);
+        statsLogger.Start();
 
         // LOADED
         super.onEnable();

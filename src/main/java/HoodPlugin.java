@@ -1,3 +1,4 @@
+import bascanskaploca.BascanskaPlocaItemManager;
 import casinochips.CasinoChipCraftListener;
 import casinochips.CasinoChipsItemManager;
 import economy.handler.MoneyHandler;
@@ -18,6 +19,7 @@ import java.util.Objects;
 import java.util.logging.Level;
 import db.database;
 import economy.*;
+import stats.StatsLogger;
 import transactionsign.TransactionSignListener;
 
 public class HoodPlugin extends JavaPlugin {
@@ -160,8 +162,15 @@ public class HoodPlugin extends JavaPlugin {
         CasinoChipsItemManager casinoChipsItemManager = new CasinoChipsItemManager(this);
         CasinoChipCraftListener casinoChipCraftListener = new CasinoChipCraftListener(this);
 
+        //BASCANSKA PLOCA
+        BascanskaPlocaItemManager bascanskaPlocaItemManager = new BascanskaPlocaItemManager(this);
+
         //TRANSACTION SIGN
         TransactionSignListener transactionSignListener = new TransactionSignListener(this, organisationHandler, moneyHandler, config);
+
+        //STATS
+        StatsLogger statsLogger = new StatsLogger(this);
+        statsLogger.Start();
 
         // LOADED
         super.onEnable();

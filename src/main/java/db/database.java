@@ -6,9 +6,18 @@ public class database {
     private Connection connection;
     FileConfiguration config;
 
+    private boolean testConnection() {
+        try {
+            Statement statement = connection.createStatement();
+            statement.execute("SELECT 1;");
+            return true;
+        } catch(SQLException e) {
+            return false;
+        }
+    }
     public Connection getConnection() throws SQLException {
         if(connection != null){
-            return connection;
+            if(testConnection()) return connection;
         }
 
         StringBuilder sb = new StringBuilder();
